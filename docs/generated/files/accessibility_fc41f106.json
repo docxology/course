@@ -1,0 +1,354 @@
+{
+  "file_path": "src/curriculum/accessibility/accessibility.py",
+  "module_docstring": "Accessibility service for inclusive learning experiences.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "AccessibilityService",
+      "docstring": "Service for accessibility features and compliance.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize accessibility service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "create_accessibility_profile",
+          "docstring": "Create an accessibility profile for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "preferences",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 17
+        },
+        {
+          "name": "analyze_content_accessibility",
+          "docstring": "Analyze content for accessibility compliance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 59
+        },
+        {
+          "name": "generate_alt_text",
+          "docstring": "Generate alt text for images using AI (mock).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "image_description",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 107
+        },
+        {
+          "name": "create_accessible_version",
+          "docstring": "Create an accessible version of content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "accessibility_features",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 112
+        },
+        {
+          "name": "validate_keyboard_navigation",
+          "docstring": "Validate keyboard navigation accessibility.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "html_content",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 140
+        },
+        {
+          "name": "generate_screen_reader_content",
+          "docstring": "Generate content optimized for screen readers.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "user_profile",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 167
+        },
+        {
+          "name": "create_sign_language_video",
+          "docstring": "Create sign language interpretation (mock).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "text_content",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 191
+        },
+        {
+          "name": "get_accessibility_guidelines",
+          "docstring": "Get accessibility guidelines and best practices.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "standard",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 207
+        },
+        {
+          "name": "audit_course_accessibility",
+          "docstring": "Audit entire course for accessibility compliance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 251
+        },
+        {
+          "name": "create_accessibility_report",
+          "docstring": "Create an accessibility report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "issues",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 270
+        },
+        {
+          "name": "get_supported_languages",
+          "docstring": "Get supported languages for accessibility features.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 295
+        },
+        {
+          "name": "translate_for_accessibility",
+          "docstring": "Translate text for accessibility purposes.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "text",
+              "annotation": "str"
+            },
+            {
+              "name": "target_language",
+              "annotation": "str"
+            },
+            {
+              "name": "context",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 310
+        },
+        {
+          "name": "create_braille_version",
+          "docstring": "Create braille version of content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 326
+        },
+        {
+          "name": "get_accessibility_tools",
+          "docstring": "Get available accessibility tools and features.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 341
+        }
+      ],
+      "total_methods": 15,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 386
+}

@@ -1,0 +1,786 @@
+{
+  "file_path": "src/curriculum/ai/research.py",
+  "module_docstring": "Research tools service for citations and bibliography management.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID",
+        "uuid4"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "re"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ResearchToolsService",
+      "docstring": "Service for research tools and citation management.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize research tools service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "create_citation",
+          "docstring": "Create a citation entry.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "authors",
+              "annotation": "List[str]",
+              "default": null
+            },
+            {
+              "name": "publication_year",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "source_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "source_details",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "authors",
+              "annotation": "List[str]",
+              "default": null
+            },
+            {
+              "name": "publication_year",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "source_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "source_details",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 28
+        },
+        {
+          "name": "format_citation",
+          "docstring": "Format citation in specified style.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "style",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "style",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 58
+        },
+        {
+          "name": "_format_apa",
+          "docstring": "Format citation in APA style.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 73
+        },
+        {
+          "name": "_format_mla",
+          "docstring": "Format citation in MLA style.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 94
+        },
+        {
+          "name": "_format_chicago",
+          "docstring": "Format citation in Chicago style.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 107
+        },
+        {
+          "name": "create_bibliography",
+          "docstring": "Create a bibliography from citations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "citation_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "style",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "citation_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "style",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 120
+        },
+        {
+          "name": "generate_bibliography_text",
+          "docstring": "Generate formatted bibliography text.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 143
+        },
+        {
+          "name": "extract_citations_from_text",
+          "docstring": "Extract potential citations from text.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "text",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "text",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 158
+        },
+        {
+          "name": "create_research_note",
+          "docstring": "Create a research note with citations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "citation_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "citation_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 184
+        },
+        {
+          "name": "search_citations",
+          "docstring": "Search citations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 211
+        },
+        {
+          "name": "validate_citation",
+          "docstring": "Validate citation data.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "citation_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 234
+        },
+        {
+          "name": "get_citation_styles",
+          "docstring": "Get available citation styles.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 261
+        },
+        {
+          "name": "import_citations_from_bibtex",
+          "docstring": "Import citations from BibTeX format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibtex_text",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibtex_text",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 265
+        },
+        {
+          "name": "export_bibliography",
+          "docstring": "Export bibliography in specified format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "format",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "format",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 285
+        },
+        {
+          "name": "_export_bibtex",
+          "docstring": "Export bibliography as BibTeX.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 298
+        },
+        {
+          "name": "_export_ris",
+          "docstring": "Export bibliography as RIS format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "bibliography",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 316
+        },
+        {
+          "name": "get_research_statistics",
+          "docstring": "Get research statistics for user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 335
+        }
+      ],
+      "total_methods": 18,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 357
+}

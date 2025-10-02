@@ -1,0 +1,560 @@
+{
+  "file_path": "src/curriculum/db/mongodb.py",
+  "module_docstring": "MongoDB database adapter.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Any",
+        "Dict",
+        "List",
+        "Optional",
+        "Type"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "motor.motor_asyncio",
+      "names": [
+        "AsyncIOMotorClient",
+        "AsyncIOMotorDatabase",
+        "AsyncIOMotorCollection"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pymongo",
+      "names": [
+        "ReturnDocument"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.db.base",
+      "names": [
+        "DatabaseInterface"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "MongoDBAdapter",
+      "docstring": "MongoDB database adapter.",
+      "bases": [
+        "DatabaseInterface"
+      ],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize MongoDB adapter.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 19
+        },
+        {
+          "name": "connect",
+          "docstring": "Connect to MongoDB database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 24
+        },
+        {
+          "name": "disconnect",
+          "docstring": "Disconnect from MongoDB database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 32
+        },
+        {
+          "name": "create",
+          "docstring": "Create a new entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 37
+        },
+        {
+          "name": "get",
+          "docstring": "Get entity by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[BaseEntity]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 52
+        },
+        {
+          "name": "update",
+          "docstring": "Update existing entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 66
+        },
+        {
+          "name": "delete",
+          "docstring": "Delete entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 85
+        },
+        {
+          "name": "list",
+          "docstring": "List entities with optional filtering and pagination.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            },
+            {
+              "name": "offset",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            },
+            {
+              "name": "offset",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "return_type": "List[BaseEntity]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 97
+        },
+        {
+          "name": "count",
+          "docstring": "Count entities matching filters.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "int",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 124
+        },
+        {
+          "name": "_get_collection_name",
+          "docstring": "Get MongoDB collection name for entity type.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 136
+        },
+        {
+          "name": "_entity_to_dict",
+          "docstring": "Convert entity to dictionary for MongoDB storage.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 153
+        },
+        {
+          "name": "_dict_to_entity",
+          "docstring": "Convert MongoDB document to entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 167
+        },
+        {
+          "name": "_is_iso_datetime",
+          "docstring": "Check if string is ISO datetime format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "value",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "value",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 179
+        }
+      ],
+      "total_methods": 13,
+      "line_number": 16
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 185
+}

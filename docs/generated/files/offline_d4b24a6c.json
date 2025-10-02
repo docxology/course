@@ -1,0 +1,733 @@
+{
+  "file_path": "src/curriculum/mobile/offline.py",
+  "module_docstring": "Offline support service for downloadable content.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "OfflineService",
+      "docstring": "Service for offline content and sync capabilities.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize offline service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "create_offline_package",
+          "docstring": "Create an offline package for download.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            },
+            {
+              "name": "compression_level",
+              "annotation": "str",
+              "default": "'balanced'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            },
+            {
+              "name": "compression_level",
+              "annotation": "str",
+              "default": "'balanced'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 18
+        },
+        {
+          "name": "get_offline_package",
+          "docstring": "Get offline package details.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 58
+        },
+        {
+          "name": "cache_content_for_offline",
+          "docstring": "Cache content for offline access.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "cache_duration",
+              "annotation": "int",
+              "default": "24"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "cache_duration",
+              "annotation": "int",
+              "default": "24"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 62
+        },
+        {
+          "name": "start_sync_session",
+          "docstring": "Start an offline sync session.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "device_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "sync_direction",
+              "annotation": "str",
+              "default": "'bidirectional'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "device_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "sync_direction",
+              "annotation": "str",
+              "default": "'bidirectional'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 85
+        },
+        {
+          "name": "sync_progress_offline",
+          "docstring": "Sync progress data from offline session.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "session_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "progress_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "session_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "progress_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 109
+        },
+        {
+          "name": "get_offline_content_list",
+          "docstring": "Get list of content available offline.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 135
+        },
+        {
+          "name": "create_offline_study_plan",
+          "docstring": "Create an offline study plan.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "available_offline_time",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "available_offline_time",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 153
+        },
+        {
+          "name": "generate_offline_manifest",
+          "docstring": "Generate manifest file for offline package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_structure",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_structure",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 187
+        },
+        {
+          "name": "validate_offline_package",
+          "docstring": "Validate offline package integrity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "checksum",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "package_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "checksum",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 211
+        },
+        {
+          "name": "get_offline_usage_statistics",
+          "docstring": "Get offline usage statistics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 233
+        },
+        {
+          "name": "create_offline_notification",
+          "docstring": "Create offline notification for sync.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 250
+        },
+        {
+          "name": "get_offline_capabilities",
+          "docstring": "Get offline capabilities and features.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 271
+        },
+        {
+          "name": "estimate_offline_storage",
+          "docstring": "Estimate storage requirements for offline content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 307
+        },
+        {
+          "name": "create_offline_backup",
+          "docstring": "Create offline backup of user data.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "backup_type",
+              "annotation": "str",
+              "default": "'full'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "backup_type",
+              "annotation": "str",
+              "default": "'full'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 332
+        },
+        {
+          "name": "restore_from_backup",
+          "docstring": "Restore user data from backup.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "backup_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "restore_options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "backup_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "restore_options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 358
+        }
+      ],
+      "total_methods": 16,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 380
+}

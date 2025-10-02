@@ -1,0 +1,205 @@
+{
+  "file_path": "src/curriculum/tools/formatters.py",
+  "module_docstring": "Formatting utilities.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime",
+        "timedelta"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "format_datetime",
+      "docstring": "Format datetime to string.\n\nArgs:\n    dt: Datetime object to format\n    format_str: Format string\n    \nReturns:\n    Formatted datetime string",
+      "parameters": [
+        {
+          "name": "dt",
+          "annotation": "datetime",
+          "default": null
+        },
+        {
+          "name": "format_str",
+          "annotation": "str",
+          "default": "'%Y-%m-%d %H:%M:%S'"
+        }
+      ],
+      "args": [
+        {
+          "name": "dt",
+          "annotation": "datetime",
+          "default": null
+        },
+        {
+          "name": "format_str",
+          "annotation": "str",
+          "default": "'%Y-%m-%d %H:%M:%S'"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 7
+    },
+    {
+      "name": "format_duration",
+      "docstring": "Format duration in seconds to human-readable string.\n\nArgs:\n    seconds: Duration in seconds\n    \nReturns:\n    Formatted duration string (e.g., \"2h 30m\")",
+      "parameters": [
+        {
+          "name": "seconds",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "seconds",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 20
+    },
+    {
+      "name": "truncate_text",
+      "docstring": "Truncate text to maximum length.\n\nArgs:\n    text: Text to truncate\n    max_length: Maximum length\n    suffix: Suffix to add when truncated\n    \nReturns:\n    Truncated text",
+      "parameters": [
+        {
+          "name": "text",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "max_length",
+          "annotation": "int",
+          "default": "100"
+        },
+        {
+          "name": "suffix",
+          "annotation": "str",
+          "default": "'...'"
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "max_length",
+          "annotation": "int",
+          "default": "100"
+        },
+        {
+          "name": "suffix",
+          "annotation": "str",
+          "default": "'...'"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 42
+    },
+    {
+      "name": "format_file_size",
+      "docstring": "Format file size in bytes to human-readable string.\n\nArgs:\n    size_bytes: Size in bytes\n    \nReturns:\n    Formatted size string (e.g., \"1.5 MB\")",
+      "parameters": [
+        {
+          "name": "size_bytes",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "size_bytes",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 59
+    },
+    {
+      "name": "format_percentage",
+      "docstring": "Format decimal as percentage.\n\nArgs:\n    value: Decimal value (0.0 to 1.0)\n    decimal_places: Number of decimal places\n    \nReturns:\n    Formatted percentage string",
+      "parameters": [
+        {
+          "name": "value",
+          "annotation": "float",
+          "default": null
+        },
+        {
+          "name": "decimal_places",
+          "annotation": "int",
+          "default": "1"
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "annotation": "float",
+          "default": null
+        },
+        {
+          "name": "decimal_places",
+          "annotation": "int",
+          "default": "1"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 75
+    },
+    {
+      "name": "slugify",
+      "docstring": "Convert text to URL-safe slug.\n\nArgs:\n    text: Text to slugify\n    \nReturns:\n    URL-safe slug",
+      "parameters": [
+        {
+          "name": "text",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 88
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 6,
+  "lines_of_code": 114
+}

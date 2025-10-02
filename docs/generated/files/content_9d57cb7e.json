@@ -1,0 +1,502 @@
+{
+  "file_path": "src/curriculum/routes/content.py",
+  "module_docstring": "Content API routes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "APIRouter",
+        "HTTPException",
+        "Depends",
+        "Query",
+        "Path"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "BaseModel"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentStatus",
+        "ContentFormat",
+        "ContentType"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.content",
+      "names": [
+        "ContentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.rendering",
+      "names": [
+        "RenderingService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.version_control",
+      "names": [
+        "VersionControlService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "PagedResponse"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CreateContentRequest",
+      "docstring": "Request model for creating content.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 24
+    },
+    {
+      "name": "UpdateContentRequest",
+      "docstring": "Request model for updating content.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 35
+    },
+    {
+      "name": "ContentResponse",
+      "docstring": "Response model for content.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 43
+    }
+  ],
+  "functions": [
+    {
+      "name": "create_content",
+      "docstring": "Create new content.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "CreateContentRequest",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "CreateContentRequest",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1071ced90>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 61
+    },
+    {
+      "name": "get_content",
+      "docstring": "Get content by ID.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107297610>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 83
+    },
+    {
+      "name": "update_content",
+      "docstring": "Update content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "UpdateContentRequest",
+          "default": null
+        },
+        {
+          "name": "content_id_path",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "UpdateContentRequest",
+          "default": null
+        },
+        {
+          "name": "content_id_path",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x10725d010>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 96
+    },
+    {
+      "name": "delete_content",
+      "docstring": "Soft delete content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1071cac50>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 127
+    },
+    {
+      "name": "publish_content",
+      "docstring": "Publish content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1071ca250>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 137
+    },
+    {
+      "name": "change_content_status",
+      "docstring": "Change content status.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "new_status",
+          "annotation": "ContentStatus",
+          "default": null
+        },
+        {
+          "name": "content_id_path",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "new_status",
+          "annotation": "ContentStatus",
+          "default": null
+        },
+        {
+          "name": "content_id_path",
+          "annotation": "UUID",
+          "default": "Path(..., description='Content ID')"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1072b3f10>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 150
+    },
+    {
+      "name": "list_content",
+      "docstring": "List content with pagination and filtering.",
+      "parameters": [
+        {
+          "name": "page",
+          "annotation": "int",
+          "default": "Query(1, ge=1, description='Page number')"
+        },
+        {
+          "name": "page_size",
+          "annotation": "int",
+          "default": "Query(20, ge=1, le=100, description='Items per page')"
+        },
+        {
+          "name": "status",
+          "annotation": "Optional[ContentStatus]",
+          "default": "Query(None, description='Filter by status')"
+        },
+        {
+          "name": "author_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by author')"
+        },
+        {
+          "name": "search",
+          "annotation": "Optional[str]",
+          "default": "Query(None, description='Search query')"
+        }
+      ],
+      "args": [
+        {
+          "name": "page",
+          "annotation": "int",
+          "default": "Query(1, ge=1, description='Page number')"
+        },
+        {
+          "name": "page_size",
+          "annotation": "int",
+          "default": "Query(20, ge=1, le=100, description='Items per page')"
+        },
+        {
+          "name": "status",
+          "annotation": "Optional[ContentStatus]",
+          "default": "Query(None, description='Filter by status')"
+        },
+        {
+          "name": "author_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by author')"
+        },
+        {
+          "name": "search",
+          "annotation": "Optional[str]",
+          "default": "Query(None, description='Search query')"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107470d90>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 167
+    },
+    {
+      "name": "render_content",
+      "docstring": "Render content in specified format.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "format",
+          "annotation": "str",
+          "default": "Query('html', description='Target format')"
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "format",
+          "annotation": "str",
+          "default": "Query('html', description='Target format')"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107472a90>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 201
+    },
+    {
+      "name": "download_content",
+      "docstring": "Download content (increment download count).",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107220110>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 215
+    },
+    {
+      "name": "get_content_versions",
+      "docstring": "Get all versions of content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107420390>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 230
+    },
+    {
+      "name": "get_content_children",
+      "docstring": "Get child content items.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107421b90>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 250
+    },
+    {
+      "name": "_content_to_response",
+      "docstring": "Convert Content model to response model.",
+      "parameters": [
+        {
+          "name": "content",
+          "annotation": "Content",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content",
+          "annotation": "Content",
+          "default": null
+        }
+      ],
+      "return_type": "ContentResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 261
+    }
+  ],
+  "total_classes": 3,
+  "total_functions": 12,
+  "lines_of_code": 276
+}

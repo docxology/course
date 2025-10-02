@@ -1,0 +1,154 @@
+{
+  "file_path": "src/curriculum/tools/file_handling.py",
+  "module_docstring": "File handling utilities.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "os"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pathlib",
+      "names": [
+        "Path"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional",
+        "List"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "get_file_extension",
+      "docstring": "Get file extension from filename.\n\nArgs:\n    filename: Filename or path\n    \nReturns:\n    File extension (without dot)",
+      "parameters": [
+        {
+          "name": "filename",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 8
+    },
+    {
+      "name": "validate_file_type",
+      "docstring": "Validate if file type is allowed.\n\nArgs:\n    filename: Filename to validate\n    allowed_extensions: List of allowed extensions (with or without dot)\n    \nReturns:\n    True if file type is allowed, False otherwise",
+      "parameters": [
+        {
+          "name": "filename",
+          "annotation": "str"
+        },
+        {
+          "name": "allowed_extensions",
+          "annotation": "List[str]"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 20
+    },
+    {
+      "name": "ensure_directory_exists",
+      "docstring": "Ensure directory exists, create if it doesn't.\n\nArgs:\n    directory: Directory path",
+      "parameters": [
+        {
+          "name": "directory",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "None",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 38
+    },
+    {
+      "name": "get_file_size",
+      "docstring": "Get file size in bytes.\n\nArgs:\n    file_path: Path to file\n    \nReturns:\n    File size in bytes",
+      "parameters": [
+        {
+          "name": "file_path",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "int",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 47
+    },
+    {
+      "name": "is_file_too_large",
+      "docstring": "Check if file exceeds maximum size.\n\nArgs:\n    file_path: Path to file\n    max_size_bytes: Maximum allowed size in bytes\n    \nReturns:\n    True if file is too large, False otherwise",
+      "parameters": [
+        {
+          "name": "file_path",
+          "annotation": "str"
+        },
+        {
+          "name": "max_size_bytes",
+          "annotation": "int"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 59
+    },
+    {
+      "name": "get_safe_filename",
+      "docstring": "Get a safe filename that doesn't conflict with existing files.\n\nArgs:\n    filename: Desired filename\n    directory: Target directory\n    \nReturns:\n    Safe filename (may be modified to avoid conflicts)",
+      "parameters": [
+        {
+          "name": "filename",
+          "annotation": "str"
+        },
+        {
+          "name": "directory",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 72
+    },
+    {
+      "name": "read_file_chunks",
+      "docstring": "Read file in chunks (generator).\n\nArgs:\n    file_path: Path to file\n    chunk_size: Size of each chunk in bytes\n    \nYields:\n    File chunks",
+      "parameters": [
+        {
+          "name": "file_path",
+          "annotation": "str"
+        },
+        {
+          "name": "chunk_size",
+          "annotation": "int"
+        }
+      ],
+      "return_type": null,
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 100
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 7,
+  "lines_of_code": 115
+}

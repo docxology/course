@@ -1,0 +1,25 @@
+{
+  "file_path": "src/curriculum/communication/__init__.py",
+  "module_docstring": "Communication and collaboration services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.communication.communication",
+      "names": [
+        "CommunicationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.communication.collaboration",
+      "names": [
+        "CollaborationService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 10
+}

@@ -1,0 +1,608 @@
+{
+  "file_path": "src/curriculum/routes/assessments.py",
+  "module_docstring": "Assessment API routes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "APIRouter",
+        "HTTPException",
+        "Depends",
+        "Query",
+        "Path",
+        "status"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "BaseModel"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Question",
+        "Submission",
+        "SubmissionResult",
+        "QuestionType",
+        "DifficultyLevel",
+        "GradingStatus"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.assessment",
+      "names": [
+        "AssessmentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserPermission"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.routes.dependencies",
+      "names": [
+        "get_current_user"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CreateAssessmentRequest",
+      "docstring": "Request model for creating assessment.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 29
+    },
+    {
+      "name": "CreateQuestionRequest",
+      "docstring": "Request model for creating question.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 39
+    },
+    {
+      "name": "SubmitAnswerRequest",
+      "docstring": "Request model for submitting answer.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 51
+    },
+    {
+      "name": "AssessmentResponse",
+      "docstring": "Response model for assessment.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 57
+    },
+    {
+      "name": "QuestionResponse",
+      "docstring": "Response model for question.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 72
+    },
+    {
+      "name": "SubmissionResponse",
+      "docstring": "Response model for submission.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 84
+    }
+  ],
+  "functions": [
+    {
+      "name": "create_assessment",
+      "docstring": "Create a new assessment.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "CreateAssessmentRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "CreateAssessmentRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1071c9fd0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 101
+    },
+    {
+      "name": "get_assessment",
+      "docstring": "Get assessment by ID.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x10726a690>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 126
+    },
+    {
+      "name": "list_assessments",
+      "docstring": "List assessments.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by content')"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by content')"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107268ed0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 136
+    },
+    {
+      "name": "create_question",
+      "docstring": "Create a new question for assessment.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "CreateQuestionRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "CreateQuestionRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107296410>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 148
+    },
+    {
+      "name": "get_assessment_questions",
+      "docstring": "Get questions for assessment.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1073d2f10>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 176
+    },
+    {
+      "name": "start_submission",
+      "docstring": "Start a new submission.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "attempt_number",
+          "annotation": "int",
+          "default": "1"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "attempt_number",
+          "annotation": "int",
+          "default": "1"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1073fe690>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 193
+    },
+    {
+      "name": "submit_answer",
+      "docstring": "Submit answer for a question.",
+      "parameters": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "SubmitAnswerRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "SubmitAnswerRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107200e50>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 215
+    },
+    {
+      "name": "submit_assessment",
+      "docstring": "Submit the complete assessment.",
+      "parameters": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x10729f250>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 247
+    },
+    {
+      "name": "get_submission",
+      "docstring": "Get submission details.",
+      "parameters": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "submission_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1073c9790>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 276
+    },
+    {
+      "name": "get_user_submissions",
+      "docstring": "Get submissions for a user.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "assessment_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by assessment')"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "assessment_id",
+          "annotation": "Optional[UUID]",
+          "default": "Query(None, description='Filter by assessment')"
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": "Depends(get_current_user)"
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1071b0750>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 295
+    },
+    {
+      "name": "get_assessment_statistics",
+      "docstring": "Get assessment statistics.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107420dd0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 313
+    },
+    {
+      "name": "_assessment_to_response",
+      "docstring": "Convert Assessment model to response model.",
+      "parameters": [
+        {
+          "name": "assessment",
+          "annotation": "Assessment",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment",
+          "annotation": "Assessment",
+          "default": null
+        }
+      ],
+      "return_type": "AssessmentResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 321
+    },
+    {
+      "name": "_question_to_response",
+      "docstring": "Convert Question model to response model.",
+      "parameters": [
+        {
+          "name": "question",
+          "annotation": "Question",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "question",
+          "annotation": "Question",
+          "default": null
+        }
+      ],
+      "return_type": "QuestionResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 338
+    },
+    {
+      "name": "_submission_to_response",
+      "docstring": "Convert Submission model to response model.",
+      "parameters": [
+        {
+          "name": "submission",
+          "annotation": "Submission",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "submission",
+          "annotation": "Submission",
+          "default": null
+        }
+      ],
+      "return_type": "SubmissionResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 352
+    }
+  ],
+  "total_classes": 6,
+  "total_functions": 14,
+  "lines_of_code": 366
+}

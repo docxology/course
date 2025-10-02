@@ -1,0 +1,678 @@
+{
+  "file_path": "src/curriculum/content/content.py",
+  "module_docstring": "Content management service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentStatus",
+        "ContentVersion",
+        "ContentFormat"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "PagedResponse"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ContentService",
+      "docstring": "Service for managing educational content.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize content service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "create_content",
+          "docstring": "Create new content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "format",
+              "annotation": "ContentFormat",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "content_body",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "format",
+              "annotation": "ContentFormat",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "content_body",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Content",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 18
+        },
+        {
+          "name": "get_content",
+          "docstring": "Retrieve content by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 40
+        },
+        {
+          "name": "update_content",
+          "docstring": "Update content fields.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "content_body",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "content_body",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 44
+        },
+        {
+          "name": "delete_content",
+          "docstring": "Soft delete content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 66
+        },
+        {
+          "name": "publish_content",
+          "docstring": "Publish content (change status to published).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 75
+        },
+        {
+          "name": "transition_status",
+          "docstring": "Transition content to a new status.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "new_status",
+              "annotation": "ContentStatus",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "new_status",
+              "annotation": "ContentStatus",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 87
+        },
+        {
+          "name": "list_content",
+          "docstring": "List content with pagination and filtering.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "page",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "page_size",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "status",
+              "annotation": "Optional[ContentStatus]",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "page",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "page_size",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "status",
+              "annotation": "Optional[ContentStatus]",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            }
+          ],
+          "return_type": "PagedResponse",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 99
+        },
+        {
+          "name": "search_content",
+          "docstring": "Search content by title and description.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "List[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 128
+        },
+        {
+          "name": "add_tag",
+          "docstring": "Add a tag to content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "tag",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "tag",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 149
+        },
+        {
+          "name": "remove_tag",
+          "docstring": "Remove a tag from content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "tag",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "tag",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 161
+        },
+        {
+          "name": "get_children",
+          "docstring": "Get all child content of a parent.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 173
+        },
+        {
+          "name": "increment_views",
+          "docstring": "Increment view count for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 181
+        },
+        {
+          "name": "increment_downloads",
+          "docstring": "Increment download count for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 189
+        },
+        {
+          "name": "get_content_count",
+          "docstring": "Get total count of non-deleted content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "int",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 197
+        }
+      ],
+      "total_methods": 15,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 199
+}

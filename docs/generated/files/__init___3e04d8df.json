@@ -1,0 +1,57 @@
+{
+  "file_path": "src/curriculum/learning/__init__.py",
+  "module_docstring": "Learning-related services for the Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.core",
+      "names": [
+        "LearningEvent",
+        "AnalyticsReport",
+        "ActivityVerb",
+        "EventType",
+        "DeviceType",
+        "Assessment",
+        "Question",
+        "Submission",
+        "SubmissionResult",
+        "QuestionType",
+        "DifficultyLevel",
+        "GradingStatus"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.analytics",
+      "names": [
+        "AnalyticsService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.assessment",
+      "names": [
+        "AssessmentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.progress",
+      "names": [
+        "ProgressService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.study_tools",
+      "names": [
+        "StudyToolsService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 42
+}

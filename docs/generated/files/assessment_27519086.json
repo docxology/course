@@ -1,0 +1,383 @@
+{
+  "file_path": "src/curriculum/learning/assessment.py",
+  "module_docstring": "Assessment and evaluation service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Question",
+        "Submission",
+        "SubmissionResult",
+        "QuestionType",
+        "GradingStatus"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "AssessmentService",
+      "docstring": "Service for managing assessments and evaluations.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize assessment service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "create_assessment",
+          "docstring": "Create a new assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]"
+            },
+            {
+              "name": "content_id",
+              "annotation": "Optional[UUID]"
+            },
+            {
+              "name": "time_limit",
+              "annotation": "Optional[int]"
+            }
+          ],
+          "return_type": "Assessment",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 26
+        },
+        {
+          "name": "get_assessment",
+          "docstring": "Get assessment by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Assessment]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 43
+        },
+        {
+          "name": "create_question",
+          "docstring": "Create a new question.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "question_text",
+              "annotation": "str"
+            },
+            {
+              "name": "question_type",
+              "annotation": "QuestionType"
+            },
+            {
+              "name": "points",
+              "annotation": "float"
+            },
+            {
+              "name": "correct_answer",
+              "annotation": "Optional[Any]"
+            },
+            {
+              "name": "options",
+              "annotation": "Optional[List[Dict[str, Any]]]"
+            }
+          ],
+          "return_type": "Question",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 47
+        },
+        {
+          "name": "get_question",
+          "docstring": "Get question by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "question_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Question]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 68
+        },
+        {
+          "name": "add_question_to_assessment",
+          "docstring": "Add a question to an assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "question_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Assessment]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 72
+        },
+        {
+          "name": "remove_question_from_assessment",
+          "docstring": "Remove a question from an assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "question_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Assessment]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 90
+        },
+        {
+          "name": "start_submission",
+          "docstring": "Start a new submission for an assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "attempt_number",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "Optional[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 108
+        },
+        {
+          "name": "get_submission",
+          "docstring": "Get submission by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 128
+        },
+        {
+          "name": "submit_answer",
+          "docstring": "Submit an answer for a question.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "question_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "answer",
+              "annotation": "Any"
+            }
+          ],
+          "return_type": "Optional[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 132
+        },
+        {
+          "name": "submit_assessment",
+          "docstring": "Submit the complete assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 143
+        },
+        {
+          "name": "grade_submission",
+          "docstring": "Grade a submission (auto-grade when possible).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "grader_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 153
+        },
+        {
+          "name": "get_user_submissions",
+          "docstring": "Get all submissions for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "Optional[UUID]"
+            }
+          ],
+          "return_type": "List[Submission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 192
+        },
+        {
+          "name": "get_assessment_statistics",
+          "docstring": "Get statistics for an assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 203
+        }
+      ],
+      "total_methods": 14,
+      "line_number": 17
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 222
+}

@@ -1,0 +1,235 @@
+{
+  "file_path": "src/curriculum/core/assessment.py",
+  "module_docstring": "Assessment models for quizzes and evaluations.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "enum",
+      "names": [
+        "Enum"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "Field"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "QuestionType",
+      "docstring": "Types of assessment questions.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 13
+    },
+    {
+      "name": "DifficultyLevel",
+      "docstring": "Difficulty levels for questions.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 25
+    },
+    {
+      "name": "GradingStatus",
+      "docstring": "Status of assessment grading.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 34
+    },
+    {
+      "name": "Assessment",
+      "docstring": "Assessment (quiz, exam, etc.) entity.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "is_available_now",
+          "docstring": "Check if assessment is currently available.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 74
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 43
+    },
+    {
+      "name": "Question",
+      "docstring": "Assessment question entity.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "calculate_score",
+          "docstring": "Calculate score for submitted answer.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submitted_answer",
+              "annotation": "Any"
+            }
+          ],
+          "return_type": "float",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 107
+        },
+        {
+          "name": "_grade_coding_submission",
+          "docstring": "Grade coding submission (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "code",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "float",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 125
+        }
+      ],
+      "total_methods": 2,
+      "line_number": 86
+    },
+    {
+      "name": "Submission",
+      "docstring": "Student submission for an assessment.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "submit",
+          "docstring": "Mark submission as submitted.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 163
+        },
+        {
+          "name": "calculate_percentage",
+          "docstring": "Calculate percentage score.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 167
+        },
+        {
+          "name": "check_passed",
+          "docstring": "Check if submission passed.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "passing_score",
+              "annotation": "float"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 172
+        }
+      ],
+      "total_methods": 3,
+      "line_number": 134
+    },
+    {
+      "name": "SubmissionResult",
+      "docstring": "Detailed result for a submission.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 178
+    }
+  ],
+  "functions": [],
+  "total_classes": 7,
+  "total_functions": 0,
+  "lines_of_code": 198
+}

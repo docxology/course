@@ -1,0 +1,32 @@
+{
+  "file_path": "src/curriculum/ai/__init__.py",
+  "module_docstring": "AI-powered features and content creation services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.ai_features",
+      "names": [
+        "AIFeaturesService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.content_creation",
+      "names": [
+        "ContentCreationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.research",
+      "names": [
+        "ResearchToolsService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 12
+}

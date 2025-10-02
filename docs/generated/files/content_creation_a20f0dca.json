@@ -1,0 +1,794 @@
+{
+  "file_path": "src/curriculum/ai/content_creation.py",
+  "module_docstring": "Content creation tools and templates service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentFormat",
+        "ContentType"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ContentCreationService",
+      "docstring": "Service for content creation tools and templates.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize content creation service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "_initialize_templates",
+          "docstring": "Initialize content creation templates.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 21
+        },
+        {
+          "name": "create_content_from_template",
+          "docstring": "Create content using a template.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "template_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "customizations",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "template_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "customizations",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Content",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 97
+        },
+        {
+          "name": "_generate_content_from_template",
+          "docstring": "Generate content body from template.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "template",
+              "annotation": "dict",
+              "default": null
+            },
+            {
+              "name": "customizations",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "template",
+              "annotation": "dict",
+              "default": null
+            },
+            {
+              "name": "customizations",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 123
+        },
+        {
+          "name": "get_available_templates",
+          "docstring": "Get all available content templates.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 194
+        },
+        {
+          "name": "create_custom_template",
+          "docstring": "Create a custom content template.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "structure",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": "'custom'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "structure",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": "'custom'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 198
+        },
+        {
+          "name": "generate_content_outline",
+          "docstring": "Generate content outline using AI assistance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "topic",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": "'lesson'"
+            },
+            {
+              "name": "estimated_duration",
+              "annotation": "int",
+              "default": "60"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "topic",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": "'lesson'"
+            },
+            {
+              "name": "estimated_duration",
+              "annotation": "int",
+              "default": "60"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 222
+        },
+        {
+          "name": "create_ai_assistant",
+          "docstring": "Create an AI assistant for content creation.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assistant_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assistant_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 271
+        },
+        {
+          "name": "generate_content_with_ai",
+          "docstring": "Generate content using AI assistant.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assistant_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "prompt",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": "'lesson'"
+            },
+            {
+              "name": "length",
+              "annotation": "str",
+              "default": "'medium'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assistant_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "prompt",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": "'lesson'"
+            },
+            {
+              "name": "length",
+              "annotation": "str",
+              "default": "'medium'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 294
+        },
+        {
+          "name": "create_content_generator",
+          "docstring": "Create a content generator tool.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "generator_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "generator_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 339
+        },
+        {
+          "name": "generate_quiz_from_content",
+          "docstring": "Generate quiz questions from existing content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "question_count",
+              "annotation": "int",
+              "default": "10"
+            },
+            {
+              "name": "difficulty",
+              "annotation": "str",
+              "default": "'mixed'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "question_count",
+              "annotation": "int",
+              "default": "10"
+            },
+            {
+              "name": "difficulty",
+              "annotation": "str",
+              "default": "'mixed'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 361
+        },
+        {
+          "name": "create_content_validator",
+          "docstring": "Create content validation rules.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "validation_rules",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "validation_rules",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 397
+        },
+        {
+          "name": "validate_content_structure",
+          "docstring": "Validate content structure and quality.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "validator_id",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "validator_id",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 421
+        },
+        {
+          "name": "get_content_creation_statistics",
+          "docstring": "Get content creation statistics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 477
+        },
+        {
+          "name": "create_content_collaboration_space",
+          "docstring": "Create a collaboration space for content creation.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "collaborators",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "permissions",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "collaborators",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "permissions",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 489
+        },
+        {
+          "name": "suggest_content_improvements",
+          "docstring": "Suggest improvements for content based on feedback.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "user_feedback",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "user_feedback",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 516
+        },
+        {
+          "name": "create_content_library",
+          "docstring": "Create a content library for organizing templates and tools.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_types",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_types",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 548
+        }
+      ],
+      "total_methods": 17,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 568
+}

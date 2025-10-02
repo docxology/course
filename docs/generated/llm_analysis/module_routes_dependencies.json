@@ -1,0 +1,6 @@
+{
+  "module_name": "routes.dependencies",
+  "summary_type": "module",
+  "llm_analysis": "Based on the given information, here is a summary of the Python module:\n\n```json\n{\n  \"overview\": \"This module provides shared dependencies for API routes, including functionality to retrieve the current user from a JWT token.\",\n  \"key_classes\": {\n    \"None\": [\n      {\n        \"name\": \"get_current_user\",\n        \"description\": \"Function to get current user from JWT token\"\n      }\n    ]\n  },\n  \"functionality\": [\n    \"Retrieves the current user from a JWT token\",\n    \"Provides shared dependencies for API routes\"\n  ],\n  \"dependencies\": [\n    \"JWT token (assumed to be provided by authentication mechanism)\"\n  ],\n  \"usage_hints\": {\n    \"get_current_user\": \"Call this function with a valid JWT token as an argument, e.g., `user = get_current_user(token)`\"\n  }\n}\n```\n\nNote that the module has only one function, `get_current_user`, which is responsible for retrieving the current user from a JWT token. The dependencies section assumes that a JWT token is provided by an authentication mechanism and is passed as an argument to the function.",
+  "generated_at": "2025-10-01T18:12:15.542324+00:00"
+}

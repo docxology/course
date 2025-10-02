@@ -1,0 +1,196 @@
+{
+  "file_path": "src/curriculum/cli.py",
+  "module_docstring": "Command-line interface for Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "click"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum",
+      "names": [
+        "__version__"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "main",
+      "docstring": "Curriculum Repository System CLI.",
+      "parameters": [],
+      "args": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x106c0d950>",
+        "<ast.Call object at 0x1073bc950>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 10
+    },
+    {
+      "name": "serve",
+      "docstring": "Start the development server.",
+      "parameters": [
+        {
+          "name": "host",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "port",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "reload",
+          "annotation": "bool",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "host",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "port",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "reload",
+          "annotation": "bool",
+          "default": null
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1073bcdd0>",
+        "<ast.Call object at 0x1073bd6d0>",
+        "<ast.Call object at 0x1073bd790>",
+        "<ast.Call object at 0x1073be190>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 19
+    },
+    {
+      "name": "check",
+      "docstring": "Check system configuration.",
+      "parameters": [],
+      "args": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1074f6cd0>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 37
+    },
+    {
+      "name": "test",
+      "docstring": "Run the test suite.",
+      "parameters": [
+        {
+          "name": "coverage",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "verbose",
+          "annotation": "bool",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "coverage",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "verbose",
+          "annotation": "bool",
+          "default": null
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x107462190>",
+        "<ast.Call object at 0x107462690>",
+        "<ast.Call object at 0x107461ad0>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 59
+    },
+    {
+      "name": "lint",
+      "docstring": "Run code quality checks.",
+      "parameters": [],
+      "args": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1073ae5d0>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 83
+    },
+    {
+      "name": "format",
+      "docstring": "Format code with Black and isort.",
+      "parameters": [],
+      "args": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1073cfc10>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 116
+    },
+    {
+      "name": "create_service",
+      "docstring": "Create a new service template.",
+      "parameters": [
+        {
+          "name": "name",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1074dde90>",
+        "<ast.Call object at 0x1074de290>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 131
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 7,
+  "lines_of_code": 166
+}

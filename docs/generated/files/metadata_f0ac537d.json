@@ -1,0 +1,706 @@
+{
+  "file_path": "src/curriculum/content/metadata.py",
+  "module_docstring": "Metadata management service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.metadata",
+      "names": [
+        "Metadata",
+        "DublinCore",
+        "LRMIMetadata",
+        "Tag",
+        "Taxonomy",
+        "ResourceType"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "MetadataService",
+      "docstring": "Service for managing content metadata.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize metadata service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 19
+        },
+        {
+          "name": "create_metadata",
+          "docstring": "Create metadata for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "resource_type",
+              "annotation": "ResourceType",
+              "default": "ResourceType.TEXT"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "resource_type",
+              "annotation": "ResourceType",
+              "default": "ResourceType.TEXT"
+            }
+          ],
+          "return_type": "Metadata",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 26
+        },
+        {
+          "name": "get_metadata",
+          "docstring": "Get metadata by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Metadata]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 44
+        },
+        {
+          "name": "get_metadata_by_content",
+          "docstring": "Get metadata for specific content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Metadata]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 48
+        },
+        {
+          "name": "update_dublin_core",
+          "docstring": "Update Dublin Core metadata.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "creators",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "subjects",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "description",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "creators",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "subjects",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Optional[Metadata]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 55
+        },
+        {
+          "name": "add_lrmi_metadata",
+          "docstring": "Add or update LRMI metadata.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "educational_use",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "learning_resource_type",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "time_required",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "educational_use",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "learning_resource_type",
+              "annotation": "Optional[List[str]]",
+              "default": "None"
+            },
+            {
+              "name": "time_required",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Optional[Metadata]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 80
+        },
+        {
+          "name": "add_custom_field",
+          "docstring": "Add custom metadata field.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "field_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "field_value",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "metadata_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "field_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "field_value",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Metadata]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 105
+        },
+        {
+          "name": "create_or_get_tag",
+          "docstring": "Create a new tag or get existing one.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Tag",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 117
+        },
+        {
+          "name": "get_tag",
+          "docstring": "Get tag by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Tag]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 132
+        },
+        {
+          "name": "get_tag_by_name",
+          "docstring": "Get tag by name.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Tag]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 136
+        },
+        {
+          "name": "increment_tag_usage",
+          "docstring": "Increment tag usage count.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tag_name",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Tag]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 142
+        },
+        {
+          "name": "create_taxonomy",
+          "docstring": "Create a taxonomy category.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "path",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "Optional[UUID]",
+              "default": "None"
+            },
+            {
+              "name": "level",
+              "annotation": "int",
+              "default": "0"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "path",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "Optional[UUID]",
+              "default": "None"
+            },
+            {
+              "name": "level",
+              "annotation": "int",
+              "default": "0"
+            }
+          ],
+          "return_type": "Taxonomy",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 148
+        },
+        {
+          "name": "get_taxonomy",
+          "docstring": "Get taxonomy by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "taxonomy_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "taxonomy_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Taxonomy]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 165
+        },
+        {
+          "name": "get_taxonomy_children",
+          "docstring": "Get child taxonomies.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "parent_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Taxonomy]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 169
+        },
+        {
+          "name": "get_all_tags",
+          "docstring": "Get all tags.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[Tag]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 177
+        },
+        {
+          "name": "get_popular_tags",
+          "docstring": "Get most popular tags by usage count.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": "10"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": "10"
+            }
+          ],
+          "return_type": "List[Tag]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 181
+        }
+      ],
+      "total_methods": 16,
+      "line_number": 16
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 184
+}

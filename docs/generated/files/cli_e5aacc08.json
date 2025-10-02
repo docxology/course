@@ -1,0 +1,150 @@
+{
+  "file_path": "src/curriculum/cli.py",
+  "module_docstring": "Command-line interface for Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "click"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum",
+      "names": [
+        "__version__"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "main",
+      "docstring": "Curriculum Repository System CLI.",
+      "parameters": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x10987b890>",
+        "<ast.Call object at 0x10987b510>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 10
+    },
+    {
+      "name": "serve",
+      "docstring": "Start the development server.",
+      "parameters": [
+        {
+          "name": "host",
+          "annotation": "str"
+        },
+        {
+          "name": "port",
+          "annotation": "int"
+        },
+        {
+          "name": "reload",
+          "annotation": "bool"
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x10987a110>",
+        "<ast.Call object at 0x10987a050>",
+        "<ast.Call object at 0x10987a250>",
+        "<ast.Call object at 0x109879610>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 19
+    },
+    {
+      "name": "check",
+      "docstring": "Check system configuration.",
+      "parameters": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1098662d0>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 37
+    },
+    {
+      "name": "test",
+      "docstring": "Run the test suite.",
+      "parameters": [
+        {
+          "name": "coverage",
+          "annotation": "bool"
+        },
+        {
+          "name": "verbose",
+          "annotation": "bool"
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x109882e10>",
+        "<ast.Call object at 0x1098825d0>",
+        "<ast.Call object at 0x109882510>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 59
+    },
+    {
+      "name": "lint",
+      "docstring": "Run code quality checks.",
+      "parameters": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x109895490>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 83
+    },
+    {
+      "name": "format",
+      "docstring": "Format code with Black and isort.",
+      "parameters": [],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x109897490>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 116
+    },
+    {
+      "name": "create_service",
+      "docstring": "Create a new service template.",
+      "parameters": [
+        {
+          "name": "name",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "None",
+      "decorators": [
+        "<ast.Call object at 0x1098f0b10>",
+        "<ast.Call object at 0x1098f02d0>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 131
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 7,
+  "lines_of_code": 166
+}

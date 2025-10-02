@@ -1,0 +1,21 @@
+{
+  "file_path": "src/curriculum/routes/__init__.py",
+  "module_docstring": "API route modules.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.routes",
+      "names": [
+        "analytics",
+        "assessments",
+        "content",
+        "users"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 10
+}

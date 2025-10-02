@@ -1,0 +1,365 @@
+{
+  "file_path": "src/curriculum/ai/ai_features.py",
+  "module_docstring": "AI-powered features service for intelligent tutoring and recommendations.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "random"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Submission"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "AIFeaturesService",
+      "docstring": "Service for AI-powered educational features.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize AI features service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 15
+        },
+        {
+          "name": "analyze_content_difficulty",
+          "docstring": "Analyze content difficulty level.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 21
+        },
+        {
+          "name": "generate_content_recommendations",
+          "docstring": "Generate personalized content recommendations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "current_content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "limit",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 52
+        },
+        {
+          "name": "create_intelligent_tutor_session",
+          "docstring": "Create an intelligent tutoring session.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "learning_style",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 83
+        },
+        {
+          "name": "provide_intelligent_feedback",
+          "docstring": "Provide intelligent feedback on user response.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "session_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_response",
+              "annotation": "str"
+            },
+            {
+              "name": "question_type",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 124
+        },
+        {
+          "name": "_generate_explanation",
+          "docstring": "Generate explanation for user response.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "response",
+              "annotation": "str"
+            },
+            {
+              "name": "question_type",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 161
+        },
+        {
+          "name": "_generate_hints",
+          "docstring": "Generate helpful hints.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "question_type",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 181
+        },
+        {
+          "name": "assess_learning_style",
+          "docstring": "Assess user's learning style based on responses.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "responses",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 203
+        },
+        {
+          "name": "generate_adaptive_content",
+          "docstring": "Generate adaptive content based on user needs.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "target_difficulty",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 222
+        },
+        {
+          "name": "predict_user_performance",
+          "docstring": "Predict user performance on assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "historical_data",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 251
+        },
+        {
+          "name": "_extract_technical_terms",
+          "docstring": "Extract technical terms from text.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "text",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 280
+        },
+        {
+          "name": "get_ai_insights",
+          "docstring": "Get AI-powered insights for user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 299
+        },
+        {
+          "name": "automate_grading",
+          "docstring": "Automatically grade submission using AI.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "submission",
+              "annotation": "Submission"
+            },
+            {
+              "name": "assessment",
+              "annotation": "Assessment"
+            },
+            {
+              "name": "rubric",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 318
+        }
+      ],
+      "total_methods": 13,
+      "line_number": 12
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 355
+}

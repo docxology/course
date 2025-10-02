@@ -1,0 +1,32 @@
+{
+  "file_path": "src/curriculum/content_generation/__init__.py",
+  "module_docstring": "Content generation module for automated content creation.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.content_generation.generator",
+      "names": [
+        "ContentGeneratorService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content_generation.workflow",
+      "names": [
+        "ContentWorkflowService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content_generation.quality",
+      "names": [
+        "ContentQualityService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 13
+}

@@ -1,0 +1,548 @@
+{
+  "file_path": "src/curriculum/integration/gamification.py",
+  "module_docstring": "Gamification service for points, badges, and leaderboards.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "collections",
+      "names": [
+        "defaultdict"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "GamificationService",
+      "docstring": "Service for gamification features.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize gamification service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "_initialize_badges",
+          "docstring": "Initialize default badge definitions.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 23
+        },
+        {
+          "name": "award_points",
+          "docstring": "Award points to a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "points",
+              "annotation": "int"
+            },
+            {
+              "name": "reason",
+              "annotation": "str"
+            },
+            {
+              "name": "metadata",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 73
+        },
+        {
+          "name": "_check_badge_eligibility",
+          "docstring": "Check if user is eligible for any badges.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "reason",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 99
+        },
+        {
+          "name": "get_user_badges",
+          "docstring": "Get badges earned by a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 121
+        },
+        {
+          "name": "create_custom_badge",
+          "docstring": "Create a custom badge for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "name",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "icon",
+              "annotation": "str"
+            },
+            {
+              "name": "criteria",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 137
+        },
+        {
+          "name": "get_leaderboard",
+          "docstring": "Get leaderboard for specified category.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "category",
+              "annotation": "str"
+            },
+            {
+              "name": "timeframe",
+              "annotation": "str"
+            },
+            {
+              "name": "limit",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 165
+        },
+        {
+          "name": "create_achievement",
+          "docstring": "Create a custom achievement.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "achievement_type",
+              "annotation": "str"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "points",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 198
+        },
+        {
+          "name": "get_user_achievements",
+          "docstring": "Get achievements for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 223
+        },
+        {
+          "name": "create_level_system",
+          "docstring": "Create a leveling system for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "levels",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 230
+        },
+        {
+          "name": "calculate_level_progress",
+          "docstring": "Calculate user's level progress.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 246
+        },
+        {
+          "name": "create_challenge",
+          "docstring": "Create a challenge for students.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "challenge_type",
+              "annotation": "str"
+            },
+            {
+              "name": "rewards",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 259
+        },
+        {
+          "name": "join_challenge",
+          "docstring": "Join a challenge.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "challenge_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 286
+        },
+        {
+          "name": "get_gamification_statistics",
+          "docstring": "Get gamification statistics for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 296
+        },
+        {
+          "name": "create_reward_system",
+          "docstring": "Create a reward system for the course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "reward_types",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 314
+        },
+        {
+          "name": "redeem_reward",
+          "docstring": "Redeem a reward using points.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "reward_id",
+              "annotation": "str"
+            },
+            {
+              "name": "points_cost",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 333
+        },
+        {
+          "name": "get_available_rewards",
+          "docstring": "Get available rewards.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 355
+        },
+        {
+          "name": "track_gamification_engagement",
+          "docstring": "Track user engagement with gamification features.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "activity_type",
+              "annotation": "str"
+            },
+            {
+              "name": "metadata",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 381
+        },
+        {
+          "name": "create_progress_milestone",
+          "docstring": "Create a progress milestone.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "target_percentage",
+              "annotation": "float"
+            },
+            {
+              "name": "reward_points",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 396
+        },
+        {
+          "name": "check_milestone_achievement",
+          "docstring": "Check if user has achieved any milestones.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "current_progress",
+              "annotation": "float"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 422
+        }
+      ],
+      "total_methods": 20,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 446
+}

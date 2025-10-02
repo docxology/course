@@ -1,0 +1,116 @@
+{
+  "file_path": "src/curriculum/__init__.py",
+  "module_docstring": "Curriculum Repository System - A comprehensive educational content management platform.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.users",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.communication",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.accessibility",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.mobile",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.teachers",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content_generation",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.documentation",
+      "names": [
+        "*"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum",
+      "names": [
+        "tools"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 93
+}

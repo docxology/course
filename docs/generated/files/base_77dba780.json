@@ -1,0 +1,176 @@
+{
+  "file_path": "src/curriculum/core/base.py",
+  "module_docstring": "Base models and mixins for the Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID",
+        "uuid4"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "BaseModel",
+        "Field",
+        "ConfigDict"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "TimestampMixin",
+      "docstring": "Mixin for timestamp fields.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [
+        {
+          "name": "update_timestamp",
+          "docstring": "Update the updated_at timestamp.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 16
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 10
+    },
+    {
+      "name": "UUIDMixin",
+      "docstring": "Mixin for UUID primary key.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 21
+    },
+    {
+      "name": "SoftDeleteMixin",
+      "docstring": "Mixin for soft delete functionality.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [
+        {
+          "name": "soft_delete",
+          "docstring": "Mark the record as deleted.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 33
+        },
+        {
+          "name": "restore",
+          "docstring": "Restore a soft-deleted record.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 38
+        }
+      ],
+      "total_methods": 2,
+      "line_number": 27
+    },
+    {
+      "name": "BaseEntity",
+      "docstring": "Base entity with common fields.",
+      "bases": [
+        "UUIDMixin",
+        "TimestampMixin",
+        "SoftDeleteMixin"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 44
+    },
+    {
+      "name": "PagedResponse",
+      "docstring": "Paged response wrapper.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [
+        {
+          "name": "create",
+          "docstring": "Create a paged response.",
+          "parameters": [
+            {
+              "name": "cls",
+              "annotation": null
+            },
+            {
+              "name": "items",
+              "annotation": "list"
+            },
+            {
+              "name": "total",
+              "annotation": "int"
+            },
+            {
+              "name": "page",
+              "annotation": "int"
+            },
+            {
+              "name": "page_size",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "PagedResponse",
+          "decorators": [
+            "classmethod"
+          ],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 64
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 54
+    }
+  ],
+  "functions": [],
+  "total_classes": 5,
+  "total_functions": 0,
+  "lines_of_code": 73
+}

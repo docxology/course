@@ -1,0 +1,177 @@
+{
+  "file_path": "src/curriculum/tools/security.py",
+  "module_docstring": "Security utilities.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "secrets"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "hashlib"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "generate_token",
+      "docstring": "Generate a secure random token.\n\nArgs:\n    length: Length of token in bytes\n    \nReturns:\n    Hexadecimal token string",
+      "parameters": [
+        {
+          "name": "length",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "length",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 8
+    },
+    {
+      "name": "generate_verification_code",
+      "docstring": "Generate a numeric verification code.\n\nArgs:\n    length: Length of code\n    \nReturns:\n    Numeric verification code",
+      "parameters": [
+        {
+          "name": "length",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "length",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 20
+    },
+    {
+      "name": "hash_content",
+      "docstring": "Hash content using specified algorithm.\n\nArgs:\n    content: Content to hash\n    algorithm: Hash algorithm (sha256, sha512, md5)\n    \nReturns:\n    Hexadecimal hash string",
+      "parameters": [
+        {
+          "name": "content",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "algorithm",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "algorithm",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 32
+    },
+    {
+      "name": "generate_api_key",
+      "docstring": "Generate an API key.\n\nReturns:\n    API key string",
+      "parameters": [],
+      "args": [],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 52
+    },
+    {
+      "name": "mask_email",
+      "docstring": "Mask email address for privacy.\n\nArgs:\n    email: Email address to mask\n\nReturns:\n    Masked email address",
+      "parameters": [
+        {
+          "name": "email",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "email",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 61
+    },
+    {
+      "name": "mask_sensitive_data",
+      "docstring": "Mask sensitive data, showing only specified number of characters.\n\nArgs:\n    data: Data to mask\n    show_chars: Number of characters to show at end\n    \nReturns:\n    Masked data",
+      "parameters": [
+        {
+          "name": "data",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "show_chars",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "show_chars",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 83
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 6,
+  "lines_of_code": 96
+}

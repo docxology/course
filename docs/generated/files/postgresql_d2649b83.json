@@ -1,0 +1,580 @@
+{
+  "file_path": "src/curriculum/db/postgresql.py",
+  "module_docstring": "PostgreSQL database adapter using SQLAlchemy.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Any",
+        "Dict",
+        "List",
+        "Optional",
+        "Type"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "sqlalchemy.ext.asyncio",
+      "names": [
+        "AsyncSession",
+        "create_async_engine",
+        "async_sessionmaker"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "sqlalchemy.orm",
+      "names": [
+        "DeclarativeBase",
+        "Mapped",
+        "mapped_column",
+        "relationship"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "sqlalchemy",
+      "names": [
+        "String",
+        "DateTime",
+        "Boolean",
+        "Float",
+        "Text",
+        "JSON",
+        "ForeignKey"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "sqlalchemy.orm",
+      "names": [
+        "selectinload"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "sqlalchemy.dialects.postgresql",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.db.base",
+      "names": [
+        "DatabaseInterface"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "Base",
+      "docstring": "SQLAlchemy base class.",
+      "bases": [
+        "DeclarativeBase"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 18
+    },
+    {
+      "name": "UserModel",
+      "docstring": "User table model.",
+      "bases": [
+        "Base"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 23
+    },
+    {
+      "name": "ContentModel",
+      "docstring": "Content table model.",
+      "bases": [
+        "Base"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 50
+    },
+    {
+      "name": "PostgreSQLAdapter",
+      "docstring": "PostgreSQL database adapter.",
+      "bases": [
+        "DatabaseInterface"
+      ],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize PostgreSQL adapter.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 90
+        },
+        {
+          "name": "connect",
+          "docstring": "Connect to PostgreSQL database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 95
+        },
+        {
+          "name": "disconnect",
+          "docstring": "Disconnect from PostgreSQL database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 101
+        },
+        {
+          "name": "create",
+          "docstring": "Create a new entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 105
+        },
+        {
+          "name": "get",
+          "docstring": "Get entity by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[BaseEntity]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 118
+        },
+        {
+          "name": "update",
+          "docstring": "Update existing entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 129
+        },
+        {
+          "name": "delete",
+          "docstring": "Delete entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 147
+        },
+        {
+          "name": "list",
+          "docstring": "List entities with optional filtering and pagination.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            },
+            {
+              "name": "offset",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            },
+            {
+              "name": "offset",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "return_type": "List[BaseEntity]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 159
+        },
+        {
+          "name": "count",
+          "docstring": "Count entities matching filters.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "int",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 189
+        },
+        {
+          "name": "_get_sql_model_class",
+          "docstring": "Map Pydantic model type to SQLAlchemy model class.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": null,
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 204
+        },
+        {
+          "name": "_pydantic_to_sqlalchemy",
+          "docstring": "Convert Pydantic model to SQLAlchemy model.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity",
+              "annotation": "BaseEntity",
+              "default": null
+            }
+          ],
+          "return_type": null,
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 215
+        },
+        {
+          "name": "_sqlalchemy_to_pydantic",
+          "docstring": "Convert SQLAlchemy model to Pydantic model.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "sql_model",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "sql_model",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[BaseEntity]",
+              "default": null
+            }
+          ],
+          "return_type": "BaseEntity",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 223
+        }
+      ],
+      "total_methods": 12,
+      "line_number": 87
+    }
+  ],
+  "functions": [],
+  "total_classes": 4,
+  "total_functions": 0,
+  "lines_of_code": 233
+}

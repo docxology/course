@@ -1,0 +1,172 @@
+{
+  "file_path": "src/curriculum/core/analytics.py",
+  "module_docstring": "Analytics models for learning event tracking.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "enum",
+      "names": [
+        "Enum"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "Field"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ActivityVerb",
+      "docstring": "xAPI activity verbs.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 13
+    },
+    {
+      "name": "EventType",
+      "docstring": "Learning event types.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 28
+    },
+    {
+      "name": "DeviceType",
+      "docstring": "Device types for analytics.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 41
+    },
+    {
+      "name": "LearningEvent",
+      "docstring": "xAPI-compliant learning event.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 50
+    },
+    {
+      "name": "AnalyticsReport",
+      "docstring": "Analytics report for users or content.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 75
+    },
+    {
+      "name": "ContentAnalytics",
+      "docstring": "Analytics data for content items.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 88
+    },
+    {
+      "name": "UserAnalytics",
+      "docstring": "Analytics data for users.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "update_timestamp",
+          "docstring": "Update timestamp and last active.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 141
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 113
+    },
+    {
+      "name": "SessionAnalytics",
+      "docstring": "Analytics for user sessions.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "end_session",
+          "docstring": "End the session and calculate duration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 168
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 147
+    }
+  ],
+  "functions": [],
+  "total_classes": 8,
+  "total_functions": 0,
+  "lines_of_code": 173
+}

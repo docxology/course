@@ -1,0 +1,859 @@
+{
+  "file_path": "src/curriculum/integration/integration.py",
+  "module_docstring": "Integration service for LMS and external tools.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "IntegrationService",
+      "docstring": "Service for integrating with external systems.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize integration service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "connect_lms",
+          "docstring": "Connect to an external LMS.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "credentials",
+              "annotation": "Dict[str, str]",
+              "default": null
+            },
+            {
+              "name": "settings",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "credentials",
+              "annotation": "Dict[str, str]",
+              "default": null
+            },
+            {
+              "name": "settings",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 18
+        },
+        {
+          "name": "sync_content_to_lms",
+          "docstring": "Sync content to external LMS.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 47
+        },
+        {
+          "name": "register_external_tool",
+          "docstring": "Register an external tool for integration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tool_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "tool_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "api_credentials",
+              "annotation": "Optional[Dict[str, str]]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tool_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "tool_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            },
+            {
+              "name": "api_credentials",
+              "annotation": "Optional[Dict[str, str]]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 76
+        },
+        {
+          "name": "create_lti_launch",
+          "docstring": "Create LTI launch parameters.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tool_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "context",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "tool_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "context",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 103
+        },
+        {
+          "name": "create_api_integration",
+          "docstring": "Create API integration with external service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "service_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "api_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "service_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "api_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 145
+        },
+        {
+          "name": "import_content_from_lms",
+          "docstring": "Import content from external LMS.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "import_options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "import_options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 176
+        },
+        {
+          "name": "sync_grades_to_lms",
+          "docstring": "Sync student grades to external LMS.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "student_grades",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "lms_connection_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "student_grades",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 214
+        },
+        {
+          "name": "create_webhook_integration",
+          "docstring": "Create webhook integration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "service_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "webhook_url",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "events",
+              "annotation": "List[str]",
+              "default": null
+            },
+            {
+              "name": "secret",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "service_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "webhook_url",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "events",
+              "annotation": "List[str]",
+              "default": null
+            },
+            {
+              "name": "secret",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 242
+        },
+        {
+          "name": "get_supported_lms_types",
+          "docstring": "Get supported LMS types.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 270
+        },
+        {
+          "name": "get_external_tools",
+          "docstring": "Get registered external tools.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 281
+        },
+        {
+          "name": "validate_lti_launch",
+          "docstring": "Validate LTI launch request.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "launch_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "launch_data",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 295
+        },
+        {
+          "name": "create_sso_integration",
+          "docstring": "Create SSO integration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "provider_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "sso_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "provider_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "sso_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "configuration",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 324
+        },
+        {
+          "name": "get_integration_health",
+          "docstring": "Get health status of integration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "integration_id",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "integration_id",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 349
+        },
+        {
+          "name": "create_content_embed",
+          "docstring": "Create embeddable content for external platforms.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "embed_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "dimensions",
+              "annotation": "Dict[str, int]",
+              "default": null
+            },
+            {
+              "name": "options",
+              "annotation": "Dict[str, Any]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "embed_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "dimensions",
+              "annotation": "Dict[str, int]",
+              "default": null
+            },
+            {
+              "name": "options",
+              "annotation": "Dict[str, Any]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 365
+        },
+        {
+          "name": "_generate_embed_html",
+          "docstring": "Generate HTML for content embedding.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "embed_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "embed_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "dimensions",
+              "annotation": "Dict[str, int]",
+              "default": null
+            },
+            {
+              "name": "options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "embed_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "embed_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "dimensions",
+              "annotation": "Dict[str, int]",
+              "default": null
+            },
+            {
+              "name": "options",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 388
+        },
+        {
+          "name": "get_supported_integrations",
+          "docstring": "Get supported integration types.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, List[str]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 411
+        },
+        {
+          "name": "monitor_integration_activity",
+          "docstring": "Monitor integration activity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "integration_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "hours",
+              "annotation": "int",
+              "default": "24"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "integration_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "hours",
+              "annotation": "int",
+              "default": "24"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 421
+        }
+      ],
+      "total_methods": 18,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 442
+}

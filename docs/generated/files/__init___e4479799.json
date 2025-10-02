@@ -1,0 +1,19 @@
+{
+  "file_path": "src/curriculum/users/__init__.py",
+  "module_docstring": "User management and authentication services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.users.user",
+      "names": [
+        "UserService",
+        "AuthenticationService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 9
+}

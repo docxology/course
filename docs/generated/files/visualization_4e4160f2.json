@@ -1,0 +1,353 @@
+{
+  "file_path": "src/curriculum/search/visualization.py",
+  "module_docstring": "Visualization and interactive content service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "VisualizationService",
+      "docstring": "Service for creating and managing interactive visualizations.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize visualization service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 14
+        },
+        {
+          "name": "create_visualization",
+          "docstring": "Create a new visualization.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "visualization_type",
+              "annotation": "str"
+            },
+            {
+              "name": "data",
+              "annotation": "Dict[str, Any]"
+            },
+            {
+              "name": "config",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 48
+        },
+        {
+          "name": "get_visualization",
+          "docstring": "Get visualization by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "visualization_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 79
+        },
+        {
+          "name": "get_content_visualizations",
+          "docstring": "Get all visualizations for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 83
+        },
+        {
+          "name": "create_progress_chart",
+          "docstring": "Create a progress visualization chart.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "progress_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 90
+        },
+        {
+          "name": "create_knowledge_map",
+          "docstring": "Create an interactive knowledge map.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "concepts",
+              "annotation": "List[Dict[str, Any]]"
+            },
+            {
+              "name": "connections",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 122
+        },
+        {
+          "name": "create_quiz_results_chart",
+          "docstring": "Create a chart showing quiz performance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "quiz_results",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 158
+        },
+        {
+          "name": "create_study_time_heatmap",
+          "docstring": "Create a heatmap showing study patterns.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "study_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 189
+        },
+        {
+          "name": "create_concept_relationship_diagram",
+          "docstring": "Create a concept relationship diagram.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "concepts",
+              "annotation": "List[str]"
+            },
+            {
+              "name": "relationships",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 212
+        },
+        {
+          "name": "export_visualization",
+          "docstring": "Export visualization in specified format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "visualization_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 242
+        },
+        {
+          "name": "_generate_svg",
+          "docstring": "Generate SVG representation of visualization (simplified).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "visualization",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 271
+        },
+        {
+          "name": "get_visualization_types",
+          "docstring": "Get available visualization types.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 276
+        },
+        {
+          "name": "validate_visualization_data",
+          "docstring": "Validate visualization data format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "data",
+              "annotation": "Dict[str, Any]"
+            },
+            {
+              "name": "viz_type",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 290
+        }
+      ],
+      "total_methods": 13,
+      "line_number": 11
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 310
+}

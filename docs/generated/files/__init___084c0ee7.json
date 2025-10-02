@@ -1,0 +1,32 @@
+{
+  "file_path": "src/curriculum/teachers/__init__.py",
+  "module_docstring": "Teachers module for instructor-specific functionality.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.teachers.teacher",
+      "names": [
+        "TeacherService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.teachers.course_management",
+      "names": [
+        "CourseManagementService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.teachers.student_management",
+      "names": [
+        "StudentManagementService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 13
+}

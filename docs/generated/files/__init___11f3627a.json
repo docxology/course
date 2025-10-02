@@ -1,0 +1,45 @@
+{
+  "file_path": "src/curriculum/tools/__init__.py",
+  "module_docstring": "Utility functions and helpers.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.tools.validators",
+      "names": [
+        "validate_email",
+        "validate_url",
+        "sanitize_filename"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.tools.formatters",
+      "names": [
+        "format_datetime",
+        "format_duration",
+        "truncate_text"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.tools.security",
+      "names": [
+        "generate_token",
+        "hash_content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.tools.file_handling",
+      "names": [
+        "get_file_extension",
+        "validate_file_type"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 19
+}

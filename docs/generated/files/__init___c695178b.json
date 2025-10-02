@@ -1,0 +1,39 @@
+{
+  "file_path": "src/curriculum/integration/__init__.py",
+  "module_docstring": "Integration services for external systems.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.integration",
+      "names": [
+        "IntegrationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.distribution",
+      "names": [
+        "DistributionService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.export",
+      "names": [
+        "ExportService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.gamification",
+      "names": [
+        "GamificationService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 14
+}

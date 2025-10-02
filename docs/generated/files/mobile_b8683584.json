@@ -1,0 +1,541 @@
+{
+  "file_path": "src/curriculum/mobile/mobile.py",
+  "module_docstring": "Mobile support and responsive design service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "MobileService",
+      "docstring": "Service for mobile optimization and responsive features.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize mobile service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "create_mobile_config",
+          "docstring": "Create mobile configuration for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "platform",
+              "annotation": "str",
+              "default": "'responsive'"
+            },
+            {
+              "name": "features",
+              "annotation": "List[str]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "platform",
+              "annotation": "str",
+              "default": "'responsive'"
+            },
+            {
+              "name": "features",
+              "annotation": "List[str]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 37
+        },
+        {
+          "name": "optimize_content_for_mobile",
+          "docstring": "Optimize content for mobile devices.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "target_device",
+              "annotation": "str",
+              "default": "'smartphone'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "target_device",
+              "annotation": "str",
+              "default": "'smartphone'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 80
+        },
+        {
+          "name": "generate_mobile_app_manifest",
+          "docstring": "Generate Progressive Web App manifest.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_title",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_title",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 116
+        },
+        {
+          "name": "create_offline_package",
+          "docstring": "Create offline downloadable package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            },
+            {
+              "name": "compression_level",
+              "annotation": "str",
+              "default": "'balanced'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "include_media",
+              "annotation": "bool",
+              "default": "True"
+            },
+            {
+              "name": "compression_level",
+              "annotation": "str",
+              "default": "'balanced'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 164
+        },
+        {
+          "name": "get_mobile_analytics",
+          "docstring": "Get mobile usage analytics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 196
+        },
+        {
+          "name": "create_mobile_learning_path",
+          "docstring": "Create mobile-optimized learning path.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "commute_time",
+              "annotation": "int",
+              "default": "30"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "commute_time",
+              "annotation": "int",
+              "default": "30"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 222
+        },
+        {
+          "name": "generate_mobile_notifications",
+          "docstring": "Generate mobile push notifications.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": "'study_reminder'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": "'study_reminder'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 260
+        },
+        {
+          "name": "create_mobile_quiz",
+          "docstring": "Create a mobile-optimized quiz.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "questions",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "time_limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "questions",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "time_limit",
+              "annotation": "Optional[int]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 300
+        },
+        {
+          "name": "get_mobile_features",
+          "docstring": "Get available mobile features.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 329
+        },
+        {
+          "name": "validate_mobile_compatibility",
+          "docstring": "Validate content for mobile compatibility.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 364
+        },
+        {
+          "name": "create_mobile_dashboard",
+          "docstring": "Create mobile-optimized dashboard.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 396
+        }
+      ],
+      "total_methods": 12,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 444
+}

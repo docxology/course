@@ -1,0 +1,341 @@
+{
+  "file_path": "src/curriculum/db/base.py",
+  "module_docstring": "Database base classes and interfaces.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "abc",
+      "names": [
+        "ABC",
+        "abstractmethod"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Any",
+        "Dict",
+        "List",
+        "Optional",
+        "Type",
+        "TypeVar"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "DatabaseInterface",
+      "docstring": "Abstract base class for database operations.",
+      "bases": [
+        "ABC"
+      ],
+      "methods": [
+        {
+          "name": "connect",
+          "docstring": "Connect to database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 16
+        },
+        {
+          "name": "disconnect",
+          "docstring": "Disconnect from database.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 21
+        },
+        {
+          "name": "create",
+          "docstring": "Create a new entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity",
+              "annotation": "T"
+            }
+          ],
+          "return_type": "T",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 26
+        },
+        {
+          "name": "get",
+          "docstring": "Get entity by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[T]"
+            }
+          ],
+          "return_type": "Optional[T]",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 31
+        },
+        {
+          "name": "update",
+          "docstring": "Update existing entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity",
+              "annotation": "T"
+            }
+          ],
+          "return_type": "T",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 36
+        },
+        {
+          "name": "delete",
+          "docstring": "Delete entity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[T]"
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 41
+        },
+        {
+          "name": "list",
+          "docstring": "List entities with optional filtering and pagination.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[T]"
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]"
+            },
+            {
+              "name": "limit",
+              "annotation": "Optional[int]"
+            },
+            {
+              "name": "offset",
+              "annotation": "Optional[int]"
+            }
+          ],
+          "return_type": "List[T]",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 46
+        },
+        {
+          "name": "count",
+          "docstring": "Count entities matching filters.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "entity_type",
+              "annotation": "Type[T]"
+            },
+            {
+              "name": "filters",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "int",
+          "decorators": [
+            "abstractmethod"
+          ],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 57
+        }
+      ],
+      "total_methods": 8,
+      "line_number": 12
+    },
+    {
+      "name": "DatabaseManager",
+      "docstring": "Database manager for handling multiple database connections.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize database manager.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 65
+        },
+        {
+          "name": "register_database",
+          "docstring": "Register a database instance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "name",
+              "annotation": "str"
+            },
+            {
+              "name": "db",
+              "annotation": "DatabaseInterface"
+            },
+            {
+              "name": "default",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 70
+        },
+        {
+          "name": "get_database",
+          "docstring": "Get database instance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "name",
+              "annotation": "Optional[str]"
+            }
+          ],
+          "return_type": "DatabaseInterface",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 76
+        },
+        {
+          "name": "initialize_all",
+          "docstring": "Initialize all registered databases.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 83
+        },
+        {
+          "name": "shutdown_all",
+          "docstring": "Shutdown all registered databases.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 88
+        }
+      ],
+      "total_methods": 5,
+      "line_number": 62
+    }
+  ],
+  "functions": [],
+  "total_classes": 2,
+  "total_functions": 0,
+  "lines_of_code": 95
+}

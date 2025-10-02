@@ -1,0 +1,596 @@
+{
+  "file_path": "src/curriculum/routes/users.py",
+  "module_docstring": "User API routes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "APIRouter",
+        "HTTPException",
+        "Depends",
+        "Query",
+        "Path",
+        "status"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi.security",
+      "names": [
+        "OAuth2PasswordBearer"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "BaseModel"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "jose",
+      "names": [
+        "JWTError",
+        "jwt"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserRole",
+        "UserPermission"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.users.user",
+      "names": [
+        "UserService",
+        "AuthenticationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.routes.dependencies",
+      "names": [
+        "get_current_user"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CreateUserRequest",
+      "docstring": "Request model for creating user.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 27
+    },
+    {
+      "name": "UpdateUserRequest",
+      "docstring": "Request model for updating user.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 36
+    },
+    {
+      "name": "LoginRequest",
+      "docstring": "Request model for user login.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 43
+    },
+    {
+      "name": "TokenResponse",
+      "docstring": "Response model for authentication tokens.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 49
+    },
+    {
+      "name": "UserResponse",
+      "docstring": "Response model for user.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 57
+    }
+  ],
+  "functions": [
+    {
+      "name": "login",
+      "docstring": "Authenticate user and return tokens.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "LoginRequest",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "LoginRequest",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1076ab650>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 73
+    },
+    {
+      "name": "refresh_token",
+      "docstring": "Refresh access token using refresh token.",
+      "parameters": [
+        {
+          "name": "refresh_token",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "refresh_token",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1076ab1d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 102
+    },
+    {
+      "name": "create_user",
+      "docstring": "Create a new user.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "CreateUserRequest",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "CreateUserRequest",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1076659d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 124
+    },
+    {
+      "name": "get_current_user",
+      "docstring": "Get current user profile.",
+      "parameters": [
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107662810>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 160
+    },
+    {
+      "name": "get_user",
+      "docstring": "Get user by ID.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107662510>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 166
+    },
+    {
+      "name": "update_user",
+      "docstring": "Update user profile.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "UpdateUserRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "request",
+          "annotation": "UpdateUserRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1074e3710>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 176
+    },
+    {
+      "name": "change_password",
+      "docstring": "Change user password.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_password",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "new_password",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_password",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "new_password",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1076391d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 207
+    },
+    {
+      "name": "activate_user",
+      "docstring": "Activate user account.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1074ae190>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 244
+    },
+    {
+      "name": "deactivate_user",
+      "docstring": "Deactivate user account.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x10766fa50>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 260
+    },
+    {
+      "name": "list_users",
+      "docstring": "List users with optional filtering.",
+      "parameters": [
+        {
+          "name": "role",
+          "annotation": "Optional[UserRole]",
+          "default": null
+        },
+        {
+          "name": "active_only",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "annotation": "Optional[UserRole]",
+          "default": null
+        },
+        {
+          "name": "active_only",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107435ad0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 276
+    },
+    {
+      "name": "add_user_role",
+      "docstring": "Add role to user.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "role",
+          "annotation": "UserRole",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "role",
+          "annotation": "UserRole",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1073affd0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 294
+    },
+    {
+      "name": "remove_user_role",
+      "docstring": "Remove role from user.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "role",
+          "annotation": "UserRole",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "role",
+          "annotation": "UserRole",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1073bf8d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 318
+    },
+    {
+      "name": "_user_to_response",
+      "docstring": "Convert User model to response model.",
+      "parameters": [
+        {
+          "name": "user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": "UserResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 342
+    }
+  ],
+  "total_classes": 5,
+  "total_functions": 13,
+  "lines_of_code": 355
+}

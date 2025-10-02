@@ -1,0 +1,948 @@
+{
+  "file_path": "src/curriculum/content_generation/workflow.py",
+  "module_docstring": "Content workflow service for managing content creation processes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime",
+        "timedelta"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentStatus"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ContentWorkflowService",
+      "docstring": "Service for managing content creation workflows.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize content workflow service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 14
+        },
+        {
+          "name": "create_content_workflow",
+          "docstring": "Create a new content creation workflow.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "assigned_users",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "assigned_users",
+              "annotation": "List[UUID]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "get_workflow_status",
+          "docstring": "Get current status of a workflow.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 50
+        },
+        {
+          "name": "assign_workflow_step",
+          "docstring": "Assign a workflow step to a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "step_index",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "assigned_user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "step_index",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "assigned_user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 63
+        },
+        {
+          "name": "complete_workflow_step",
+          "docstring": "Mark a workflow step as completed.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "step_index",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "completed_by",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notes",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "step_index",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "completed_by",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "notes",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 84
+        },
+        {
+          "name": "submit_content_for_review",
+          "docstring": "Submit content for review in the workflow.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submitted_by",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "review_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submitted_by",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "review_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 113
+        },
+        {
+          "name": "submit_review",
+          "docstring": "Submit a review for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "review_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "decision",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "score",
+              "annotation": "Optional[int]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "review_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "decision",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "score",
+              "annotation": "Optional[int]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 144
+        },
+        {
+          "name": "get_workflow_timeline",
+          "docstring": "Get timeline of workflow events.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 184
+        },
+        {
+          "name": "create_workflow_template",
+          "docstring": "Create a reusable workflow template.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "default_steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "default_steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 206
+        },
+        {
+          "name": "get_workflow_templates",
+          "docstring": "Get available workflow templates.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 230
+        },
+        {
+          "name": "track_workflow_metrics",
+          "docstring": "Track metrics for workflow performance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 260
+        },
+        {
+          "name": "_identify_bottlenecks",
+          "docstring": "Identify bottlenecks in workflow steps.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "steps",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 291
+        },
+        {
+          "name": "create_collaborative_workflow",
+          "docstring": "Create a collaborative workflow with multiple contributors.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "collaborators",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "permissions",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "collaborators",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "permissions",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 307
+        },
+        {
+          "name": "generate_workflow_report",
+          "docstring": "Generate a comprehensive workflow report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "report_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "report_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 329
+        },
+        {
+          "name": "get_workflow_analytics",
+          "docstring": "Get analytics across all workflows.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 354
+        },
+        {
+          "name": "create_approval_workflow",
+          "docstring": "Create an approval workflow for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "approval_chain",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "approval_chain",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 377
+        },
+        {
+          "name": "submit_for_approval",
+          "docstring": "Submit approval decision.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "approval_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "approver_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "decision",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "comments",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "approval_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "approver_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "decision",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "comments",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 398
+        },
+        {
+          "name": "get_pending_approvals",
+          "docstring": "Get pending approvals for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 438
+        },
+        {
+          "name": "create_revision_request",
+          "docstring": "Create a revision request for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "revision_notes",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workflow_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "revision_notes",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 454
+        }
+      ],
+      "total_methods": 19,
+      "line_number": 11
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 475
+}

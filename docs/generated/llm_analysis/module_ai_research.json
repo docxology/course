@@ -1,0 +1,6 @@
+{
+  "module_name": "ai.research",
+  "summary_type": "module",
+  "llm_analysis": "Based on the given information, here is a comprehensive summary of the Python module `ai.research` in JSON format:\n\n```\n{\n  \"overview\": {\n    \"title\": \"Research Tools Service\",\n    \"description\": \"Provides research tools and citation management service for bibliography management.\"\n  },\n  \"key_classes\": [\n    {\n      \"name\": \"ResearchToolsService\",\n      \"purpose\": \"Service class for managing research tools and citations\"\n    }\n  ],\n  \"functionality\": [\n    \"Citation management\",\n    \"Bibliography management\",\n    \"Research tool integration\"\n  ],\n  \"dependencies\": [],\n  \"usage_hints\": [\n    {\n      \"hint\": \"To use this module, import the ResearchToolsService class\",\n      \"code\": \"from ai.research import ResearchToolsService\"\n    },\n    {\n      \"hint\": \"Create an instance of the ResearchToolsService class to manage research tools and citations\",\n      \"code\": \"research_service = ResearchToolsService()\"\n    }\n  ]\n}\n```\n\nNote: Since there is no code provided, I couldn't analyze any actual implementation details. This summary is based on the given module docstring and context.",
+  "generated_at": "2025-10-01T18:09:04.073868+00:00"
+}

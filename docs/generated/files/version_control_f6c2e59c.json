@@ -1,0 +1,404 @@
+{
+  "file_path": "src/curriculum/content/version_control.py",
+  "module_docstring": "Version control service for content.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentVersion"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "VersionControlService",
+      "docstring": "Service for managing content versions.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize version control service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "create_version",
+          "docstring": "Create a new version snapshot of content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "change_log",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "change_log",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "return_type": "ContentVersion",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 17
+        },
+        {
+          "name": "get_version",
+          "docstring": "Get a specific version.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[ContentVersion]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 35
+        },
+        {
+          "name": "get_content_versions",
+          "docstring": "Get all versions for specific content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[ContentVersion]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 39
+        },
+        {
+          "name": "get_latest_version",
+          "docstring": "Get the latest version of content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[ContentVersion]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 48
+        },
+        {
+          "name": "restore_version",
+          "docstring": "Restore content to a specific version.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[Content]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 53
+        },
+        {
+          "name": "compare_versions",
+          "docstring": "Compare two versions (simplified).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id_1",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "version_id_2",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id_1",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "version_id_2",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[dict]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 69
+        },
+        {
+          "name": "get_version_count",
+          "docstring": "Get count of versions for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "int",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 97
+        },
+        {
+          "name": "delete_version",
+          "docstring": "Delete a version (soft delete).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "version_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 101
+        },
+        {
+          "name": "increment_version",
+          "docstring": "Increment semantic version number.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "current_version",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "increment_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "current_version",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "increment_type",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 110
+        }
+      ],
+      "total_methods": 10,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 128
+}

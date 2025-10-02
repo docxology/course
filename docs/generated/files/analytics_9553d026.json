@@ -1,0 +1,545 @@
+{
+  "file_path": "src/curriculum/routes/analytics.py",
+  "module_docstring": "Analytics API routes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Dict",
+        "Any",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "APIRouter",
+        "HTTPException",
+        "Depends",
+        "Query",
+        "Path",
+        "status"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "BaseModel"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.analytics",
+      "names": [
+        "LearningEvent",
+        "EventType",
+        "ActivityVerb"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.analytics",
+      "names": [
+        "AnalyticsService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserPermission"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.routes.dependencies",
+      "names": [
+        "get_current_user"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "TrackEventRequest",
+      "docstring": "Request model for tracking events.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 22
+    },
+    {
+      "name": "UserReportResponse",
+      "docstring": "Response model for user analytics report.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 34
+    },
+    {
+      "name": "ContentReportResponse",
+      "docstring": "Response model for content analytics report.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 46
+    },
+    {
+      "name": "EventResponse",
+      "docstring": "Response model for learning events.",
+      "bases": [
+        "BaseModel"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 56
+    }
+  ],
+  "functions": [
+    {
+      "name": "track_event",
+      "docstring": "Track a learning event.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "TrackEventRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "TrackEventRequest",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cb2a10>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 72
+    },
+    {
+      "name": "track_content_view",
+      "docstring": "Track content view event.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "duration",
+          "annotation": "Optional[int]",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "duration",
+          "annotation": "Optional[int]",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cd9fd0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 93
+    },
+    {
+      "name": "track_assessment_completion",
+      "docstring": "Track assessment completion event.",
+      "parameters": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "score",
+          "annotation": "float",
+          "default": null
+        },
+        {
+          "name": "passed",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "duration",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "assessment_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "score",
+          "annotation": "float",
+          "default": null
+        },
+        {
+          "name": "passed",
+          "annotation": "bool",
+          "default": null
+        },
+        {
+          "name": "duration",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cd8cd0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 109
+    },
+    {
+      "name": "get_user_report",
+      "docstring": "Get analytics report for a user.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cac6d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 129
+    },
+    {
+      "name": "get_content_report",
+      "docstring": "Get analytics report for content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cadb90>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 155
+    },
+    {
+      "name": "get_user_events",
+      "docstring": "Get events for a specific user.",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "event_type",
+          "annotation": "Optional[EventType]",
+          "default": null
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "event_type",
+          "annotation": "Optional[EventType]",
+          "default": null
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109b66750>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 170
+    },
+    {
+      "name": "get_content_events",
+      "docstring": "Get events for specific content.",
+      "parameters": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "event_type",
+          "annotation": "Optional[EventType]",
+          "default": null
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "content_id",
+          "annotation": "UUID",
+          "default": null
+        },
+        {
+          "name": "event_type",
+          "annotation": "Optional[EventType]",
+          "default": null
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109b2b910>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 189
+    },
+    {
+      "name": "get_dashboard_overview",
+      "docstring": "Get dashboard overview statistics.",
+      "parameters": [
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109a0e850>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 201
+    },
+    {
+      "name": "export_analytics_report",
+      "docstring": "Export analytics report.",
+      "parameters": [
+        {
+          "name": "report_type",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "format",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "start_date",
+          "annotation": "Optional[datetime]",
+          "default": null
+        },
+        {
+          "name": "end_date",
+          "annotation": "Optional[datetime]",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "report_type",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "format",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "start_date",
+          "annotation": "Optional[datetime]",
+          "default": null
+        },
+        {
+          "name": "end_date",
+          "annotation": "Optional[datetime]",
+          "default": null
+        },
+        {
+          "name": "current_user",
+          "annotation": "User",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x109cbda10>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 222
+    },
+    {
+      "name": "_event_to_response",
+      "docstring": "Convert LearningEvent model to response model.",
+      "parameters": [
+        {
+          "name": "event",
+          "annotation": "LearningEvent",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "event",
+          "annotation": "LearningEvent",
+          "default": null
+        }
+      ],
+      "return_type": "EventResponse",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 247
+    }
+  ],
+  "total_classes": 4,
+  "total_functions": 10,
+  "lines_of_code": 260
+}

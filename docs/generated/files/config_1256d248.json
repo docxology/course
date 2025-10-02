@@ -1,0 +1,147 @@
+{
+  "file_path": "src/curriculum/config.py",
+  "module_docstring": "Configuration management for the Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "os"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "functools",
+      "names": [
+        "lru_cache"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "Field"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic_settings",
+      "names": [
+        "BaseSettings",
+        "SettingsConfigDict"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "Settings",
+      "docstring": "Application settings loaded from environment variables.",
+      "bases": [
+        "BaseSettings"
+      ],
+      "methods": [
+        {
+          "name": "allowed_extensions_list",
+          "docstring": "Get allowed file extensions as a list.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [
+            "property"
+          ],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 88
+        },
+        {
+          "name": "is_production",
+          "docstring": "Check if running in production environment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [
+            "property"
+          ],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 93
+        },
+        {
+          "name": "is_development",
+          "docstring": "Check if running in development environment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [
+            "property"
+          ],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 98
+        }
+      ],
+      "total_methods": 3,
+      "line_number": 11
+    }
+  ],
+  "functions": [
+    {
+      "name": "get_settings",
+      "docstring": "Get cached settings instance.",
+      "parameters": [],
+      "args": [],
+      "return_type": "Settings",
+      "decorators": [
+        "<ast.Call object at 0x109b3bc10>"
+      ],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 104
+    }
+  ],
+  "total_classes": 1,
+  "total_functions": 1,
+  "lines_of_code": 110
+}

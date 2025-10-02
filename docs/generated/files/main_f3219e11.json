@@ -1,0 +1,172 @@
+{
+  "file_path": "src/curriculum/routes/main.py",
+  "module_docstring": "Main FastAPI application for Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "contextlib",
+      "names": [
+        "asynccontextmanager"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "FastAPI",
+        "Request"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi.middleware.cors",
+      "names": [
+        "CORSMiddleware"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi.responses",
+      "names": [
+        "JSONResponse"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "time"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.routes",
+      "names": [
+        "content",
+        "users",
+        "assessments",
+        "analytics"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "lifespan",
+      "docstring": "Application lifespan manager.",
+      "parameters": [
+        {
+          "name": "app",
+          "annotation": "FastAPI",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "app",
+          "annotation": "FastAPI",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "asynccontextmanager"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 14
+    },
+    {
+      "name": "add_process_time_header",
+      "docstring": "Add processing time to response headers.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "Request",
+          "default": null
+        },
+        {
+          "name": "call_next",
+          "annotation": null,
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "Request",
+          "default": null
+        },
+        {
+          "name": "call_next",
+          "annotation": null,
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107682250>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 46
+    },
+    {
+      "name": "health_check",
+      "docstring": "Health check endpoint.",
+      "parameters": [],
+      "args": [],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x107680850>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 57
+    },
+    {
+      "name": "global_exception_handler",
+      "docstring": "Global exception handler.",
+      "parameters": [
+        {
+          "name": "request",
+          "annotation": "Request",
+          "default": null
+        },
+        {
+          "name": "exc",
+          "annotation": "Exception",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "request",
+          "annotation": "Request",
+          "default": null
+        },
+        {
+          "name": "exc",
+          "annotation": "Exception",
+          "default": null
+        }
+      ],
+      "return_type": null,
+      "decorators": [
+        "<ast.Call object at 0x1076a86d0>"
+      ],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 96
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 4,
+  "lines_of_code": 117
+}

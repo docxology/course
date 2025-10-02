@@ -1,0 +1,418 @@
+{
+  "file_path": "src/curriculum/integration/export.py",
+  "module_docstring": "Export service for generating various output formats.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any",
+        "BinaryIO"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "io"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ExportService",
+      "docstring": "Service for exporting content in various formats.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize export service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 15
+        },
+        {
+          "name": "export_content",
+          "docstring": "Export content in specified format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "options",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 31
+        },
+        {
+          "name": "export_course",
+          "docstring": "Export entire course in specified format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "include_assessments",
+              "annotation": "bool"
+            },
+            {
+              "name": "include_analytics",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 58
+        },
+        {
+          "name": "_export_scorm_package",
+          "docstring": "Export course as SCORM package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "include_assessments",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 77
+        },
+        {
+          "name": "_export_pdf_book",
+          "docstring": "Export course as PDF book.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "include_assessments",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 125
+        },
+        {
+          "name": "_export_epub_book",
+          "docstring": "Export course as EPUB book.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "include_assessments",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 147
+        },
+        {
+          "name": "export_user_progress",
+          "docstring": "Export user progress report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 164
+        },
+        {
+          "name": "export_assessment_results",
+          "docstring": "Export assessment results.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "include_details",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 191
+        },
+        {
+          "name": "generate_certificate",
+          "docstring": "Generate course completion certificate.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "template",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 219
+        },
+        {
+          "name": "export_analytics_report",
+          "docstring": "Export analytics report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "report_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 241
+        },
+        {
+          "name": "batch_export",
+          "docstring": "Export multiple content items.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "options",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 262
+        },
+        {
+          "name": "get_supported_formats",
+          "docstring": "Get list of supported export formats.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 290
+        },
+        {
+          "name": "validate_export_options",
+          "docstring": "Validate export options for format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "options",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 294
+        },
+        {
+          "name": "estimate_export_size",
+          "docstring": "Estimate file size for export.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 341
+        },
+        {
+          "name": "_format_bytes",
+          "docstring": "Format bytes to human readable format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "bytes",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 372
+        }
+      ],
+      "total_methods": 15,
+      "line_number": 12
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 378
+}

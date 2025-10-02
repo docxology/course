@@ -1,0 +1,79 @@
+{
+  "file_path": "src/curriculum/core/__init__.py",
+  "module_docstring": "Core models and base classes for the Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity",
+        "PagedResponse",
+        "TimestampMixin",
+        "UUIDMixin",
+        "SoftDeleteMixin"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentVersion",
+        "ContentStatus",
+        "ContentFormat",
+        "ContentType"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.metadata",
+      "names": [
+        "Metadata",
+        "DublinCore",
+        "LRMIMetadata",
+        "ResourceType"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserRole",
+        "UserPermission"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.analytics",
+      "names": [
+        "LearningEvent",
+        "AnalyticsReport",
+        "ActivityVerb",
+        "EventType",
+        "DeviceType",
+        "ContentAnalytics",
+        "UserAnalytics",
+        "SessionAnalytics"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Question",
+        "Submission",
+        "SubmissionResult",
+        "QuestionType",
+        "DifficultyLevel",
+        "GradingStatus"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 43
+}

@@ -1,0 +1,402 @@
+{
+  "file_path": "src/curriculum/search/search.py",
+  "module_docstring": "Search service using Elasticsearch.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Dict",
+        "Any",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "SearchService",
+      "docstring": "Service for searching content using Elasticsearch.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize search service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "connect",
+          "docstring": "Connect to Elasticsearch.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 19
+        },
+        {
+          "name": "disconnect",
+          "docstring": "Disconnect from Elasticsearch.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 36
+        },
+        {
+          "name": "index_content",
+          "docstring": "Index content for search.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 41
+        },
+        {
+          "name": "delete_from_index",
+          "docstring": "Remove content from search index.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 75
+        },
+        {
+          "name": "search",
+          "docstring": "Search for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            },
+            {
+              "name": "tags",
+              "annotation": "Optional[List[str]]",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "offset",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content_type",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "Optional[UUID]",
+              "default": null
+            },
+            {
+              "name": "tags",
+              "annotation": "Optional[List[str]]",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "offset",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 90
+        },
+        {
+          "name": "suggest",
+          "docstring": "Get search suggestions.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "query",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "List[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 179
+        },
+        {
+          "name": "get_similar_content",
+          "docstring": "Find similar content using more-like-this query.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 220
+        },
+        {
+          "name": "_ensure_index_exists",
+          "docstring": "Ensure search index exists with proper mapping.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 261
+        },
+        {
+          "name": "get_index_stats",
+          "docstring": "Get search index statistics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 298
+        }
+      ],
+      "total_methods": 10,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 312
+}

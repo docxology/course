@@ -1,0 +1,1006 @@
+{
+  "file_path": "src/curriculum/communication/communication.py",
+  "module_docstring": "Communication service for forums, messaging, and announcements.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CommunicationService",
+      "docstring": "Service for communication features.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize communication service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "create_forum",
+          "docstring": "Create a discussion forum.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "is_public",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "is_public",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "create_post",
+          "docstring": "Create a forum post.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "forum_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": "'General Discussion'"
+            },
+            {
+              "name": "tags",
+              "annotation": "List[str]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "forum_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "str",
+              "default": "'General Discussion'"
+            },
+            {
+              "name": "tags",
+              "annotation": "List[str]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 57
+        },
+        {
+          "name": "create_reply",
+          "docstring": "Create a reply to a forum post.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 95
+        },
+        {
+          "name": "send_message",
+          "docstring": "Send a private message.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "sender_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "recipient_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "subject",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "sender_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "recipient_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "subject",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 121
+        },
+        {
+          "name": "create_announcement",
+          "docstring": "Create a course announcement.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": "'normal'"
+            },
+            {
+              "name": "expires_at",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": "'normal'"
+            },
+            {
+              "name": "expires_at",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 145
+        },
+        {
+          "name": "get_forum_posts",
+          "docstring": "Get posts from a forum.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "forum_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": "20"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "forum_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "category",
+              "annotation": "Optional[str]",
+              "default": "None"
+            },
+            {
+              "name": "limit",
+              "annotation": "int",
+              "default": "20"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 172
+        },
+        {
+          "name": "get_user_messages",
+          "docstring": "Get messages for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "unread_only",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "unread_only",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 192
+        },
+        {
+          "name": "get_course_announcements",
+          "docstring": "Get announcements for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 208
+        },
+        {
+          "name": "mark_message_read",
+          "docstring": "Mark message as read.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "message_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "message_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 224
+        },
+        {
+          "name": "pin_post",
+          "docstring": "Pin a forum post.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 232
+        },
+        {
+          "name": "lock_post",
+          "docstring": "Lock a forum post.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "post_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 240
+        },
+        {
+          "name": "get_communication_statistics",
+          "docstring": "Get communication statistics for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 248
+        },
+        {
+          "name": "moderate_content",
+          "docstring": "Moderate forum content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "action",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": "''"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "moderator_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "action",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": "''"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 279
+        },
+        {
+          "name": "create_study_group",
+          "docstring": "Create a study group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "organizer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "max_members",
+              "annotation": "int",
+              "default": "10"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "organizer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "max_members",
+              "annotation": "int",
+              "default": "10"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 313
+        },
+        {
+          "name": "get_user_conversations",
+          "docstring": "Get user's message conversations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 341
+        },
+        {
+          "name": "create_notification",
+          "docstring": "Create a notification for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": "'info'"
+            },
+            {
+              "name": "action_url",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "notification_type",
+              "annotation": "str",
+              "default": "'info'"
+            },
+            {
+              "name": "action_url",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 370
+        },
+        {
+          "name": "get_user_notifications",
+          "docstring": "Get notifications for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "unread_only",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "unread_only",
+              "annotation": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 394
+        }
+      ],
+      "total_methods": 18,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 416
+}

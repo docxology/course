@@ -1,0 +1,39 @@
+{
+  "file_path": "src/curriculum/content/__init__.py",
+  "module_docstring": "Content management services for the Curriculum Repository System.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.content.content",
+      "names": [
+        "ContentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.metadata",
+      "names": [
+        "MetadataService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.rendering",
+      "names": [
+        "RenderingService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.version_control",
+      "names": [
+        "VersionControlService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 14
+}

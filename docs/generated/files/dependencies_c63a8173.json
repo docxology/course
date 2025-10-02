@@ -1,0 +1,87 @@
+{
+  "file_path": "src/curriculum/routes/dependencies.py",
+  "module_docstring": "Shared dependencies for API routes.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "fastapi",
+      "names": [
+        "Depends",
+        "HTTPException",
+        "status"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "fastapi.security",
+      "names": [
+        "OAuth2PasswordBearer"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "jose",
+      "names": [
+        "JWTError",
+        "jwt"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.users.user",
+      "names": [
+        "UserService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "get_current_user",
+      "docstring": "Get current user from JWT token.",
+      "parameters": [
+        {
+          "name": "token",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "annotation": "str",
+          "default": null
+        }
+      ],
+      "return_type": "User",
+      "decorators": [],
+      "is_method": false,
+      "is_async": true,
+      "line_number": 20
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 1,
+  "lines_of_code": 48
+}

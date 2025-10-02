@@ -1,0 +1,309 @@
+{
+  "file_path": "src/curriculum/integration/distribution.py",
+  "module_docstring": "Content distribution and delivery service.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "asyncio"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "hashlib"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentFormat"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "DistributionService",
+      "docstring": "Service for content distribution and delivery.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize distribution service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 16
+        },
+        {
+          "name": "distribute_content",
+          "docstring": "Distribute content to CDN and edge locations.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "target_format",
+              "annotation": "str"
+            },
+            {
+              "name": "regions",
+              "annotation": "Optional[List[str]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 22
+        },
+        {
+          "name": "invalidate_cache",
+          "docstring": "Invalidate CDN cache for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "paths",
+              "annotation": "List[str]"
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 57
+        },
+        {
+          "name": "warm_cache",
+          "docstring": "Warm CDN cache by pre-loading content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "urls",
+              "annotation": "List[str]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 68
+        },
+        {
+          "name": "generate_cache_key",
+          "docstring": "Generate cache key for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 83
+        },
+        {
+          "name": "calculate_content_hash",
+          "docstring": "Calculate hash of content for cache validation.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 87
+        },
+        {
+          "name": "get_distribution_status",
+          "docstring": "Get distribution status for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 91
+        },
+        {
+          "name": "batch_distribute",
+          "docstring": "Distribute multiple content items.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_ids",
+              "annotation": "List[UUID]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 106
+        },
+        {
+          "name": "optimize_for_delivery",
+          "docstring": "Optimize content for delivery.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "optimizations",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 129
+        },
+        {
+          "name": "generate_presigned_url",
+          "docstring": "Generate presigned URL for secure content access.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "filename",
+              "annotation": "str"
+            },
+            {
+              "name": "expires_in",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 154
+        },
+        {
+          "name": "get_content_metrics",
+          "docstring": "Get delivery metrics for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 164
+        }
+      ],
+      "total_methods": 11,
+      "line_number": 13
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 175
+}

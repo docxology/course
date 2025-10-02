@@ -1,0 +1,1057 @@
+{
+  "file_path": "src/curriculum/teachers/student_management.py",
+  "module_docstring": "Student management service for teachers.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserRole"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "StudentManagementService",
+      "docstring": "Service for managing students from a teacher's perspective.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize student management service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 13
+        },
+        {
+          "name": "enroll_student",
+          "docstring": "Enroll a student in a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 19
+        },
+        {
+          "name": "unenroll_student",
+          "docstring": "Unenroll a student from a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": "'Teacher request'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": "'Teacher request'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 43
+        },
+        {
+          "name": "get_course_roster",
+          "docstring": "Get the complete student roster for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 65
+        },
+        {
+          "name": "update_student_grade",
+          "docstring": "Update a student's grade for an assessment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "grade",
+              "annotation": "float",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "grade",
+              "annotation": "float",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "Optional[str]",
+              "default": "None"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 86
+        },
+        {
+          "name": "get_student_grades",
+          "docstring": "Get all grades for a student in a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 111
+        },
+        {
+          "name": "add_student_note",
+          "docstring": "Add a note about a student.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "note",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "note_type",
+              "annotation": "str",
+              "default": "'general'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "note",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "note_type",
+              "annotation": "str",
+              "default": "'general'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 132
+        },
+        {
+          "name": "get_student_notes",
+          "docstring": "Get notes about students.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "Optional[UUID]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "Optional[UUID]",
+              "default": "None"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 156
+        },
+        {
+          "name": "flag_student_for_attention",
+          "docstring": "Flag a student for special attention.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": "'medium'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reason",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "priority",
+              "annotation": "str",
+              "default": "'medium'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 169
+        },
+        {
+          "name": "create_student_group",
+          "docstring": "Create a student group for collaborative work.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "group_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "student_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "group_type",
+              "annotation": "str",
+              "default": "'study_group'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "group_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "student_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "group_type",
+              "annotation": "str",
+              "default": "'study_group'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 190
+        },
+        {
+          "name": "assign_student_mentor",
+          "docstring": "Assign a peer mentor to a student.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "mentor_student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "mentor_student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 215
+        },
+        {
+          "name": "get_students_needing_help",
+          "docstring": "Get students who may need additional help.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "criteria",
+              "annotation": "Dict[str, Any]",
+              "default": "None"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "criteria",
+              "annotation": "Dict[str, Any]",
+              "default": "None"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 236
+        },
+        {
+          "name": "_determine_help_reason",
+          "docstring": "Determine the primary reason a student needs help.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "student",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "student",
+              "annotation": "Dict[str, Any]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 270
+        },
+        {
+          "name": "send_bulk_message",
+          "docstring": "Send a message to multiple students.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "subject",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_ids",
+              "annotation": "List[UUID]",
+              "default": null
+            },
+            {
+              "name": "subject",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "message",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 285
+        },
+        {
+          "name": "create_intervention_plan",
+          "docstring": "Create an intervention plan for a struggling student.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "interventions",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "interventions",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 307
+        },
+        {
+          "name": "track_student_engagement",
+          "docstring": "Track student engagement metrics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 331
+        },
+        {
+          "name": "generate_student_report",
+          "docstring": "Generate a comprehensive student report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "report_type",
+              "annotation": "str",
+              "default": "'comprehensive'"
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "student_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "report_type",
+              "annotation": "str",
+              "default": "'comprehensive'"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 361
+        },
+        {
+          "name": "get_class_analytics",
+          "docstring": "Get analytics for the entire class.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 413
+        }
+      ],
+      "total_methods": 18,
+      "line_number": 10
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 459
+}

@@ -1,0 +1,25 @@
+{
+  "file_path": "src/curriculum/mobile/__init__.py",
+  "module_docstring": "Mobile and offline learning services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.mobile.mobile",
+      "names": [
+        "MobileService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.mobile.offline",
+      "names": [
+        "OfflineService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 10
+}

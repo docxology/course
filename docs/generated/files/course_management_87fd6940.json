@@ -1,0 +1,515 @@
+{
+  "file_path": "src/curriculum/teachers/course_management.py",
+  "module_docstring": "Course management service for teachers.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime",
+        "timedelta"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentStatus",
+        "ContentType"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Question",
+        "QuestionType"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CourseManagementService",
+      "docstring": "Service for course management by teachers.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize course management service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 14
+        },
+        {
+          "name": "create_course_structure",
+          "docstring": "Create a complete course structure.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "modules",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "add_course_content",
+          "docstring": "Add content to a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 54
+        },
+        {
+          "name": "create_course_assessment",
+          "docstring": "Create an assessment for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "assessment_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 85
+        },
+        {
+          "name": "update_course_settings",
+          "docstring": "Update course settings.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "settings",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 115
+        },
+        {
+          "name": "get_course_content",
+          "docstring": "Get all content for a teacher's course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 131
+        },
+        {
+          "name": "get_course_assessments",
+          "docstring": "Get all assessments for a teacher's course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 152
+        },
+        {
+          "name": "publish_course_content",
+          "docstring": "Publish course content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_id",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 176
+        },
+        {
+          "name": "unpublish_course_content",
+          "docstring": "Unpublish course content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_id",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 191
+        },
+        {
+          "name": "duplicate_course",
+          "docstring": "Duplicate an existing course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "source_course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "new_title",
+              "annotation": "str"
+            },
+            {
+              "name": "new_description",
+              "annotation": "Optional[str]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 204
+        },
+        {
+          "name": "archive_course",
+          "docstring": "Archive a completed course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "reason",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 228
+        },
+        {
+          "name": "get_course_statistics",
+          "docstring": "Get comprehensive course statistics.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 248
+        },
+        {
+          "name": "create_course_syllabus",
+          "docstring": "Create or update course syllabus.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "syllabus_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 278
+        },
+        {
+          "name": "set_course_schedule",
+          "docstring": "Set course schedule with deadlines and events.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "schedule",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 311
+        },
+        {
+          "name": "create_learning_module",
+          "docstring": "Create a learning module within a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "learning_objectives",
+              "annotation": "List[str]"
+            },
+            {
+              "name": "content_items",
+              "annotation": "List[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 332
+        },
+        {
+          "name": "generate_course_report",
+          "docstring": "Generate a comprehensive course report.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "report_type",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 361
+        },
+        {
+          "name": "get_course_analytics_dashboard",
+          "docstring": "Get real-time course analytics dashboard.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "teacher_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 410
+        }
+      ],
+      "total_methods": 17,
+      "line_number": 11
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 443
+}

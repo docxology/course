@@ -1,0 +1,416 @@
+{
+  "file_path": "src/curriculum/learning/analytics.py",
+  "module_docstring": "Analytics and tracking service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.analytics",
+      "names": [
+        "LearningEvent",
+        "ActivityVerb",
+        "EventType",
+        "DeviceType",
+        "ContentAnalytics",
+        "UserAnalytics",
+        "SessionAnalytics"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "AnalyticsService",
+      "docstring": "Service for learning analytics and tracking.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize analytics service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 21
+        },
+        {
+          "name": "track_event",
+          "docstring": "Track a learning event.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "verb",
+              "annotation": "ActivityVerb"
+            },
+            {
+              "name": "event_type",
+              "annotation": "EventType"
+            },
+            {
+              "name": "object_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "object_type",
+              "annotation": "str"
+            },
+            {
+              "name": "success",
+              "annotation": "Optional[bool]"
+            },
+            {
+              "name": "score",
+              "annotation": "Optional[float]"
+            },
+            {
+              "name": "duration",
+              "annotation": "Optional[int]"
+            },
+            {
+              "name": "metadata",
+              "annotation": "Optional[Dict[str, Any]]"
+            }
+          ],
+          "return_type": "LearningEvent",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 28
+        },
+        {
+          "name": "track_content_view",
+          "docstring": "Track content view event.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "duration",
+              "annotation": "Optional[int]"
+            },
+            {
+              "name": "device_type",
+              "annotation": "DeviceType"
+            }
+          ],
+          "return_type": "LearningEvent",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 55
+        },
+        {
+          "name": "track_assessment_completion",
+          "docstring": "Track assessment completion event.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "assessment_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "score",
+              "annotation": "float"
+            },
+            {
+              "name": "passed",
+              "annotation": "bool"
+            },
+            {
+              "name": "duration",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "LearningEvent",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 78
+        },
+        {
+          "name": "start_session",
+          "docstring": "Start a new user session.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "session_id",
+              "annotation": "str"
+            },
+            {
+              "name": "device_type",
+              "annotation": "DeviceType"
+            }
+          ],
+          "return_type": "SessionAnalytics",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 103
+        },
+        {
+          "name": "end_session",
+          "docstring": "End a user session.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "session_id",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Optional[SessionAnalytics]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 118
+        },
+        {
+          "name": "get_content_analytics",
+          "docstring": "Get analytics for specific content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[ContentAnalytics]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 125
+        },
+        {
+          "name": "get_user_analytics",
+          "docstring": "Get analytics for specific user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Optional[UserAnalytics]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 129
+        },
+        {
+          "name": "get_events_by_user",
+          "docstring": "Get events for a specific user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "event_type",
+              "annotation": "Optional[EventType]"
+            },
+            {
+              "name": "limit",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "List[LearningEvent]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 133
+        },
+        {
+          "name": "get_events_by_content",
+          "docstring": "Get events for specific content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "event_type",
+              "annotation": "Optional[EventType]"
+            },
+            {
+              "name": "limit",
+              "annotation": "int"
+            }
+          ],
+          "return_type": "List[LearningEvent]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 150
+        },
+        {
+          "name": "_update_content_analytics",
+          "docstring": "Update content analytics after a view event.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 166
+        },
+        {
+          "name": "_update_user_analytics",
+          "docstring": "Update user analytics after an event.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "assessment_passed",
+              "annotation": "bool"
+            },
+            {
+              "name": "score",
+              "annotation": "Optional[float]"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 175
+        },
+        {
+          "name": "generate_user_report",
+          "docstring": "Generate comprehensive analytics report for a user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 200
+        },
+        {
+          "name": "generate_content_report",
+          "docstring": "Generate analytics report for content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 219
+        }
+      ],
+      "total_methods": 14,
+      "line_number": 18
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 233
+}

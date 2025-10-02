@@ -1,0 +1,126 @@
+{
+  "file_path": "src/curriculum/tools/validators.py",
+  "module_docstring": "Validation utilities.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "re"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "urllib.parse",
+      "names": [
+        "urlparse"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [
+    {
+      "name": "validate_email",
+      "docstring": "Validate email address format.\n\nArgs:\n    email: Email address to validate\n    \nReturns:\n    True if email is valid, False otherwise",
+      "parameters": [
+        {
+          "name": "email",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 8
+    },
+    {
+      "name": "validate_url",
+      "docstring": "Validate URL format.\n\nArgs:\n    url: URL to validate\n    \nReturns:\n    True if URL is valid, False otherwise",
+      "parameters": [
+        {
+          "name": "url",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 21
+    },
+    {
+      "name": "sanitize_filename",
+      "docstring": "Sanitize filename by removing invalid characters.\n\nArgs:\n    filename: Original filename\n    max_length: Maximum allowed length\n    \nReturns:\n    Sanitized filename",
+      "parameters": [
+        {
+          "name": "filename",
+          "annotation": "str"
+        },
+        {
+          "name": "max_length",
+          "annotation": "int"
+        }
+      ],
+      "return_type": "str",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 37
+    },
+    {
+      "name": "validate_slug",
+      "docstring": "Validate URL-safe slug format.\n\nArgs:\n    slug: Slug to validate\n    \nReturns:\n    True if slug is valid, False otherwise",
+      "parameters": [
+        {
+          "name": "slug",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 62
+    },
+    {
+      "name": "validate_version",
+      "docstring": "Validate semantic version format (x.y.z).\n\nArgs:\n    version: Version string to validate\n    \nReturns:\n    True if version is valid semver, False otherwise",
+      "parameters": [
+        {
+          "name": "version",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 75
+    },
+    {
+      "name": "validate_hex_color",
+      "docstring": "Validate hexadecimal color code.\n\nArgs:\n    color: Color code to validate\n    \nReturns:\n    True if color is valid hex, False otherwise",
+      "parameters": [
+        {
+          "name": "color",
+          "annotation": "str"
+        }
+      ],
+      "return_type": "bool",
+      "decorators": [],
+      "is_method": false,
+      "is_async": false,
+      "line_number": 88
+    }
+  ],
+  "total_classes": 0,
+  "total_functions": 6,
+  "lines_of_code": 98
+}

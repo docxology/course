@@ -1,0 +1,1042 @@
+{
+  "file_path": "src/curriculum/users/user.py",
+  "module_docstring": "User management and authentication services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime",
+        "timedelta"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User",
+        "UserRole",
+        "UserPermission",
+        "ROLE_PERMISSIONS"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "UserService",
+      "docstring": "Service for managing users.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize user service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "create_user",
+          "docstring": "Create a new user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "email",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "username",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "full_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "roles",
+              "annotation": "Optional[List[UserRole]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "email",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "username",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "full_name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "roles",
+              "annotation": "Optional[List[UserRole]]",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 26
+        },
+        {
+          "name": "get_user",
+          "docstring": "Get user by ID.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 63
+        },
+        {
+          "name": "get_user_by_email",
+          "docstring": "Get user by email.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "email",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "email",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 67
+        },
+        {
+          "name": "get_user_by_username",
+          "docstring": "Get user by username.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "username",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "username",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 72
+        },
+        {
+          "name": "update_user",
+          "docstring": "Update user profile.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "full_name",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "bio",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "avatar_url",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "full_name",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "bio",
+              "annotation": "Optional[str]",
+              "default": null
+            },
+            {
+              "name": "avatar_url",
+              "annotation": "Optional[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 77
+        },
+        {
+          "name": "change_password",
+          "docstring": "Change user password with current password verification.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "current_password",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "new_password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "current_password",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "new_password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 99
+        },
+        {
+          "name": "verify_password",
+          "docstring": "Verify user password.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 114
+        },
+        {
+          "name": "add_role",
+          "docstring": "Add role to user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 122
+        },
+        {
+          "name": "remove_role",
+          "docstring": "Remove role from user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 135
+        },
+        {
+          "name": "deactivate_user",
+          "docstring": "Deactivate user account.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 148
+        },
+        {
+          "name": "activate_user",
+          "docstring": "Activate user account.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 157
+        },
+        {
+          "name": "record_login",
+          "docstring": "Record user login.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 166
+        },
+        {
+          "name": "list_users",
+          "docstring": "List users with optional filtering.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "Optional[UserRole]",
+              "default": null
+            },
+            {
+              "name": "active_only",
+              "annotation": "bool",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "Optional[UserRole]",
+              "default": null
+            },
+            {
+              "name": "active_only",
+              "annotation": "bool",
+              "default": null
+            }
+          ],
+          "return_type": "List[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 174
+        },
+        {
+          "name": "has_permission",
+          "docstring": "Check if user has specific permission.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "UserPermission",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "UserPermission",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 186
+        },
+        {
+          "name": "has_role",
+          "docstring": "Check if user has specific role.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 194
+        },
+        {
+          "name": "_calculate_permissions",
+          "docstring": "Calculate permissions based on user roles.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "roles",
+              "annotation": "List[UserRole]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "roles",
+              "annotation": "List[UserRole]",
+              "default": null
+            }
+          ],
+          "return_type": "List[UserPermission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 202
+        }
+      ],
+      "total_methods": 17,
+      "line_number": 17
+    },
+    {
+      "name": "AuthenticationService",
+      "docstring": "Service for authentication and authorization.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize authentication service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_service",
+              "annotation": "UserService",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_service",
+              "annotation": "UserService",
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 216
+        },
+        {
+          "name": "authenticate_user",
+          "docstring": "Authenticate user with username/email and password.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "username_or_email",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "username_or_email",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "password",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[User]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 220
+        },
+        {
+          "name": "create_access_token",
+          "docstring": "Create simple access token (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "expires_delta",
+              "annotation": "Optional[timedelta]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "expires_delta",
+              "annotation": "Optional[timedelta]",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 241
+        },
+        {
+          "name": "create_refresh_token",
+          "docstring": "Create simple refresh token (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 246
+        },
+        {
+          "name": "verify_token",
+          "docstring": "Verify token and return user ID (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "token",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "token",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Optional[UUID]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 251
+        },
+        {
+          "name": "has_permission",
+          "docstring": "Check if user has a specific permission.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "UserPermission",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "UserPermission",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 262
+        },
+        {
+          "name": "has_role",
+          "docstring": "Check if user has a specific role.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole",
+              "default": null
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 269
+        }
+      ],
+      "total_methods": 7,
+      "line_number": 213
+    }
+  ],
+  "functions": [],
+  "total_classes": 2,
+  "total_functions": 0,
+  "lines_of_code": 274
+}

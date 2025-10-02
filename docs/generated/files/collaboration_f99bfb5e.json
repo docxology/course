@@ -1,0 +1,933 @@
+{
+  "file_path": "src/curriculum/communication/collaboration.py",
+  "module_docstring": "Collaboration service for group projects and peer review.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CollaborationService",
+      "docstring": "Service for collaborative features.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize collaboration service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 12
+        },
+        {
+          "name": "create_group_project",
+          "docstring": "Create a group project.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "max_group_size",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "due_date",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "max_group_size",
+              "annotation": "int",
+              "default": null
+            },
+            {
+              "name": "due_date",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 19
+        },
+        {
+          "name": "create_study_group",
+          "docstring": "Create a study group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "organizer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "max_members",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "organizer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "max_members",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 62
+        },
+        {
+          "name": "join_group",
+          "docstring": "Join a group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 91
+        },
+        {
+          "name": "create_workspace",
+          "docstring": "Create a collaborative workspace.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "tools",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "name",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "tools",
+              "annotation": "List[str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 115
+        },
+        {
+          "name": "create_peer_review_assignment",
+          "docstring": "Create a peer review assignment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submission_deadline",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "review_deadline",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submission_deadline",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "review_deadline",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 140
+        },
+        {
+          "name": "submit_for_review",
+          "docstring": "Submit work for peer review.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assignment_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submission_title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "submission_content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "files",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "assignment_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "submission_title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "submission_content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "files",
+              "annotation": "List[Dict[str, Any]]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 176
+        },
+        {
+          "name": "submit_review",
+          "docstring": "Submit a peer review.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "scores",
+              "annotation": "Dict[str, float]",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "is_anonymous",
+              "annotation": "bool",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "submission_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "reviewer_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "scores",
+              "annotation": "Dict[str, float]",
+              "default": null
+            },
+            {
+              "name": "feedback",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "is_anonymous",
+              "annotation": "bool",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 207
+        },
+        {
+          "name": "get_group_projects",
+          "docstring": "Get group projects for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 255
+        },
+        {
+          "name": "get_user_groups",
+          "docstring": "Get groups a user is a member of.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 262
+        },
+        {
+          "name": "assign_group_roles",
+          "docstring": "Assign roles within a group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role_assignments",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "group_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "role_assignments",
+              "annotation": "Dict[str, str]",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 279
+        },
+        {
+          "name": "create_collaboration_task",
+          "docstring": "Create a task in a collaborative workspace.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workspace_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "assignee_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "due_date",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workspace_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "description",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "assignee_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "due_date",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 300
+        },
+        {
+          "name": "get_collaboration_statistics",
+          "docstring": "Get collaboration statistics for a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 326
+        },
+        {
+          "name": "create_shared_document",
+          "docstring": "Create a shared document in a workspace.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workspace_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "workspace_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "content",
+              "annotation": "str",
+              "default": null
+            },
+            {
+              "name": "author_id",
+              "annotation": "UUID",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 347
+        },
+        {
+          "name": "add_collaborator",
+          "docstring": "Add a collaborator to a document.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "document_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "document_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "permission",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 373
+        },
+        {
+          "name": "get_collaboration_activity",
+          "docstring": "Get recent collaboration activity.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "days",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "days",
+              "annotation": "int",
+              "default": null
+            }
+          ],
+          "return_type": "List[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 400
+        }
+      ],
+      "total_methods": 16,
+      "line_number": 9
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 416
+}

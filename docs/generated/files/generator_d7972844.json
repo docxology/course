@@ -1,0 +1,656 @@
+{
+  "file_path": "src/curriculum/documentation/generator.py",
+  "module_docstring": "Documentation generator service with LLM-powered multi-level summarization.",
+  "imports": [
+    {
+      "type": "import",
+      "modules": [
+        "ast"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "importlib"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "inspect"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "json"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "os"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "subprocess"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pathlib",
+      "names": [
+        "Path"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID",
+        "uuid4"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime",
+        "timezone"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.config",
+      "names": [
+        "settings"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "DocumentationGeneratorService",
+      "docstring": "Service for automated documentation generation with LLM summarization.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize documentation generator service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "output_dir",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "_setup_output_directories",
+          "docstring": "Create output directory structure.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 31
+        },
+        {
+          "name": "generate_documentation",
+          "docstring": "Generate comprehensive documentation for the entire package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "package_path",
+              "annotation": "str"
+            },
+            {
+              "name": "use_llm",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 45
+        },
+        {
+          "name": "_extract_package_documentation",
+          "docstring": "Extract documentation from all Python files in package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "package_root",
+              "annotation": "Path"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 76
+        },
+        {
+          "name": "_extract_file_documentation",
+          "docstring": "Extract documentation from a single Python file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "file_path",
+              "annotation": "Path"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 97
+        },
+        {
+          "name": "_extract_class_info",
+          "docstring": "Extract information from a class definition.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "node",
+              "annotation": "ast.ClassDef"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 141
+        },
+        {
+          "name": "_extract_function_info",
+          "docstring": "Extract information from a function or method definition.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "node",
+              "annotation": "ast.FunctionDef"
+            },
+            {
+              "name": "is_method",
+              "annotation": "bool"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 167
+        },
+        {
+          "name": "_extract_import_info",
+          "docstring": "Extract import information.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "node",
+              "annotation": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 201
+        },
+        {
+          "name": "_get_name",
+          "docstring": "Get name from AST node.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "node",
+              "annotation": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 216
+        },
+        {
+          "name": "_get_annotation",
+          "docstring": "Get type annotation as string.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "node",
+              "annotation": null
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 234
+        },
+        {
+          "name": "_get_module_name",
+          "docstring": "Get module name from file path.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "file_path",
+              "annotation": "Path"
+            },
+            {
+              "name": "package_root",
+              "annotation": "Path"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 240
+        },
+        {
+          "name": "_generate_llm_summaries",
+          "docstring": "Generate LLM-powered summaries at multiple levels.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 251
+        },
+        {
+          "name": "_generate_module_summary",
+          "docstring": "Generate LLM summary for a module.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "module_name",
+              "annotation": "str"
+            },
+            {
+              "name": "module_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Optional[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 270
+        },
+        {
+          "name": "_generate_file_summary",
+          "docstring": "Generate LLM summary for a file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "file_path",
+              "annotation": "str"
+            },
+            {
+              "name": "file_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Optional[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 308
+        },
+        {
+          "name": "_generate_package_overview",
+          "docstring": "Generate high-level package overview.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "Optional[Dict[str, Any]]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 343
+        },
+        {
+          "name": "_prepare_module_context",
+          "docstring": "Prepare context string for module analysis.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "module_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 392
+        },
+        {
+          "name": "_prepare_file_context",
+          "docstring": "Prepare context string for file analysis.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "file_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 413
+        },
+        {
+          "name": "_call_ollama_llm",
+          "docstring": "Call Ollama LLM for text generation.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "prompt",
+              "annotation": "str"
+            },
+            {
+              "name": "model",
+              "annotation": "str"
+            },
+            {
+              "name": "temperature",
+              "annotation": "float"
+            }
+          ],
+          "return_type": "Optional[str]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 426
+        },
+        {
+          "name": "_generate_mock_llm_response",
+          "docstring": "Generate mock LLM response when Ollama is unavailable.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "prompt",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 471
+        },
+        {
+          "name": "_generate_output_files",
+          "docstring": "Generate final documentation output files.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 479
+        },
+        {
+          "name": "_write_module_documentation",
+          "docstring": "Write documentation for a single module.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "module_name",
+              "annotation": "str"
+            },
+            {
+              "name": "module_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 498
+        },
+        {
+          "name": "_write_file_documentation",
+          "docstring": "Write documentation for a single file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "file_path",
+              "annotation": "str"
+            },
+            {
+              "name": "file_data",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 555
+        },
+        {
+          "name": "_write_methods_index",
+          "docstring": "Write index of all methods.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 562
+        },
+        {
+          "name": "_write_llm_summaries",
+          "docstring": "Write all LLM summaries to files.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 567
+        },
+        {
+          "name": "_write_main_index",
+          "docstring": "Write main index file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 578
+        },
+        {
+          "name": "get_documentation_stats",
+          "docstring": "Get statistics about generated documentation.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 632
+        },
+        {
+          "name": "export_documentation",
+          "docstring": "Export all documentation in a single file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "format",
+              "annotation": "str"
+            },
+            {
+              "name": "output_file",
+              "annotation": "Optional[str]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 642
+        },
+        {
+          "name": "_export_markdown",
+          "docstring": "Export documentation as single Markdown file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "output_file",
+              "annotation": "Optional[str]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 655
+        },
+        {
+          "name": "_export_json",
+          "docstring": "Export documentation as single JSON file.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "output_file",
+              "annotation": "Optional[str]"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 676
+        }
+      ],
+      "total_methods": 29,
+      "line_number": 17
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 690
+}

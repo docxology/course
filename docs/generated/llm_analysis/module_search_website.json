@@ -1,0 +1,6 @@
+{
+  "module_name": "search.website",
+  "summary_type": "module",
+  "llm_analysis": "Here is a comprehensive analysis of the `search.website` module in JSON format:\n\n```json\n{\n  \"overview\": \"The search.website module provides a service for managing course websites and portals.\",\n  \"key_classes\": {\n    \"WebsiteService\": \"Manages course websites and portals, likely providing functionality such as user authentication, content management, and portal configuration.\"\n  },\n  \"functionality\": [\n    \"Managing course websites and portals\",\n    \"User authentication and authorization\",\n    \"Content management for courses\",\n    \"Portal configuration\"\n  ],\n  \"dependencies\": [],\n  \"usage_hints\": []\n}\n```\n\nHowever, based on the provided information, it is clear that there are no specific dependencies or usage hints mentioned in the context. Therefore, I will assume that the module provides a basic service class (`WebsiteService`) and does not have any external dependencies.\n\nIf you can provide more code from the `search.website` module, I may be able to give more detailed information about its functionality and usage.",
+  "generated_at": "2025-10-01T18:08:32.507722+00:00"
+}

@@ -1,0 +1,286 @@
+{
+  "file_path": "src/curriculum/core/user.py",
+  "module_docstring": "User and authentication models.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "enum",
+      "names": [
+        "Enum"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "Field"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "UserRole",
+      "docstring": "User roles in the system.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 14
+    },
+    {
+      "name": "UserPermission",
+      "docstring": "System permissions.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 25
+    },
+    {
+      "name": "User",
+      "docstring": "User entity.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "get_permissions",
+          "docstring": "Get all permissions for this user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "List[UserPermission]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 114
+        },
+        {
+          "name": "has_permission",
+          "docstring": "Check if user has a specific permission.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "permission",
+              "annotation": "UserPermission"
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 121
+        },
+        {
+          "name": "has_role",
+          "docstring": "Check if user has a specific role.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole"
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 125
+        },
+        {
+          "name": "add_role",
+          "docstring": "Add a role to the user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 129
+        },
+        {
+          "name": "remove_role",
+          "docstring": "Remove a role from the user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "role",
+              "annotation": "UserRole"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 135
+        },
+        {
+          "name": "record_login",
+          "docstring": "Record a user login.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 141
+        },
+        {
+          "name": "update_activity",
+          "docstring": "Update last activity timestamp.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 147
+        }
+      ],
+      "total_methods": 7,
+      "line_number": 82
+    },
+    {
+      "name": "UserGroup",
+      "docstring": "User group for access control.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "add_member",
+          "docstring": "Add a member to the group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 162
+        },
+        {
+          "name": "remove_member",
+          "docstring": "Remove a member from the group.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 168
+        },
+        {
+          "name": "has_member",
+          "docstring": "Check if user is a member.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 174
+        }
+      ],
+      "total_methods": 3,
+      "line_number": 152
+    }
+  ],
+  "functions": [],
+  "total_classes": 4,
+  "total_functions": 0,
+  "lines_of_code": 176
+}

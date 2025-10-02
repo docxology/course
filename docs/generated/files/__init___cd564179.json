@@ -1,0 +1,32 @@
+{
+  "file_path": "src/curriculum/search/__init__.py",
+  "module_docstring": "Search and visualization services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "curriculum.search.search",
+      "names": [
+        "SearchService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search.visualization",
+      "names": [
+        "VisualizationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search.website",
+      "names": [
+        "WebsiteService"
+      ]
+    }
+  ],
+  "classes": [],
+  "functions": [],
+  "total_classes": 0,
+  "total_functions": 0,
+  "lines_of_code": 12
+}

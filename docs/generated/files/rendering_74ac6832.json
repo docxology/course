@@ -1,0 +1,267 @@
+{
+  "file_path": "src/curriculum/content/rendering.py",
+  "module_docstring": "Content rendering and compilation service.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "Any",
+        "Optional"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "markdown"
+      ]
+    },
+    {
+      "type": "import",
+      "modules": [
+        "hashlib"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content",
+        "ContentFormat"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "RenderingService",
+      "docstring": "Service for rendering content in multiple formats.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize rendering service.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 14
+        },
+        {
+          "name": "render_content",
+          "docstring": "Render content to target format.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "target_format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 20
+        },
+        {
+          "name": "_render_markdown",
+          "docstring": "Render Markdown content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "target_format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 31
+        },
+        {
+          "name": "_render_html",
+          "docstring": "Render HTML content.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "target_format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 55
+        },
+        {
+          "name": "_render_latex",
+          "docstring": "Render LaTeX content (placeholder for actual LaTeX processing).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "target_format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 66
+        },
+        {
+          "name": "generate_scorm_package",
+          "docstring": "Generate SCORM package metadata (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "course_id",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 79
+        },
+        {
+          "name": "_generate_scorm_manifest",
+          "docstring": "Generate SCORM imsmanifest.xml (simplified).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            },
+            {
+              "name": "course_id",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 89
+        },
+        {
+          "name": "validate_content",
+          "docstring": "Validate content structure and quality.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 109
+        },
+        {
+          "name": "calculate_content_hash",
+          "docstring": "Calculate hash of content for change detection.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            }
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 139
+        },
+        {
+          "name": "optimize_content",
+          "docstring": "Optimize content for delivery (placeholder).",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content",
+              "annotation": "Content"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 144
+        }
+      ],
+      "total_methods": 10,
+      "line_number": 11
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 152
+}

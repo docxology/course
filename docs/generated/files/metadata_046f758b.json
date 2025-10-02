@@ -1,0 +1,245 @@
+{
+  "file_path": "src/curriculum/core/metadata.py",
+  "module_docstring": "Metadata models following Dublin Core and LRMI standards.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "datetime",
+      "names": [
+        "datetime"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "enum",
+      "names": [
+        "Enum"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "List",
+        "Optional",
+        "Dict",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "pydantic",
+      "names": [
+        "Field",
+        "HttpUrl"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.base",
+      "names": [
+        "BaseEntity"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "ResourceType",
+      "docstring": "Dublin Core resource types.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 13
+    },
+    {
+      "name": "EducationalUse",
+      "docstring": "LRMI educational use types.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 27
+    },
+    {
+      "name": "InteractivityType",
+      "docstring": "LRMI interactivity types.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 39
+    },
+    {
+      "name": "LearningResourceType",
+      "docstring": "LRMI learning resource types.",
+      "bases": [
+        "str",
+        "Enum"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 47
+    },
+    {
+      "name": "DublinCore",
+      "docstring": "Dublin Core 15-element metadata schema.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 59
+    },
+    {
+      "name": "LRMIMetadata",
+      "docstring": "Learning Resource Metadata Initiative (LRMI) extensions.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 80
+    },
+    {
+      "name": "Metadata",
+      "docstring": "Comprehensive metadata combining Dublin Core and LRMI.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "create_minimal",
+          "docstring": "Create metadata with minimal required fields.",
+          "parameters": [
+            {
+              "name": "cls",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "cls",
+              "annotation": null,
+              "default": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID",
+              "default": null
+            },
+            {
+              "name": "title",
+              "annotation": "str",
+              "default": null
+            }
+          ],
+          "return_type": "Metadata",
+          "decorators": [
+            "classmethod"
+          ],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 138
+        }
+      ],
+      "total_methods": 1,
+      "line_number": 108
+    },
+    {
+      "name": "Taxonomy",
+      "docstring": "Custom taxonomy for content classification.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [],
+      "total_methods": 0,
+      "line_number": 144
+    },
+    {
+      "name": "Tag",
+      "docstring": "Content tag.",
+      "bases": [
+        "BaseEntity"
+      ],
+      "methods": [
+        {
+          "name": "increment_usage",
+          "docstring": "Increment tag usage count.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 165
+        },
+        {
+          "name": "decrement_usage",
+          "docstring": "Decrement tag usage count.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "args": [
+            {
+              "name": "self",
+              "annotation": null,
+              "default": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 169
+        }
+      ],
+      "total_methods": 2,
+      "line_number": 156
+    }
+  ],
+  "functions": [],
+  "total_classes": 9,
+  "total_functions": 0,
+  "lines_of_code": 172
+}

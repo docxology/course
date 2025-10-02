@@ -1,0 +1,598 @@
+{
+  "file_path": "src/curriculum/orchestration.py",
+  "module_docstring": "Thin orchestration layer for coordinating all services.",
+  "imports": [
+    {
+      "type": "from_import",
+      "module": "typing",
+      "names": [
+        "Dict",
+        "List",
+        "Optional",
+        "Any"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "uuid",
+      "names": [
+        "UUID"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.content",
+      "names": [
+        "Content"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.user",
+      "names": [
+        "User"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.core.assessment",
+      "names": [
+        "Assessment",
+        "Submission"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.content",
+      "names": [
+        "ContentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.metadata",
+      "names": [
+        "MetadataService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.rendering",
+      "names": [
+        "RenderingService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.content.version_control",
+      "names": [
+        "VersionControlService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.users.user",
+      "names": [
+        "UserService",
+        "AuthenticationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.ai_features",
+      "names": [
+        "AIFeaturesService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.content_creation",
+      "names": [
+        "ContentCreationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.ai.research",
+      "names": [
+        "ResearchToolsService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.assessment",
+      "names": [
+        "AssessmentService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.analytics",
+      "names": [
+        "AnalyticsService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.progress",
+      "names": [
+        "ProgressService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.learning.study_tools",
+      "names": [
+        "StudyToolsService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.communication.communication",
+      "names": [
+        "CommunicationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.communication.collaboration",
+      "names": [
+        "CollaborationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.accessibility.accessibility",
+      "names": [
+        "AccessibilityService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.mobile.mobile",
+      "names": [
+        "MobileService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.mobile.offline",
+      "names": [
+        "OfflineService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.distribution",
+      "names": [
+        "DistributionService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.export",
+      "names": [
+        "ExportService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.gamification",
+      "names": [
+        "GamificationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.integration.integration",
+      "names": [
+        "IntegrationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search.search",
+      "names": [
+        "SearchService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search.visualization",
+      "names": [
+        "VisualizationService"
+      ]
+    },
+    {
+      "type": "from_import",
+      "module": "curriculum.search.website",
+      "names": [
+        "WebsiteService"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "CurriculumOrchestrator",
+      "docstring": "Thin orchestration layer that coordinates all services.",
+      "bases": [],
+      "methods": [
+        {
+          "name": "__init__",
+          "docstring": "Initialize the orchestrator with all services.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "is_method": true,
+          "is_async": false,
+          "line_number": 46
+        },
+        {
+          "name": "create_course_with_assessments",
+          "docstring": "Create a complete course with lessons and assessments.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "title",
+              "annotation": "str"
+            },
+            {
+              "name": "description",
+              "annotation": "str"
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "lesson_titles",
+              "annotation": "List[str]"
+            },
+            {
+              "name": "quiz_titles",
+              "annotation": "List[str]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 78
+        },
+        {
+          "name": "generate_comprehensive_analytics",
+          "docstring": "Generate comprehensive analytics for a user in a course.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 124
+        },
+        {
+          "name": "create_content_with_ai_assistance",
+          "docstring": "Create content with AI assistance.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "topic",
+              "annotation": "str"
+            },
+            {
+              "name": "content_type",
+              "annotation": "str"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 154
+        },
+        {
+          "name": "setup_mobile_learning_environment",
+          "docstring": "Set up mobile learning environment for user.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 192
+        },
+        {
+          "name": "create_accessible_learning_experience",
+          "docstring": "Create accessible learning experience.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "content_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_accessibility_profile",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 229
+        },
+        {
+          "name": "award_gamification_points",
+          "docstring": "Award points and check for achievements.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "action_type",
+              "annotation": "str"
+            },
+            {
+              "name": "metadata",
+              "annotation": "Dict[str, Any]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 262
+        },
+        {
+          "name": "create_research_workflow",
+          "docstring": "Create a complete research workflow.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "research_topic",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 295
+        },
+        {
+          "name": "create_collaborative_learning_environment",
+          "docstring": "Create a collaborative learning environment.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "student_ids",
+              "annotation": "List[UUID]"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 328
+        },
+        {
+          "name": "export_complete_course_package",
+          "docstring": "Export complete course package.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "export_format",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 373
+        },
+        {
+          "name": "create_course_website",
+          "docstring": "Create a complete course website.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_title",
+              "annotation": "str"
+            },
+            {
+              "name": "course_description",
+              "annotation": "str"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 407
+        },
+        {
+          "name": "setup_search_and_discovery",
+          "docstring": "Set up search and content discovery.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 461
+        },
+        {
+          "name": "setup_lms_integration",
+          "docstring": "Set up LMS integration.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "lms_type",
+              "annotation": "str"
+            },
+            {
+              "name": "credentials",
+              "annotation": "Dict[str, str]"
+            },
+            {
+              "name": "course_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 489
+        },
+        {
+          "name": "system_health_check",
+          "docstring": "Perform comprehensive system health check.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 522
+        },
+        {
+          "name": "create_complete_learning_experience",
+          "docstring": "Create a complete learning experience from scratch.",
+          "parameters": [
+            {
+              "name": "self",
+              "annotation": null
+            },
+            {
+              "name": "user_id",
+              "annotation": "UUID"
+            },
+            {
+              "name": "course_title",
+              "annotation": "str"
+            },
+            {
+              "name": "instructor_id",
+              "annotation": "UUID"
+            }
+          ],
+          "return_type": "Dict[str, Any]",
+          "decorators": [],
+          "is_method": true,
+          "is_async": true,
+          "line_number": 555
+        }
+      ],
+      "total_methods": 15,
+      "line_number": 43
+    }
+  ],
+  "functions": [],
+  "total_classes": 1,
+  "total_functions": 0,
+  "lines_of_code": 603
+}
