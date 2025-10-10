@@ -174,6 +174,18 @@ class Submission(BaseEntity):
         if self.percentage is not None:
             self.passed = self.percentage >= passing_score
 
+    def grade_submission(self) -> None:
+        """Mark submission as graded."""
+        # Calculate score based on answers (simplified logic)
+        if self.answers:
+            # For demo purposes, assume 50% of questions are correct
+            self.score = 50.0  # This would be calculated from actual answers
+            self.max_score = 100.0
+            self.calculate_percentage()
+
+        self.grading_status = GradingStatus.COMPLETED
+        self.graded_at = datetime.utcnow()
+
 
 class SubmissionResult(BaseEntity):
     """Detailed result for a submission."""

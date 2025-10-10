@@ -15,6 +15,7 @@ class ActivityVerb(str, Enum):
 
     VIEWED = "viewed"
     COMPLETED = "completed"
+    ASSESSED = "assessed"
     STARTED = "started"
     ATTEMPTED = "attempted"
     PASSED = "passed"
@@ -28,14 +29,9 @@ class ActivityVerb(str, Enum):
 class EventType(str, Enum):
     """Learning event types."""
 
-    CONTENT_VIEW = "content_view"
-    ASSESSMENT_SUBMIT = "assessment_submit"
-    LESSON_COMPLETE = "lesson_complete"
-    COURSE_ENROLL = "course_enroll"
-    SESSION_START = "session_start"
-    SESSION_END = "session_end"
-    RESOURCE_ACCESS = "resource_access"
-    DISCUSSION_POST = "discussion_post"
+    CONTENT = "content"
+    ASSESSMENT = "assessment"
+    USER = "user"
 
 
 class DeviceType(str, Enum):

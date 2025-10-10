@@ -100,7 +100,7 @@ class Content(BaseEntity):
             ContentStatus.DRAFT: [ContentStatus.INTERNAL_REVIEW],
             ContentStatus.INTERNAL_REVIEW: [ContentStatus.DRAFT, ContentStatus.EXTERNAL_REVIEW],
             ContentStatus.EXTERNAL_REVIEW: [ContentStatus.INTERNAL_REVIEW, ContentStatus.APPROVED],
-            ContentStatus.APPROVED: [ContentStatus.PUBLISHED, ContentStatus.DRAFT],
+            ContentStatus.APPROVED: [ContentStatus.PUBLISHED],
             ContentStatus.PUBLISHED: [ContentStatus.ARCHIVED],
             ContentStatus.ARCHIVED: [ContentStatus.DRAFT],
         }

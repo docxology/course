@@ -38,6 +38,10 @@ class SearchService:
         if self._client:
             await self._client.close()
 
+    def is_connected(self) -> bool:
+        """Check if connected to Elasticsearch."""
+        return self._connected
+
     async def index_content(self, content: Content) -> bool:
         """Index content for search."""
         if not self._connected or not self._client:

@@ -41,7 +41,7 @@ class MobileService:
         features: List[str] = None,
     ) -> Dict[str, Any]:
         """Create mobile configuration for content."""
-        config_id = UUID(f"mobile_{content_id}")
+        config_id = content_id  # Use the content_id directly
 
         config = {
             "id": str(config_id),

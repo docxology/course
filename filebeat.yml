@@ -1,0 +1,53 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/curriculum/*.log
+  json.keys_under_root: true
+  json.add_error_key: true
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/*.log
+  fields:
+    service: nginx
+
+# Output to Elasticsearch
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "curriculum-logs-%{+yyyy.MM.dd}"
+
+# Output to Logstash (alternative)
+# output.logstash:
+#   hosts: ["logstash:5044"]
+
+# Console output for debugging (remove in production)
+# output.console:
+#   pretty: true
+
+# Processors
+processors:
+- add_host_metadata:
+    when.not.contains.tags: forwarded
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+- add_kubernetes_metadata: ~
+
+# Logging
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# Monitoring
+http.enabled: true
+http.host: 0.0.0.0
+http.port: 5066
+
+# Security
+# seccomp.enabled: true
+
