@@ -63,7 +63,7 @@ class VisualizationService:
             "type": visualization_type,
             "data": data,
             "config": config or {},
-            "created_at": "2024-01-01T00:00:00Z",  # Would use datetime.utcnow()
+            "created_at": "2024-01-01T00:00:00Z",  # Would use datetime.now(timezone.utc)
             "is_interactive": True,
             "accessibility_features": {
                 "alt_text": title,

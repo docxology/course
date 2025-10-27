@@ -101,7 +101,7 @@ class TeacherService:
             "title": title,
             "content": content,
             "priority": priority,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "expires_at": None,
         }
 
@@ -186,7 +186,7 @@ class TeacherService:
             "recipient_id": str(student_id),
             "subject": subject,
             "content": message,
-            "sent_at": datetime.utcnow().isoformat(),
+            "sent_at": datetime.now(timezone.utc).isoformat(),
             "is_read": False,
             "message_type": "teacher_to_student",
         }
@@ -210,7 +210,7 @@ class TeacherService:
             "title": title,
             "criteria": criteria,
             "total_points": sum(c.get("points", 0) for c in criteria),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return rubric
@@ -235,7 +235,7 @@ class TeacherService:
                 "Progress Summary",
                 "Individual Reports",
             ],
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "download_url": f"/api/teachers/reports/{report_id}/download",
         }
 
@@ -274,7 +274,7 @@ class TeacherService:
             "teacher_id": str(teacher_id),
             "action": action,
             "reason": reason,
-            "moderated_at": datetime.utcnow().isoformat(),
+            "moderated_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return moderation
@@ -295,7 +295,7 @@ class TeacherService:
             "events": events,
             "academic_year": "2024",
             "semester": "Spring",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return calendar
@@ -350,7 +350,7 @@ class TeacherService:
                 "discussion_posts",
             ] if export_type == "complete" else ["course_content", "grades"],
             "estimated_size": "250MB",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "download_url": f"/api/teachers/exports/{export_id}/download",
         }
 

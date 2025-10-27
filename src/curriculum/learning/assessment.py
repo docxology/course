@@ -185,7 +185,7 @@ class AssessmentService:
         submission.check_passed(assessment.passing_score)
         submission.grading_status = GradingStatus.COMPLETED
         submission.graded_by = grader_id
-        submission.graded_at = datetime.utcnow()
+        submission.graded_at = datetime.now(timezone.utc)
 
         return submission
 

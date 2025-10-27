@@ -363,12 +363,12 @@ class AuthenticationService:
     def create_access_token(self, user_id: UUID, expires_delta: Optional[timedelta] = None) -> str:
         """Create simple access token (placeholder)."""
         # In production, use proper JWT
-        return f"access_token_{user_id}_{datetime.utcnow().isoformat()}"
+        return f"access_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
 
     def create_refresh_token(self, user_id: UUID) -> str:
         """Create simple refresh token (placeholder)."""
         # In production, use proper JWT
-        return f"refresh_token_{user_id}_{datetime.utcnow().isoformat()}"
+        return f"refresh_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
 
     def verify_token(self, token: str) -> Optional[UUID]:
         """Verify token and return user ID (placeholder)."""

@@ -140,13 +140,13 @@ class User(BaseEntity):
 
     def record_login(self) -> None:
         """Record a user login."""
-        self.last_login_at = datetime.utcnow()
-        self.last_activity_at = datetime.utcnow()
+        self.last_login_at = datetime.now(timezone.utc)
+        self.last_activity_at = datetime.now(timezone.utc)
         self.login_count += 1
 
     def update_activity(self) -> None:
         """Update last activity timestamp."""
-        self.last_activity_at = datetime.utcnow()
+        self.last_activity_at = datetime.now(timezone.utc)
 
 
 class UserGroup(BaseEntity):

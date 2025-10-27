@@ -109,7 +109,7 @@ class ContentGeneratorService:
             "metadata": {
                 "word_count": len(generated_content.split()),
                 "estimated_time": template["estimated_time"],
-                "generated_at": datetime.utcnow().isoformat(),
+                "generated_at": datetime.now(timezone.utc).isoformat(),
                 "quality_score": 0.85,  # Mock quality score
             },
             "options_used": options,
@@ -340,7 +340,7 @@ class ContentGeneratorService:
             "improvements_applied": improvements,
             "quality_score_before": 0.75,
             "quality_score_after": 0.88,
-            "improved_at": datetime.utcnow().isoformat(),
+            "improved_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def generate_content_variations(
@@ -384,7 +384,7 @@ class ContentGeneratorService:
                 "estimated_total_time": len(topics) * 45,  # minutes
                 "target_audience": "intermediate_learners",
             },
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return series
@@ -402,7 +402,7 @@ class ContentGeneratorService:
             "title": f"Series Part {len(previous_content) + 1}",
             "content": f"Continuation of the series based on {len(previous_content)} previous parts.",
             "builds_on": [prev["title"] for prev in previous_content],
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def validate_generated_content(

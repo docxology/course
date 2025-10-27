@@ -25,7 +25,7 @@ def serve(host: str, port: int, reload: bool) -> None:
     click.echo(f"Server: http://{host}:{port}")
     
     uvicorn.run(
-        "curriculum.api.main:app",
+        "curriculum.routes.main:app",
         host=host,
         port=port,
         reload=reload,

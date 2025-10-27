@@ -194,7 +194,7 @@ class AnalyticsService:
                 total_score = analytics.average_score * (analytics.assessments_attempted - 1)
                 analytics.average_score = (total_score + score) / analytics.assessments_attempted
 
-        analytics.last_active_at = datetime.utcnow()
+        analytics.last_active_at = datetime.now(timezone.utc)
         analytics.update_timestamp()
 
     def generate_user_report(self, user_id: UUID) -> Dict[str, Any]:

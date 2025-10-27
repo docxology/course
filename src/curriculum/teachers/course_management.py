@@ -42,7 +42,7 @@ class CourseManagementService:
                 "Apply knowledge in practice",
                 "Demonstrate mastery through assessment",
             ],
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         # Initialize course content and assessment tracking
@@ -76,7 +76,7 @@ class CourseManagementService:
             "difficulty": content_data.get("difficulty", "intermediate"),
             "tags": content_data.get("tags", []),
             "is_published": False,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         self._course_content[course_id].append(content_id)
@@ -106,7 +106,7 @@ class CourseManagementService:
             "attempts_allowed": assessment_data.get("attempts_allowed", 1),
             "questions": assessment_data.get("questions", []),
             "is_published": False,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         self._course_assessments[course_id].append(assessment_id)
@@ -123,7 +123,7 @@ class CourseManagementService:
             self._course_settings[course_id] = {}
 
         self._course_settings[course_id].update(settings)
-        self._course_settings[course_id]["updated_at"] = datetime.utcnow().isoformat()
+        self._course_settings[course_id]["updated_at"] = datetime.now(timezone.utc).isoformat()
         self._course_settings[course_id]["updated_by"] = str(teacher_id)
 
         return self._course_settings[course_id]
@@ -183,7 +183,7 @@ class CourseManagementService:
         # Mock publish operation
         return {
             "content_id": content_id,
-            "published_at": datetime.utcnow().isoformat(),
+            "published_at": datetime.now(timezone.utc).isoformat(),
             "status": "published",
             "visibility": "course_students",
         }
@@ -197,7 +197,7 @@ class CourseManagementService:
         """Unpublish course content."""
         return {
             "content_id": content_id,
-            "unpublished_at": datetime.utcnow().isoformat(),
+            "unpublished_at": datetime.now(timezone.utc).isoformat(),
             "status": "draft",
         }
 
@@ -218,7 +218,7 @@ class CourseManagementService:
             "title": new_title,
             "description": new_description or "Duplicated course",
             "source_course_id": str(source_course_id),
-            "duplicated_at": datetime.utcnow().isoformat(),
+            "duplicated_at": datetime.now(timezone.utc).isoformat(),
             "content_count": 15,  # Mock count
             "assessment_count": 8,  # Mock count
         }
@@ -235,7 +235,7 @@ class CourseManagementService:
         archive_data = {
             "course_id": str(course_id),
             "teacher_id": str(teacher_id),
-            "archived_at": datetime.utcnow().isoformat(),
+            "archived_at": datetime.now(timezone.utc).isoformat(),
             "reason": reason,
             "student_count": 45,
             "completion_rate": 78.5,
@@ -303,7 +303,7 @@ class CourseManagementService:
                 "D": "60-69",
                 "F": "0-59",
             }),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return syllabus
@@ -324,7 +324,7 @@ class CourseManagementService:
             "schedule": schedule,
             "academic_calendar": "Spring 2024",
             "time_zone": "UTC",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return course_schedule
@@ -353,7 +353,7 @@ class CourseManagementService:
             "estimated_duration": sum(item.get("duration", 30) for item in content_items),
             "difficulty_level": "intermediate",
             "is_sequential": True,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return module
@@ -373,7 +373,7 @@ class CourseManagementService:
                 "course_id": str(course_id),
                 "teacher_id": str(teacher_id),
                 "report_type": "comprehensive",
-                "generated_at": datetime.utcnow().isoformat(),
+                "generated_at": datetime.now(timezone.utc).isoformat(),
                 "sections": {
                     "course_overview": {
                         "title": "Course Overview",
@@ -439,5 +439,5 @@ class CourseManagementService:
                     "action_required": False,
                 },
             ],
-            "updated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }

@@ -90,21 +90,21 @@ class TestContentCreationService:
 
     def test_create_content_from_template(self, content_creation_service, sample_user):
         """Test content creation from template."""
+        title = "Machine Learning Basics"
         template_id = "lesson_template"
         customizations = {
-            "title": "Machine Learning Basics",
             "learning_objectives": ["Understand ML concepts", "Apply ML algorithms"],
             "main_content": "Detailed ML content"
         }
 
         result = content_creation_service.create_content_from_template(
-            template_id, sample_user.id, customizations
+            template_id, title, sample_user.id, customizations
         )
 
         assert result is not None
-        assert "content" in result
-        assert "template_id" in result
-
+        assert hasattr(result, "title")
+        assert hasattr(result, "content_body")
+        assert result.title == "Machine Learning Basics"
     def test_generate_quiz_from_content(self, content_creation_service, sample_content):
         """Test quiz generation from content."""
         question_count = 3
@@ -317,7 +317,7 @@ class TestAIIntegration:
         """Test complete AI content creation workflow."""
         # Create content from template
         lesson = content_creation_service.create_content_from_template(
-            "lesson_template", sample_user.id, {"title": "Machine Learning Basics"}
+            "lesson_template", "Machine Learning Basics", sample_user.id, {}
         )
 
         assert lesson is not None

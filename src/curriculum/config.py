@@ -2,7 +2,7 @@
 
 import os
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -76,6 +76,27 @@ class Settings(BaseSettings):
     enable_versioning: bool = Field(default=True, alias="ENABLE_VERSIONING")
     enable_analytics: bool = Field(default=True, alias="ENABLE_ANALYTICS")
     enable_ai_features: bool = Field(default=False, alias="ENABLE_AI_FEATURES")
+    
+    # Logging
+    enable_file_logging: bool = Field(default=True, alias="ENABLE_FILE_LOGGING")
+    enable_json_logging: bool = Field(default=False, alias="ENABLE_JSON_LOGGING")
+    log_file: Optional[str] = Field(default=None, alias="LOG_FILE")
+    
+    # Rate Limiting
+    rate_limit_enabled: bool = Field(default=True, alias="RATE_LIMIT_ENABLED")
+    rate_limit_per_minute: int = Field(default=60, alias="RATE_LIMIT_PER_MINUTE")
+    
+    # Security
+    allowed_hosts: List[str] = Field(
+        default=["*"], 
+        alias="ALLOWED_HOSTS"
+    )
+    require_https: bool = Field(default=False, alias="REQUIRE_HTTPS")
+    
+    # Monitoring
+    enable_health_check: bool = Field(default=True, alias="ENABLE_HEALTH_CHECK")
+    health_check_interval: int = Field(default=30, alias="HEALTH_CHECK_INTERVAL")
+    sentry_dsn: Optional[str] = Field(default=None, alias="SENTRY_DSN")
 
     model_config = SettingsConfigDict(
         env_file=".env",

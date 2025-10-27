@@ -109,7 +109,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "curriculum.api.main:app",
+        "curriculum.routes.main:app",
         host=settings.host,
         port=settings.port,
         reload=settings.debug,

@@ -73,7 +73,7 @@ class Assessment(BaseEntity):
 
     def is_available_now(self) -> bool:
         """Check if assessment is currently available."""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if not self.is_available:
             return False
         if self.available_from and now < self.available_from:
@@ -140,7 +140,7 @@ class Submission(BaseEntity):
 
     # Submission data
     answers: Dict[str, Any] = Field(default_factory=dict)  # question_id -> answer
-    started_at: datetime = Field(default_factory=datetime.utcnow)
+    started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     submitted_at: Optional[datetime] = None
 
     # Grading data
@@ -162,7 +162,7 @@ class Submission(BaseEntity):
 
     def submit(self) -> None:
         """Mark submission as submitted."""
-        self.submitted_at = datetime.utcnow()
+        self.submitted_at = datetime.now(timezone.utc)
 
     def calculate_percentage(self) -> None:
         """Calculate percentage score."""
@@ -184,7 +184,7 @@ class Submission(BaseEntity):
             self.calculate_percentage()
 
         self.grading_status = GradingStatus.COMPLETED
-        self.graded_at = datetime.utcnow()
+        self.graded_at = datetime.now(timezone.utc)
 
 
 class SubmissionResult(BaseEntity):

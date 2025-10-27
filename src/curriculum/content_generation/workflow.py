@@ -36,8 +36,8 @@ class ContentWorkflowService:
             "steps": steps,
             "assigned_users": [str(uid) for uid in assigned_users],
             "status": "active",
-            "created_at": datetime.utcnow().isoformat(),
-            "deadline": (datetime.utcnow() + timedelta(days=14)).isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "deadline": (datetime.now(timezone.utc) + timedelta(days=14)).isoformat(),
             "progress": 0,  # percentage
             "current_step": 0,
         }
@@ -76,7 +76,7 @@ class ContentWorkflowService:
             return {"error": "Invalid step index"}
 
         steps[step_index]["assigned_to"] = str(assigned_user_id)
-        steps[step_index]["assigned_at"] = datetime.utcnow().isoformat()
+        steps[step_index]["assigned_at"] = datetime.now(timezone.utc).isoformat()
         steps[step_index]["status"] = "assigned"
 
         return steps[step_index]
@@ -100,7 +100,7 @@ class ContentWorkflowService:
         step = steps[step_index]
         step["status"] = "completed"
         step["completed_by"] = str(completed_by)
-        step["completed_at"] = datetime.utcnow().isoformat()
+        step["completed_at"] = datetime.now(timezone.utc).isoformat()
         step["notes"] = notes
 
         # Update workflow progress
@@ -129,7 +129,7 @@ class ContentWorkflowService:
             "submitted_by": str(submitted_by),
             "review_type": review_type,
             "status": "pending",
-            "submitted_at": datetime.utcnow().isoformat(),
+            "submitted_at": datetime.now(timezone.utc).isoformat(),
             "reviewers": workflow["assigned_users"],
             "reviews": [],
         }
@@ -166,7 +166,7 @@ class ContentWorkflowService:
             "decision": decision,
             "feedback": feedback,
             "score": score,
-            "reviewed_at": datetime.utcnow().isoformat(),
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
         }
 
         review["reviews"].append(review_entry)
@@ -222,7 +222,7 @@ class ContentWorkflowService:
             "estimated_duration": sum(step.get("estimated_duration", 60) for step in default_steps),
             "required_roles": ["content_creator", "reviewer", "editor"],
             "is_active": True,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return template
@@ -297,7 +297,7 @@ class ContentWorkflowService:
                 duration = 0
                 if step.get("started_at"):
                     start_time = datetime.fromisoformat(step["started_at"])
-                    duration = (datetime.utcnow() - start_time).total_seconds() / 3600  # hours
+                    duration = (datetime.now(timezone.utc) - start_time).total_seconds() / 3600  # hours
 
                 if duration > 24:  # More than 24 hours
                     bottlenecks.append(f"Step '{step.get('title', 'Unknown')}' has been in progress for {duration:.1f} hours")
@@ -346,7 +346,7 @@ class ContentWorkflowService:
                 "metrics": self.track_workflow_metrics(workflow_id),
                 "participants": workflow.get("assigned_users", []),
                 "reviews": self._content_reviews.get(workflow_id, []),
-                "generated_at": datetime.utcnow().isoformat(),
+                "generated_at": datetime.now(timezone.utc).isoformat(),
             }
 
         return report
@@ -390,7 +390,7 @@ class ContentWorkflowService:
             "status": "pending",
             "approvals": [],
             "rejections": [],
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return approval_workflow
@@ -417,7 +417,7 @@ class ContentWorkflowService:
             "approver_id": str(approver_id),
             "decision": decision,
             "comments": comments,
-            "submitted_at": datetime.utcnow().isoformat(),
+            "submitted_at": datetime.now(timezone.utc).isoformat(),
         }
 
         if decision == "approve":
@@ -468,8 +468,8 @@ class ContentWorkflowService:
             "revision_notes": revision_notes,
             "priority": priority,
             "status": "pending",
-            "created_at": datetime.utcnow().isoformat(),
-            "deadline": (datetime.utcnow() + timedelta(days=7)).isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "deadline": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat(),
         }
 
         return revision

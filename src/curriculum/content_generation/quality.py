@@ -76,7 +76,7 @@ class ContentQualityService:
             "content_id": str(content_id),
             "overall_score": overall_score,
             "quality_level": self._get_quality_level(overall_score),
-            "assessed_at": datetime.utcnow().isoformat(),
+            "assessed_at": datetime.now(timezone.utc).isoformat(),
             "breakdown": {
                 "content_length": length_score,
                 "structure": structure_score,
@@ -468,7 +468,7 @@ class ContentQualityService:
             "earned_points": earned_points,
             "score": score,
             "quality_level": self._get_quality_level(score),
-            "validated_at": datetime.utcnow().isoformat(),
+            "validated_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def get_quality_trends(self, user_id: UUID) -> Dict[str, Any]:
@@ -543,7 +543,7 @@ class ContentQualityService:
         report = {
             "content_id": str(content_id),
             "report_type": "quality_assessment",
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "summary": {
                 "overall_score": assessment["overall_score"],
                 "quality_level": assessment["quality_level"],
@@ -583,7 +583,7 @@ class ContentQualityService:
                 "top_performer": str(content_ids[0]),
                 "areas_for_improvement": ["Readability", "Engagement"],
             },
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def get_quality_analytics(self) -> Dict[str, Any]:

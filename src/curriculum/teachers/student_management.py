@@ -33,7 +33,7 @@ class StudentManagementService:
             "student_id": str(student_id),
             "course_id": str(course_id),
             "teacher_id": str(teacher_id),
-            "enrolled_at": datetime.utcnow().isoformat(),
+            "enrolled_at": datetime.now(timezone.utc).isoformat(),
             "enrollment_status": "active",
             "access_level": "full",
         }
@@ -56,7 +56,7 @@ class StudentManagementService:
             "student_id": str(student_id),
             "course_id": str(course_id),
             "teacher_id": str(teacher_id),
-            "unenrolled_at": datetime.utcnow().isoformat(),
+            "unenrolled_at": datetime.now(timezone.utc).isoformat(),
             "reason": reason,
         }
 
@@ -102,7 +102,7 @@ class StudentManagementService:
         self._student_grades[student_id][course_id][assessment_id] = {
             "grade": grade,
             "feedback": feedback,
-            "graded_at": datetime.utcnow().isoformat(),
+            "graded_at": datetime.now(timezone.utc).isoformat(),
             "graded_by": str(teacher_id),
         }
 
@@ -146,7 +146,7 @@ class StudentManagementService:
             "student_id": str(student_id),
             "note": note,
             "note_type": note_type,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "is_private": True,
         }
 
@@ -180,7 +180,7 @@ class StudentManagementService:
             "student_id": str(student_id),
             "reason": reason,
             "priority": priority,
-            "flagged_at": datetime.utcnow().isoformat(),
+            "flagged_at": datetime.now(timezone.utc).isoformat(),
             "status": "active",
             "follow_up_date": None,
         }
@@ -207,7 +207,7 @@ class StudentManagementService:
             "group_type": group_type,
             "max_members": 8,
             "is_active": True,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         return group
@@ -226,7 +226,7 @@ class StudentManagementService:
             "course_id": str(course_id),
             "student_id": str(student_id),
             "mentor_student_id": str(mentor_student_id),
-            "assigned_at": datetime.utcnow().isoformat(),
+            "assigned_at": datetime.now(timezone.utc).isoformat(),
             "is_active": True,
             "meeting_frequency": "weekly",
         }
@@ -298,7 +298,7 @@ class StudentManagementService:
             "recipient_student_ids": [str(sid) for sid in student_ids],
             "subject": subject,
             "message": message,
-            "sent_at": datetime.utcnow().isoformat(),
+            "sent_at": datetime.now(timezone.utc).isoformat(),
             "delivery_status": "sent",
         }
 
@@ -320,8 +320,8 @@ class StudentManagementService:
             "student_id": str(student_id),
             "course_id": str(course_id),
             "interventions": interventions,
-            "start_date": datetime.utcnow().isoformat(),
-            "target_completion_date": (datetime.utcnow() + timedelta(weeks=4)).isoformat(),
+            "start_date": datetime.now(timezone.utc).isoformat(),
+            "target_completion_date": (datetime.now(timezone.utc) + timedelta(weeks=4)).isoformat(),
             "progress": 0,  # percentage
             "is_active": True,
         }
@@ -370,7 +370,7 @@ class StudentManagementService:
             "student_id": str(student_id),
             "course_id": str(course_id),
             "report_type": report_type,
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
         }
 
         if report_type == "comprehensive":

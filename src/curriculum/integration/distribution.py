@@ -35,7 +35,7 @@ class DistributionService:
             "status": "distributing",
             "cdn_urls": {},
             "edge_locations": regions or ["global"],
-            "distributed_at": datetime.utcnow(),
+            "distributed_at": datetime.now(timezone.utc),
             "cache_headers": {
                 "max-age": 3600,
                 "s-maxage": 86400,
@@ -75,7 +75,7 @@ class DistributionService:
             results[url] = {
                 "status": "warmed",
                 "response_time": 150,  # ms
-                "cached_at": datetime.utcnow(),
+                "cached_at": datetime.now(timezone.utc),
             }
 
         return results

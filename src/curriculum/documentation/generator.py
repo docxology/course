@@ -1125,7 +1125,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                             return self._generate_mock_llm_response(prompt)
 
                         # Cache the response
-                        self._cache_response(cache_key, {"response": llm_response, "model": model}, file_path)
+                        self._cache_response(cache_key, {"response": llm_response, "model": model})
                         logger.debug(f"Successfully called Ollama API with model {model}")
                         return llm_response
 
@@ -1163,7 +1163,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                         return self._generate_mock_llm_response(prompt)
 
                     # Cache the response
-                    self._cache_response(cache_key, {"response": llm_response, "model": model}, file_path)
+                    self._cache_response(cache_key, {"response": llm_response, "model": model})
                     logger.debug(f"Successfully called Ollama subprocess with model {model}")
                     return llm_response
                 else:
