@@ -1,43 +1,35 @@
 """Thin orchestration layer for coordinating all services."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from curriculum.core.content import Content
-from curriculum.core.user import User
-from curriculum.core.assessment import Assessment, Submission
-
+from curriculum.accessibility.accessibility import AccessibilityService
+from curriculum.ai.ai_features import AIFeaturesService
+from curriculum.ai.content_creation import ContentCreationService
+from curriculum.ai.research import ResearchToolsService
+from curriculum.communication.collaboration import CollaborationService
+from curriculum.communication.communication import CommunicationService
 from curriculum.content.content import ContentService
 from curriculum.content.metadata import MetadataService
 from curriculum.content.rendering import RenderingService
 from curriculum.content.version_control import VersionControlService
-
-from curriculum.users.user import UserService, AuthenticationService
-from curriculum.ai.ai_features import AIFeaturesService
-from curriculum.ai.content_creation import ContentCreationService
-from curriculum.ai.research import ResearchToolsService
-
-from curriculum.learning.assessment import AssessmentService
-from curriculum.learning.analytics import AnalyticsService
-from curriculum.learning.progress import ProgressService
-from curriculum.learning.study_tools import StudyToolsService
-
-from curriculum.communication.communication import CommunicationService
-from curriculum.communication.collaboration import CollaborationService
-
-from curriculum.accessibility.accessibility import AccessibilityService
-
-from curriculum.mobile.mobile import MobileService
-from curriculum.mobile.offline import OfflineService
-
+from curriculum.core.assessment import Assessment, Submission
+from curriculum.core.content import Content
+from curriculum.core.user import User
 from curriculum.integration.distribution import DistributionService
 from curriculum.integration.export import ExportService
 from curriculum.integration.gamification import GamificationService
 from curriculum.integration.integration import IntegrationService
-
+from curriculum.learning.analytics import AnalyticsService
+from curriculum.learning.assessment import AssessmentService
+from curriculum.learning.progress import ProgressService
+from curriculum.learning.study_tools import StudyToolsService
+from curriculum.mobile.mobile import MobileService
+from curriculum.mobile.offline import OfflineService
 from curriculum.search.search import SearchService
 from curriculum.search.visualization import VisualizationService
 from curriculum.search.website import WebsiteService
+from curriculum.users.user import AuthenticationService, UserService
 
 
 class CurriculumOrchestrator:
@@ -138,9 +130,7 @@ class CurriculumOrchestrator:
         insights = self.progress.generate_progress_insights(user_id, course_id)
 
         # Get recommendations
-        recommendations = self.ai_features.generate_content_recommendations(
-            user_id, course_id
-        )
+        recommendations = self.ai_features.generate_content_recommendations(user_id, course_id)
 
         return {
             "user_analytics": user_analytics,
@@ -321,7 +311,7 @@ class CurriculumOrchestrator:
         return {
             "research_note": research_note,
             "extracted_citations": citations,
-            "bibliography": bibliography if 'bibliography' in locals() else None,
+            "bibliography": bibliography if "bibliography" in locals() else None,
         }
 
     # Collaboration Orchestration

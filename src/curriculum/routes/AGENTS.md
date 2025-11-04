@@ -14,7 +14,9 @@ routes/
 ├── assessments.py     # Assessment and grading endpoints
 ├── analytics.py       # Analytics and reporting endpoints
 ├── dependencies.py    # Shared authentication and validation
-└── README.md          # Module documentation
+├── __init__.py        # Module exports
+├── README.md          # Module documentation
+└── AGENTS.md          # This file
 ```
 
 ## API Architecture
@@ -1151,7 +1153,7 @@ Before adding new API endpoints:
 
 ### Internal Documentation
 - `README.md`: Module overview and API structure
-- `tests/test_routes.py`: API integration tests
+- `tests/integration/test_routes.py`: API integration tests
 
 ### External References
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
@@ -1161,7 +1163,6 @@ Before adding new API endpoints:
 
 ---
 
-**Last Updated**: September 2025
 
 **For Questions**: Review the API documentation at `/docs` when running the server
 

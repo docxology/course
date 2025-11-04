@@ -1,13 +1,14 @@
 """Main FastAPI application for Curriculum Repository System."""
 
+import time
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import time
 
 from curriculum.config import settings
-from curriculum.routes import content, users, assessments, analytics
+from curriculum.routes import analytics, assessments, content, users
 
 
 @asynccontextmanager

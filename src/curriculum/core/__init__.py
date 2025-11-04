@@ -1,11 +1,40 @@
 """Core models and base classes for the Curriculum Repository System."""
 
-from curriculum.core.base import BaseEntity, PagedResponse, TimestampMixin, UUIDMixin, SoftDeleteMixin
-from curriculum.core.content import Content, ContentVersion, ContentStatus, ContentFormat, ContentType
-from curriculum.core.metadata import Metadata, DublinCore, LRMIMetadata, ResourceType
-from curriculum.core.user import User, UserRole, UserPermission
-from curriculum.core.analytics import LearningEvent, AnalyticsReport, ActivityVerb, EventType, DeviceType, ContentAnalytics, UserAnalytics, SessionAnalytics
-from curriculum.core.assessment import Assessment, Question, Submission, SubmissionResult, QuestionType, DifficultyLevel, GradingStatus
+from curriculum.core.analytics import (
+    ActivityVerb,
+    AnalyticsReport,
+    ContentAnalytics,
+    DeviceType,
+    EventType,
+    LearningEvent,
+    SessionAnalytics,
+    UserAnalytics,
+)
+from curriculum.core.assessment import (
+    Assessment,
+    DifficultyLevel,
+    GradingStatus,
+    Question,
+    QuestionType,
+    Submission,
+    SubmissionResult,
+)
+from curriculum.core.base import (
+    BaseEntity,
+    PagedResponse,
+    SoftDeleteMixin,
+    TimestampMixin,
+    UUIDMixin,
+)
+from curriculum.core.content import (
+    Content,
+    ContentFormat,
+    ContentStatus,
+    ContentType,
+    ContentVersion,
+)
+from curriculum.core.metadata import DublinCore, LRMIMetadata, Metadata, ResourceType
+from curriculum.core.user import User, UserPermission, UserRole
 
 __all__ = [
     "BaseEntity",

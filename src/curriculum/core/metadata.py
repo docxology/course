@@ -1,8 +1,8 @@
 """Metadata models following Dublin Core and LRMI standards."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import Field, HttpUrl
@@ -66,7 +66,7 @@ class DublinCore(BaseEntity):
     description: Optional[str] = None
     publisher: Optional[str] = None
     contributor: List[str] = Field(default_factory=list)
-    date: datetime = Field(default_factory=datetime.utcnow)
+    date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     type: ResourceType = ResourceType.TEXT
     format: Optional[str] = None  # MIME type
     identifier: Optional[str] = None  # URI or unique identifier

@@ -23,12 +23,13 @@ import subprocess
 import sys
 import time
 import traceback
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple, Union, Callable
-from uuid import UUID, uuid4
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from uuid import UUID, uuid4
 
 from curriculum.config import settings
+
 
 # Configure logging
 def _configure_logging(output_dir: Path) -> logging.Logger:
@@ -37,11 +38,9 @@ def _configure_logging(output_dir: Path) -> logging.Logger:
 
     # Create formatters
     file_formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+        "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
     )
-    console_formatter = logging.Formatter(
-        '%(levelname)s - %(message)s'
-    )
+    console_formatter = logging.Formatter("%(levelname)s - %(message)s")
 
     # Create handlers
     file_handler = logging.FileHandler(log_file)
@@ -53,12 +52,13 @@ def _configure_logging(output_dir: Path) -> logging.Logger:
     console_handler.setLevel(logging.INFO)
 
     # Configure root logger
-    logger = logging.getLogger('curriculum.documentation')
+    logger = logging.getLogger("curriculum.documentation")
     logger.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
     return logger
+
 
 logger = _configure_logging(Path("./docs/generated"))
 
@@ -101,7 +101,7 @@ class DocumentationGeneratorService:
             "llm_subprocess_calls": 0,
             "processing_time": 0,
             "files_processed": 0,
-            "errors_encountered": 0
+            "errors_encountered": 0,
         }
 
         # Performance settings
@@ -109,33 +109,35 @@ class DocumentationGeneratorService:
         self._llm_timeout_seconds = 60
 
         # Multi-model strategy with validation
-        self._model_config = self._validate_model_config({
-            "package_overview": {
-                "model": "gemma2:2b",  # Fast, good for summaries
-                "temperature": 0.3,
-                "max_tokens": 2000
-            },
-            "module_analysis": {
-                "model": "llama3.1:latest",  # Balanced performance
-                "temperature": 0.2,
-                "max_tokens": 1500
-            },
-            "file_deep_analysis": {
-                "model": "codellama:latest",  # Code-specific analysis
-                "temperature": 0.1,
-                "max_tokens": 3000
-            },
-            "code_review": {
-                "model": "deepseek-coder:latest",  # Advanced code understanding
-                "temperature": 0.15,
-                "max_tokens": 2500
-            },
-            "quick_summary": {
-                "model": "mistral:latest",  # Very fast
-                "temperature": 0.4,
-                "max_tokens": 800
+        self._model_config = self._validate_model_config(
+            {
+                "package_overview": {
+                    "model": "gemma2:2b",  # Fast, good for summaries
+                    "temperature": 0.3,
+                    "max_tokens": 2000,
+                },
+                "module_analysis": {
+                    "model": "llama3.1:latest",  # Balanced performance
+                    "temperature": 0.2,
+                    "max_tokens": 1500,
+                },
+                "file_deep_analysis": {
+                    "model": "codellama:latest",  # Code-specific analysis
+                    "temperature": 0.1,
+                    "max_tokens": 3000,
+                },
+                "code_review": {
+                    "model": "deepseek-coder:latest",  # Advanced code understanding
+                    "temperature": 0.15,
+                    "max_tokens": 2500,
+                },
+                "quick_summary": {
+                    "model": "mistral:latest",  # Very fast
+                    "temperature": 0.4,
+                    "max_tokens": 800,
+                },
             }
-        })
+        )
 
         # Validate configuration
         self._validate_configuration()
@@ -181,7 +183,7 @@ class DocumentationGeneratorService:
             validated_config[analysis_type] = {
                 "model": str(model_settings["model"]),
                 "temperature": temperature,
-                "max_tokens": max_tokens
+                "max_tokens": max_tokens,
             }
 
         return validated_config
@@ -189,8 +191,13 @@ class DocumentationGeneratorService:
     def _validate_configuration(self) -> None:
         """Validate service configuration and warn about potential issues."""
         # Validate concurrent calls
-        if not isinstance(self._max_concurrent_llm_calls, int) or self._max_concurrent_llm_calls < 1:
-            logger.warning(f"Invalid max_concurrent_llm_calls: {self._max_concurrent_llm_calls}, using 5")
+        if (
+            not isinstance(self._max_concurrent_llm_calls, int)
+            or self._max_concurrent_llm_calls < 1
+        ):
+            logger.warning(
+                f"Invalid max_concurrent_llm_calls: {self._max_concurrent_llm_calls}, using 5"
+            )
             self._max_concurrent_llm_calls = 5
 
         # Validate timeout
@@ -212,8 +219,10 @@ class DocumentationGeneratorService:
             logger.error(f"Output directory is not writable: {self.output_dir}, error: {e}")
             raise ValueError(f"Output directory is not writable: {self.output_dir}")
 
-        logger.info(f"Configuration validated: concurrent_calls={self._max_concurrent_llm_calls}, "
-                   f"timeout={self._llm_timeout_seconds}s, cache_ttl={self._cache_ttl_days}d")
+        logger.info(
+            f"Configuration validated: concurrent_calls={self._max_concurrent_llm_calls}, "
+            f"timeout={self._llm_timeout_seconds}s, cache_ttl={self._cache_ttl_days}d"
+        )
 
     def get_performance_metrics(self) -> Dict[str, Any]:
         """Get comprehensive performance metrics."""
@@ -225,26 +234,30 @@ class DocumentationGeneratorService:
                 "api_calls": self._performance_metrics["llm_api_calls"],
                 "subprocess_calls": self._performance_metrics["llm_subprocess_calls"],
                 "cache_hit_rate": (
-                    self._performance_metrics["cache_hits"] /
-                    max(1, self._performance_metrics["total_llm_calls"])
-                ) if self._performance_metrics["total_llm_calls"] > 0 else 0
+                    (
+                        self._performance_metrics["cache_hits"]
+                        / max(1, self._performance_metrics["total_llm_calls"])
+                    )
+                    if self._performance_metrics["total_llm_calls"] > 0
+                    else 0
+                ),
             },
             "processing": {
                 "files_processed": self._performance_metrics["files_processed"],
                 "errors_encountered": self._performance_metrics["errors_encountered"],
-                "processing_time": self._performance_metrics["processing_time"]
+                "processing_time": self._performance_metrics["processing_time"],
             },
             "cache": {
                 "cache_files": len(list(self._cache_dir.glob("*.json"))),
                 "cache_enabled": self._enable_caching,
                 "cache_ttl_days": self._cache_ttl_days,
-                "cache_invalidation_enabled": self._cache_invalidation_enabled
+                "cache_invalidation_enabled": self._cache_invalidation_enabled,
             },
             "configuration": {
                 "max_concurrent_calls": self._max_concurrent_llm_calls,
                 "llm_timeout_seconds": self._llm_timeout_seconds,
-                "output_directory": str(self.output_dir)
-            }
+                "output_directory": str(self.output_dir),
+            },
         }
 
     def _setup_output_directories(self) -> None:
@@ -322,7 +335,7 @@ class DocumentationGeneratorService:
     def _get_file_hash(self, file_path: str) -> Optional[str]:
         """Get SHA256 hash of a file for change detection."""
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 return hashlib.sha256(f.read()).hexdigest()
         except (OSError, IOError):
             return None
@@ -355,7 +368,7 @@ class DocumentationGeneratorService:
         # Find all cache files that might be related to this file
         for cache_file in self._cache_dir.glob("*.json"):
             try:
-                with open(cache_file, 'r') as f:
+                with open(cache_file, "r") as f:
                     cache_data = json.load(f)
 
                 # Check if this cache entry is for our file
@@ -379,7 +392,9 @@ class DocumentationGeneratorService:
 
         return invalidated_count
 
-    def _cache_response(self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None) -> None:
+    def _cache_response(
+        self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None
+    ) -> None:
         """Store LLM response in cache with file path for invalidation."""
         if not self._enable_caching:
             return
@@ -404,11 +419,9 @@ class DocumentationGeneratorService:
 
     def _select_model_for_analysis(self, analysis_type: str) -> Dict[str, Any]:
         """Select the best model and parameters for a given analysis type."""
-        return self._model_config.get(analysis_type, {
-            "model": "llama3.1:latest",
-            "temperature": 0.3,
-            "max_tokens": 1500
-        })
+        return self._model_config.get(
+            analysis_type, {"model": "llama3.1:latest", "temperature": 0.3, "max_tokens": 1500}
+        )
 
     def _prepare_package_context(self) -> str:
         """Prepare context string for package analysis."""
@@ -452,16 +465,17 @@ Please provide:
 Format your response as JSON with keys: architecture, domains, capabilities, improvements"""
 
         llm_response = self._call_ollama_llm(
-            prompt,
-            model=model_config["model"],
-            temperature=model_config["temperature"]
+            prompt, model=model_config["model"], temperature=model_config["temperature"]
         )
 
         if llm_response:
             try:
                 return json.loads(llm_response)
             except json.JSONDecodeError:
-                return {"llm_analysis": llm_response, "generated_at": datetime.now(timezone.utc).isoformat()}
+                return {
+                    "llm_analysis": llm_response,
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                }
         return None
 
     def generate_documentation(
@@ -528,13 +542,10 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     "modules_indexed": len(search_index.get("modules", {})),
                     "files_indexed": len(search_index.get("files", {})),
                     "keywords": len(search_index.get("keywords", [])),
-                    "index_file": str(self.output_dir / "search_index.json")
+                    "index_file": str(self.output_dir / "search_index.json"),
                 }
             else:
-                result["search_index"] = {
-                    "generated": False,
-                    "reason": "LLM analysis disabled"
-                }
+                result["search_index"] = {"generated": False, "reason": "LLM analysis disabled"}
 
             # Add performance metrics
             result["performance_metrics"] = self.get_performance_metrics()
@@ -613,24 +624,26 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 files_with_errors += 1
                 self._performance_metrics["errors_encountered"] += 1
 
-        logger.info(f"Package documentation extraction complete: {files_processed} files processed, {files_with_errors} errors")
+        logger.info(
+            f"Package documentation extraction complete: {files_processed} files processed, {files_with_errors} errors"
+        )
 
     def _extract_file_documentation(self, file_path: Path) -> Dict[str, Any]:
         """Extract documentation from a single Python file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 source = f.read()
-            
+
             tree = ast.parse(source)
-            
+
             # Extract module docstring
             module_docstring = ast.get_docstring(tree)
-            
+
             # Extract classes and functions
             classes = []
             functions = []
             imports = []
-            
+
             # First pass - extract top-level items
             for node in tree.body:
                 if isinstance(node, ast.ClassDef):
@@ -641,7 +654,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     functions.append(func_info)
                 elif isinstance(node, (ast.Import, ast.ImportFrom)):
                     imports.append(self._extract_import_info(node))
-            
+
             return {
                 "file_path": str(file_path),
                 "module_docstring": module_docstring,
@@ -652,7 +665,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 "total_functions": len(functions),
                 "lines_of_code": len(source.splitlines()),
             }
-        
+
         except Exception as e:
             return {
                 "file_path": str(file_path),
@@ -662,20 +675,20 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
     def _extract_class_info(self, node: ast.ClassDef) -> Dict[str, Any]:
         """Extract information from a class definition."""
         docstring = ast.get_docstring(node)
-        
+
         methods = []
         for item in node.body:
             if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 method_info = self._extract_function_info(item, is_method=True)
                 methods.append(method_info)
-                
+
                 # Store method documentation separately
                 method_key = f"{node.name}.{item.name}"
                 self._method_docs[method_key] = method_info
-        
+
         # Extract base classes
         bases = [self._get_name(base) for base in node.bases]
-        
+
         return {
             "name": node.name,
             "docstring": docstring,
@@ -686,16 +699,14 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         }
 
     def _extract_function_info(
-        self, 
-        node: ast.FunctionDef, 
-        is_method: bool = False
+        self, node: ast.FunctionDef, is_method: bool = False
     ) -> Dict[str, Any]:
         """Extract information from a function or method definition."""
         docstring = ast.get_docstring(node)
-        
+
         # Extract parameters
         params = []
-        if hasattr(node, 'args') and hasattr(node.args, 'args'):
+        if hasattr(node, "args") and hasattr(node.args, "args"):
             # Get default values (they correspond to the last N arguments)
             defaults = node.args.defaults
             num_defaults = len(defaults)
@@ -714,13 +725,13 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     "default": default_value,
                 }
                 params.append(param_info)
-        
+
         # Extract return type
         return_type = self._get_annotation(node.returns) if node.returns else None
-        
+
         # Extract decorators
         decorators = [self._get_name(dec) for dec in node.decorator_list]
-        
+
         return {
             "name": node.name,
             "docstring": docstring,
@@ -757,8 +768,8 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         elif isinstance(node, ast.Subscript):
             # Handle subscripted types like Optional[str], List[int], etc.
             base = self._get_name(node.value)
-            if hasattr(node.slice, 'elts'):  # Tuple of types
-                args = ', '.join(self._get_name(elt) for elt in node.slice.elts)
+            if hasattr(node.slice, "elts"):  # Tuple of types
+                args = ", ".join(self._get_name(elt) for elt in node.slice.elts)
             else:  # Single type
                 args = self._get_name(node.slice)
             return f"{base}[{args}]"
@@ -798,33 +809,41 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         # Module summaries
         for module_name in sorted(self._module_docs.keys()):
             module_data = self._module_docs[module_name]
-            summary_tasks.append((f"module_{module_name}", {
-                "type": "module",
-                "module_name": module_name,
-                "module_data": module_data
-            }))
+            summary_tasks.append(
+                (
+                    f"module_{module_name}",
+                    {"type": "module", "module_name": module_name, "module_data": module_data},
+                )
+            )
 
         # File summaries
         for file_path in sorted(self._file_docs.keys()):
             file_data = self._file_docs[file_path]
-            summary_tasks.append((f"file_{file_path}", {
-                "type": "file",
-                "file_path": file_path,
-                "file_data": file_data
-            }))
+            summary_tasks.append(
+                (
+                    f"file_{file_path}",
+                    {"type": "file", "file_path": file_path, "file_data": file_data},
+                )
+            )
 
         # Process in parallel
         if summary_tasks:
             results = self._process_summaries_parallel(summary_tasks)
             self._llm_summaries.update(results)
 
-        logger.info(f"Generated {len(self._llm_summaries)} LLM summaries (parallel processing with caching)")
+        logger.info(
+            f"Generated {len(self._llm_summaries)} LLM summaries (parallel processing with caching)"
+        )
 
-    def _process_summaries_parallel(self, summary_tasks: List[Tuple[str, Dict[str, Any]]]) -> Dict[str, Dict[str, Any]]:
+    def _process_summaries_parallel(
+        self, summary_tasks: List[Tuple[str, Dict[str, Any]]]
+    ) -> Dict[str, Dict[str, Any]]:
         """Process LLM summary tasks in parallel with rate limiting."""
         logger.info(f"Processing {len(summary_tasks)} summary tasks in parallel")
 
-        async def process_with_limit(task_key: str, task_data: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        async def process_with_limit(
+            task_key: str, task_data: Dict[str, Any]
+        ) -> Tuple[str, Dict[str, Any]]:
             """Process a single summary task with semaphore limiting."""
             semaphore = asyncio.Semaphore(self._max_concurrent_llm_calls)
 
@@ -882,6 +901,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             if loop.is_running():
                 # If we're already in an async context, run differently
                 import nest_asyncio
+
                 nest_asyncio.apply()
                 return loop.run_until_complete(main_async())
             else:
@@ -911,9 +931,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             return results
 
     def _generate_module_summary(
-        self, 
-        module_name: str, 
-        module_data: Dict[str, Any]
+        self, module_name: str, module_data: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """Generate LLM summary for a module using optimized model."""
         model_config = self._select_model_for_analysis("module_analysis")
@@ -939,11 +957,9 @@ Format your response as JSON with keys: overview, key_classes, functionality, de
 
         # Call Ollama LLM with optimized model
         llm_response = self._call_ollama_llm(
-            prompt,
-            model=model_config["model"],
-            temperature=model_config["temperature"]
+            prompt, model=model_config["model"], temperature=model_config["temperature"]
         )
-        
+
         if llm_response:
             return {
                 "module_name": module_name,
@@ -951,13 +967,11 @@ Format your response as JSON with keys: overview, key_classes, functionality, de
                 "llm_analysis": llm_response,
                 "generated_at": datetime.now(timezone.utc).isoformat(),
             }
-        
+
         return None
 
     def _generate_file_summary(
-        self, 
-        file_path: str, 
-        file_data: Dict[str, Any]
+        self, file_path: str, file_data: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """Generate LLM summary for a file using optimized model."""
         model_config = self._select_model_for_analysis("file_deep_analysis")
@@ -980,11 +994,9 @@ Please provide:
 Format your response as JSON with keys: purpose, components, complexity, improvements"""
 
         llm_response = self._call_ollama_llm(
-            prompt,
-            model=model_config["model"],
-            temperature=model_config["temperature"]
+            prompt, model=model_config["model"], temperature=model_config["temperature"]
         )
-        
+
         if llm_response:
             return {
                 "file_path": file_path,
@@ -992,7 +1004,7 @@ Format your response as JSON with keys: purpose, components, complexity, improve
                 "llm_analysis": llm_response,
                 "generated_at": datetime.now(timezone.utc).isoformat(),
             }
-        
+
         return None
 
     def _generate_package_overview(self) -> Optional[Dict[str, Any]]:
@@ -1000,16 +1012,14 @@ Format your response as JSON with keys: purpose, components, complexity, improve
         # Aggregate all module information
         total_modules = len(self._module_docs)
         total_classes = sum(
-            doc["documentation"].get("total_classes", 0) 
-            for doc in self._module_docs.values()
+            doc["documentation"].get("total_classes", 0) for doc in self._module_docs.values()
         )
         total_functions = sum(
-            doc["documentation"].get("total_functions", 0) 
-            for doc in self._module_docs.values()
+            doc["documentation"].get("total_functions", 0) for doc in self._module_docs.values()
         )
-        
+
         module_list = list(self._module_docs.keys())
-        
+
         prompt = f"""Provide a high-level architectural overview of this Python package:
 
 Package Statistics:
@@ -1027,9 +1037,9 @@ Please provide:
 4. Suggested improvements for structure and organization
 
 Format your response as JSON with keys: architecture, domains, capabilities, improvements"""
-        
+
         llm_response = self._call_ollama_llm(prompt, model="gemma2:2b")
-        
+
         if llm_response:
             return {
                 "summary_type": "package_overview",
@@ -1041,28 +1051,32 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 "llm_analysis": llm_response,
                 "generated_at": datetime.now(timezone.utc).isoformat(),
             }
-        
+
         return None
 
     def _prepare_module_context(self, module_data: Dict[str, Any]) -> str:
         """Prepare context string for module analysis."""
         doc = module_data.get("documentation", module_data)
-        
+
         context_parts = []
-        
+
         if doc.get("module_docstring"):
             context_parts.append(f"Module Docstring: {doc['module_docstring']}")
-        
+
         if doc.get("classes"):
             context_parts.append(f"\nClasses ({len(doc['classes'])}):")
             for cls in doc["classes"][:5]:  # Limit to first 5
-                context_parts.append(f"  - {cls['name']}: {cls.get('docstring', 'No docstring')[:100]}")
-        
+                context_parts.append(
+                    f"  - {cls['name']}: {cls.get('docstring', 'No docstring')[:100]}"
+                )
+
         if doc.get("functions"):
             context_parts.append(f"\nFunctions ({len(doc['functions'])}):")
             for func in doc["functions"][:5]:  # Limit to first 5
-                context_parts.append(f"  - {func['name']}: {func.get('docstring', 'No docstring')[:100]}")
-        
+                context_parts.append(
+                    f"  - {func['name']}: {func.get('docstring', 'No docstring')[:100]}"
+                )
+
         return "\n".join(context_parts)
 
     def _prepare_file_context(self, file_data: Dict[str, Any]) -> str:
@@ -1072,17 +1086,14 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             f"Classes: {file_data.get('total_classes', 0)}",
             f"Functions: {file_data.get('total_functions', 0)}",
         ]
-        
+
         if file_data.get("module_docstring"):
             context_parts.append(f"Docstring: {file_data['module_docstring'][:200]}")
-        
+
         return "\n".join(context_parts)
 
     def _call_ollama_llm(
-        self,
-        prompt: str,
-        model: str = "llama3.1",
-        temperature: float = 0.3
+        self, prompt: str, model: str = "llama3.1", temperature: float = 0.3
     ) -> Optional[str]:
         """Call Ollama LLM for text generation with comprehensive error handling and caching."""
         if not prompt or not prompt.strip():
@@ -1167,11 +1178,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     logger.debug(f"Successfully called Ollama subprocess with model {model}")
                     return llm_response
                 else:
-                    logger.warning(f"Ollama subprocess returned non-zero exit code: {result.returncode}")
+                    logger.warning(
+                        f"Ollama subprocess returned non-zero exit code: {result.returncode}"
+                    )
                     logger.debug(f"Subprocess stderr: {result.stderr}")
 
             except subprocess.TimeoutExpired:
-                logger.error(f"Ollama subprocess timed out after {self._llm_timeout_seconds} seconds")
+                logger.error(
+                    f"Ollama subprocess timed out after {self._llm_timeout_seconds} seconds"
+                )
             except FileNotFoundError:
                 logger.error("Ollama command not found - is Ollama installed and running?")
             except Exception as e:
@@ -1180,7 +1195,9 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 # All methods failed, use mock response
                 mock_response = self._generate_mock_llm_response(prompt)
                 self._cache_response(cache_key, {"response": mock_response, "model": model})
-                logger.warning(f"Using mock response due to Ollama unavailability for model {model}")
+                logger.warning(
+                    f"Using mock response due to Ollama unavailability for model {model}"
+                )
                 return mock_response
 
         except Exception as e:
@@ -1198,39 +1215,35 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         # Generate module documentation files
         for module_name, module_data in self._module_docs.items():
             self._write_module_documentation(module_name, module_data)
-        
+
         # Generate file documentation
         for file_path, file_data in self._file_docs.items():
             self._write_file_documentation(file_path, file_data)
-        
+
         # Generate method documentation
         self._write_methods_index()
-        
+
         # Generate LLM summaries
         self._write_llm_summaries()
-        
+
         # Generate main index
         self._write_main_index()
 
-    def _write_module_documentation(
-        self, 
-        module_name: str, 
-        module_data: Dict[str, Any]
-    ) -> None:
+    def _write_module_documentation(self, module_name: str, module_data: Dict[str, Any]) -> None:
         """Write documentation for a single module."""
         safe_name = module_name.replace(".", "_")
         output_file = self.output_dir / "modules" / f"{safe_name}.md"
-        
+
         doc = module_data["documentation"]
-        
+
         content = [
             f"# Module: {module_name}\n",
             f"**File:** `{module_data['file_path']}`\n",
         ]
-        
+
         if doc.get("module_docstring"):
             content.append(f"## Description\n\n{doc['module_docstring']}\n")
-        
+
         # Classes
         if doc.get("classes"):
             content.append("## Classes\n")
@@ -1241,13 +1254,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 if cls.get("bases"):
                     content.append(f"**Inherits from:** {', '.join(cls['bases'])}\n")
                 content.append(f"**Methods:** {cls['total_methods']}\n")
-                
+
                 # List methods
                 if cls.get("methods"):
                     content.append("\n**Method List:**\n")
                     for method in cls["methods"]:
-                        content.append(f"- `{method['name']}`: {method.get('docstring', 'No description')[:50]}\n")
-        
+                        content.append(
+                            f"- `{method['name']}`: {method.get('docstring', 'No description')[:50]}\n"
+                        )
+
         # Functions
         if doc.get("functions"):
             content.append("## Functions\n")
@@ -1258,22 +1273,22 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 if func.get("parameters"):
                     content.append("**Parameters:**\n")
                     for param in func["parameters"]:
-                        param_type = f": {param['annotation']}" if param['annotation'] else ""
+                        param_type = f": {param['annotation']}" if param["annotation"] else ""
                         content.append(f"- `{param['name']}{param_type}`\n")
-        
+
         # LLM Summary
         llm_key = f"module_{module_name}"
         if llm_key in self._llm_summaries:
             content.append("\n## AI-Generated Analysis\n")
             content.append(f"```json\n{self._llm_summaries[llm_key]['llm_analysis']}\n```\n")
-        
+
         output_file.write_text("\n".join(content))
 
     def _write_file_documentation(self, file_path: str, file_data: Dict[str, Any]) -> None:
         """Write documentation for a single file."""
         safe_name = Path(file_path).stem + "_" + str(uuid4())[:8]
         output_file = self.output_dir / "files" / f"{safe_name}.json"
-        
+
         output_file.write_text(json.dumps(file_data, indent=2))
 
     def _write_methods_index(self) -> None:
@@ -1287,7 +1302,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             safe_name = summary_key.replace("/", "_").replace(".", "_")
             output_file = self.output_dir / "llm_analysis" / f"{safe_name}.json"
             output_file.write_text(json.dumps(summary_data, indent=2))
-        
+
         # Also write a combined summary
         combined_file = self.output_dir / "llm_analysis" / "all_summaries.json"
         combined_file.write_text(json.dumps(self._llm_summaries, indent=2))
@@ -1311,11 +1326,11 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 "summaries": "Human-readable summaries (Markdown)",
             },
         }
-        
+
         # Write JSON index
         index_file = self.output_dir / "index.json"
         index_file.write_text(json.dumps(index_data, indent=2))
-        
+
         # Write Markdown index
         readme_content = [
             "# Auto-Generated Documentation\n",
@@ -1338,11 +1353,11 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             "Human-readable summary documents.\n",
             "## Modules Documented\n",
         ]
-        
+
         for module in sorted(index_data["modules"]):
             safe_name = module.replace(".", "_")
             readme_content.append(f"- [{module}](modules/{safe_name}.md)")
-        
+
         readme_file = self.output_dir / "README.md"
         readme_file.write_text("\n".join(readme_content))
 
@@ -1367,7 +1382,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             "functions": {},
             "keywords": {},
             "domains": {},
-            "generated_at": datetime.now(timezone.utc).isoformat()
+            "generated_at": datetime.now(timezone.utc).isoformat(),
         }
 
         # Index modules
@@ -1376,7 +1391,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 "file_path": module_data.get("file_path", ""),
                 "summary": self._extract_text_from_llm(module_name, "module"),
                 "classes": [cls["name"] for cls in module_data.get("classes", [])],
-                "functions": [func["name"] for func in module_data.get("functions", [])]
+                "functions": [func["name"] for func in module_data.get("functions", [])],
             }
 
             # Index classes
@@ -1386,7 +1401,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     "module": module_name,
                     "name": cls["name"],
                     "docstring": cls.get("docstring", ""),
-                    "methods": [method["name"] for method in cls.get("methods", [])]
+                    "methods": [method["name"] for method in cls.get("methods", [])],
                 }
 
                 # Index methods
@@ -1397,7 +1412,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                         "class": cls["name"],
                         "name": method["name"],
                         "signature": self._extract_method_signature(method),
-                        "docstring": method.get("docstring", "")
+                        "docstring": method.get("docstring", ""),
                     }
 
         # Index files
@@ -1406,7 +1421,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 "module": self._get_module_name_from_path(file_path),
                 "summary": self._extract_text_from_llm(file_path, "file"),
                 "classes": [cls["name"] for cls in file_data.get("classes", [])],
-                "functions": [func["name"] for func in file_data.get("functions", [])]
+                "functions": [func["name"] for func in file_data.get("functions", [])],
             }
 
         # Extract keywords from all content
@@ -1431,7 +1446,9 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         with open(index_file, "w") as f:
             json.dump(search_index, f, indent=2)
 
-        print(f"  Generated search index with {len(search_index['modules'])} modules, {len(search_index['files'])} files")
+        print(
+            f"  Generated search index with {len(search_index['modules'])} modules, {len(search_index['files'])} files"
+        )
         return search_index
 
     def _extract_text_from_llm(self, key: str, summary_type: str) -> str:
@@ -1473,7 +1490,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
 
     def search_documentation(self, query: str, max_results: int = 10) -> List[Dict[str, Any]]:
         """Search documentation using simple text matching."""
-        if not hasattr(self, '_search_index'):
+        if not hasattr(self, "_search_index"):
             self._search_index = self.generate_search_index()
 
         results = []
@@ -1490,13 +1507,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 score += 5
 
             if score > 0:
-                results.append({
-                    "type": "module",
-                    "name": module_name,
-                    "score": score,
-                    "path": module_data.get("file_path", ""),
-                    "summary": module_data.get("summary", "")[:200]
-                })
+                results.append(
+                    {
+                        "type": "module",
+                        "name": module_name,
+                        "score": score,
+                        "path": module_data.get("file_path", ""),
+                        "summary": module_data.get("summary", "")[:200],
+                    }
+                )
 
         # Search files
         for file_path, file_data in self._search_index["files"].items():
@@ -1509,13 +1528,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 score += 4
 
             if score > 0:
-                results.append({
-                    "type": "file",
-                    "name": file_path,
-                    "score": score,
-                    "module": file_data.get("module", ""),
-                    "summary": file_data.get("summary", "")[:200]
-                })
+                results.append(
+                    {
+                        "type": "file",
+                        "name": file_path,
+                        "score": score,
+                        "module": file_data.get("module", ""),
+                        "summary": file_data.get("summary", "")[:200],
+                    }
+                )
 
         # Sort by score and return top results
         results.sort(key=lambda x: x["score"], reverse=True)
@@ -1556,15 +1577,13 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
         answer = self._call_ollama_llm(
             prompt,
             model=model_config["model"],
-            temperature=0.2  # Lower temperature for factual answers
+            temperature=0.2,  # Lower temperature for factual answers
         )
 
         return answer or "I couldn't generate an answer to your question."
 
     def export_documentation(
-        self, 
-        format: str = "markdown", 
-        output_file: Optional[str] = None
+        self, format: str = "markdown", output_file: Optional[str] = None
     ) -> str:
         """Export all documentation in a single file."""
         if format == "markdown":
@@ -1577,13 +1596,13 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
     def _export_markdown(self, output_file: Optional[str] = None) -> str:
         """Export documentation as single Markdown file."""
         output_path = output_file or str(self.output_dir / "complete_documentation.md")
-        
+
         content = [
             "# Complete System Documentation\n",
             f"**Generated:** {datetime.now(timezone.utc).isoformat()}\n",
             "---\n",
         ]
-        
+
         # Add all module documentation
         for module_name in sorted(self._module_docs.keys()):
             safe_name = module_name.replace(".", "_")
@@ -1591,14 +1610,14 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
             if module_file.exists():
                 content.append(module_file.read_text())
                 content.append("\n---\n")
-        
+
         Path(output_path).write_text("\n".join(content))
         return output_path
 
     def _export_json(self, output_file: Optional[str] = None) -> str:
         """Export documentation as single JSON file."""
         output_path = output_file or str(self.output_dir / "complete_documentation.json")
-        
+
         complete_data = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "modules": self._module_docs,
@@ -1606,21 +1625,23 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
             "methods": self._method_docs,
             "llm_summaries": self._llm_summaries,
         }
-        
+
         # Add statistics if available
-        if hasattr(self, '_stats'):
+        if hasattr(self, "_stats"):
             complete_data["statistics"] = self._stats
-        
+
         Path(output_path).write_text(json.dumps(complete_data, indent=2))
         return output_path
 
-    def _convert_llm_json_to_markdown(self, analysis_key: str, analysis_data: Dict[str, Any]) -> str:
+    def _convert_llm_json_to_markdown(
+        self, analysis_key: str, analysis_data: Dict[str, Any]
+    ) -> str:
         """Convert a single LLM analysis JSON to readable Markdown."""
         content = []
-        
+
         # Title based on summary type
         summary_type = analysis_data.get("summary_type", "unknown")
-        
+
         if summary_type == "package_overview":
             content.append("# Package Architectural Overview\n")
         elif summary_type == "module":
@@ -1633,12 +1654,12 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
             content.append(f"**Full Path:** `{file_path}`\n")
         else:
             content.append(f"# {summary_type.title()} Analysis\n")
-        
+
         # Generated timestamp
         generated_at = analysis_data.get("generated_at", "Unknown")
         content.append(f"**Generated:** {generated_at}\n")
         content.append("---\n")
-        
+
         # Statistics if available
         if "statistics" in analysis_data:
             content.append("\n## Statistics\n")
@@ -1647,55 +1668,55 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 formatted_key = key.replace("_", " ").title()
                 content.append(f"- **{formatted_key}:** {value}")
             content.append("\n")
-        
+
         # Module/file name if present
         if "module_name" in analysis_data and summary_type != "module":
             content.append(f"\n**Module:** `{analysis_data['module_name']}`\n")
-        
+
         # LLM Analysis - the main content
         content.append("\n## AI-Generated Analysis\n")
-        
+
         llm_analysis = analysis_data.get("llm_analysis", "No analysis available")
-        
+
         # Check if it's already formatted JSON
         if llm_analysis.strip().startswith("{") or llm_analysis.strip().startswith("```"):
             content.append(llm_analysis)
         else:
             content.append(llm_analysis)
-        
+
         content.append("\n")
-        
+
         # Metadata
         content.append("\n## Metadata\n")
         content.append(f"- **Analysis Type:** {summary_type}")
         content.append(f"- **Analysis Key:** `{analysis_key}`")
         content.append(f"- **Generated At:** {generated_at}")
         content.append("\n")
-        
+
         return "\n".join(content)
 
     def export_llm_analyses_to_markdown(self) -> Dict[str, int]:
         """Export all LLM analyses as standalone Markdown files and a combined file.
-        
+
         Returns:
             Dict with counts of exported files
         """
         print("Exporting LLM analyses to Markdown...")
-        
+
         # Create output directory for Markdown LLM analyses
         llm_md_dir = self.output_dir / "llm_analysis_md"
         llm_md_dir.mkdir(parents=True, exist_ok=True)
-        
+
         standalone_count = 0
-        
+
         # Export each LLM analysis as a standalone Markdown file
         for analysis_key, analysis_data in self._llm_summaries.items():
             # Generate Markdown content
             md_content = self._convert_llm_json_to_markdown(analysis_key, analysis_data)
-            
+
             # Create informative filename
             summary_type = analysis_data.get("summary_type", "unknown")
-            
+
             if summary_type == "package_overview":
                 filename = "00_package_overview.md"
             elif summary_type == "module":
@@ -1704,25 +1725,27 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
             elif summary_type == "file":
                 # Extract filename from path
                 file_path = analysis_data.get("file_path", "unknown")
-                safe_name = Path(file_path).stem.replace(".", "_") if file_path != "unknown" else "unknown"
+                safe_name = (
+                    Path(file_path).stem.replace(".", "_") if file_path != "unknown" else "unknown"
+                )
                 filename = f"file_{safe_name}.md"
             else:
                 filename = f"{summary_type}_{analysis_key}.md"
-            
+
             # Write standalone file
             output_file = llm_md_dir / filename
             output_file.write_text(md_content)
             standalone_count += 1
-        
+
         print(f"  ✓ Exported {standalone_count} standalone Markdown files")
-        
+
         # Create combined Markdown file
         combined_content = self._create_combined_llm_markdown()
         combined_file = self.output_dir / "llm_analysis_complete.md"
         combined_file.write_text(combined_content)
-        
+
         print(f"  ✓ Created combined Markdown file: {combined_file}")
-        
+
         return {
             "standalone_files": standalone_count,
             "combined_file": 1,
@@ -1732,21 +1755,21 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
     def _create_combined_llm_markdown(self) -> str:
         """Create a single combined Markdown file with all LLM analyses."""
         content = []
-        
+
         # Header
         content.append("# Complete LLM Analysis - Curriculum Repository System\n")
         content.append(f"**Generated:** {datetime.now(timezone.utc).isoformat()}\n")
         content.append(f"**Total Analyses:** {len(self._llm_summaries)}\n")
         content.append("---\n")
-        
+
         # Table of Contents
         content.append("\n## Table of Contents\n")
-        
+
         # Organize by type
         package_analyses = []
         module_analyses = []
         file_analyses = []
-        
+
         for key, data in self._llm_summaries.items():
             summary_type = data.get("summary_type", "unknown")
             if summary_type == "package_overview":
@@ -1755,25 +1778,27 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 module_analyses.append((key, data))
             elif summary_type == "file":
                 file_analyses.append((key, data))
-        
+
         if package_analyses:
             content.append("\n### Package Overview")
             for key, data in package_analyses:
-                content.append(f"- [Package Architectural Overview](#package-architectural-overview)")
-        
+                content.append(
+                    f"- [Package Architectural Overview](#package-architectural-overview)"
+                )
+
         if module_analyses:
             content.append("\n### Module Analyses")
             for key, data in sorted(module_analyses, key=lambda x: x[1].get("module_name", "")):
                 module_name = data.get("module_name", "Unknown")
                 anchor = module_name.lower().replace(".", "-")
                 content.append(f"- [Module: {module_name}](#module-analysis-{anchor})")
-        
+
         if file_analyses:
             content.append(f"\n### File Analyses ({len(file_analyses)} files)")
             content.append("*(See individual sections below)*")
-        
+
         content.append("\n---\n")
-        
+
         # Package Overview Section
         if package_analyses:
             content.append("\n# Package Overview\n")
@@ -1781,7 +1806,7 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 md_section = self._convert_llm_json_to_markdown(key, data)
                 content.append(md_section)
                 content.append("\n---\n")
-        
+
         # Module Analyses Section
         if module_analyses:
             content.append("\n# Module Analyses\n")
@@ -1789,7 +1814,7 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 md_section = self._convert_llm_json_to_markdown(key, data)
                 content.append(md_section)
                 content.append("\n---\n")
-        
+
         # File Analyses Section
         if file_analyses:
             content.append("\n# File Analyses\n")
@@ -1797,7 +1822,7 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 md_section = self._convert_llm_json_to_markdown(key, data)
                 content.append(md_section)
                 content.append("\n---\n")
-        
+
         # Footer
         content.append("\n## Summary\n")
         content.append(f"- **Total Analyses:** {len(self._llm_summaries)}")
@@ -1805,6 +1830,5 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
         content.append(f"- **Module Analyses:** {len(module_analyses)}")
         content.append(f"- **File Analyses:** {len(file_analyses)}")
         content.append(f"\n**Generated:** {datetime.now(timezone.utc).isoformat()}\n")
-        
-        return "\n".join(content)
 
+        return "\n".join(content)

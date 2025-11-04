@@ -41,6 +41,7 @@ export_result = export.export_content(content_id, "scorm")
 ## Testing
 
 ```bash
-pytest tests/test_integration/
+pytest tests/integration/test_integration.py
+pytest tests/integration/test_integration_distribution_service.py
 ```
 

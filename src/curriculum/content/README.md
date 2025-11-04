@@ -26,10 +26,12 @@ content_service = ContentService()
 rendering_service = RenderingService()
 
 # Create content
+from curriculum.core.content import ContentType, ContentFormat
+
 content = content_service.create_content(
     title="Python Tutorial",
-    content_type="lesson",
-    format="markdown",
+    content_type=ContentType.LESSON,
+    format=ContentFormat.MARKDOWN,
     author_id=user_id,
 )
 
@@ -40,6 +42,7 @@ rendered = rendering_service.render_content(content, "html")
 ## Testing
 
 ```bash
-pytest tests/test_content/
+pytest tests/integration/test_content_content_service.py
+pytest tests/unit/test_core.py  # Content models tested here
 ```
 

@@ -1,11 +1,11 @@
 """Visualization and interactive content service."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 import json
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
-from curriculum.core.content import Content
 from curriculum.config import settings
+from curriculum.core.content import Content
 
 
 class VisualizationService:
@@ -20,28 +20,28 @@ class VisualizationService:
                 "config": {
                     "responsive": True,
                     "maintainAspectRatio": False,
-                }
+                },
             },
             "line_chart": {
                 "type": "line",
                 "config": {
                     "responsive": True,
                     "maintainAspectRatio": False,
-                }
+                },
             },
             "pie_chart": {
                 "type": "pie",
                 "config": {
                     "responsive": True,
                     "maintainAspectRatio": False,
-                }
+                },
             },
             "scatter_plot": {
                 "type": "scatter",
                 "config": {
                     "responsive": True,
                     "maintainAspectRatio": False,
-                }
+                },
             },
         }
 
@@ -83,8 +83,7 @@ class VisualizationService:
     def get_content_visualizations(self, content_id: UUID) -> List[Dict[str, Any]]:
         """Get all visualizations for content."""
         return [
-            viz for viz in self._visualizations.values()
-            if viz["content_id"] == str(content_id)
+            viz for viz in self._visualizations.values() if viz["content_id"] == str(content_id)
         ]
 
     def create_progress_chart(
@@ -100,13 +99,15 @@ class VisualizationService:
             visualization_type="line_chart",
             data={
                 "labels": progress_data.get("dates", []),
-                "datasets": [{
-                    "label": "Progress",
-                    "data": progress_data.get("scores", []),
-                    "borderColor": "#1f77b4",
-                    "backgroundColor": "rgba(31, 119, 180, 0.1)",
-                    "fill": True,
-                }],
+                "datasets": [
+                    {
+                        "label": "Progress",
+                        "data": progress_data.get("scores", []),
+                        "borderColor": "#1f77b4",
+                        "backgroundColor": "rgba(31, 119, 180, 0.1)",
+                        "fill": True,
+                    }
+                ],
             },
             config={
                 "plugins": {
@@ -167,14 +168,16 @@ class VisualizationService:
             visualization_type="bar_chart",
             data={
                 "labels": quiz_results.get("quiz_names", []),
-                "datasets": [{
-                    "label": "Score",
-                    "data": quiz_results.get("scores", []),
-                    "backgroundColor": [
-                        "#ff6384" if score < 70 else "#36a2eb"
-                        for score in quiz_results.get("scores", [])
-                    ],
-                }],
+                "datasets": [
+                    {
+                        "label": "Score",
+                        "data": quiz_results.get("scores", []),
+                        "backgroundColor": [
+                            "#ff6384" if score < 70 else "#36a2eb"
+                            for score in quiz_results.get("scores", [])
+                        ],
+                    }
+                ],
             },
             config={
                 "plugins": {

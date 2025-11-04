@@ -1,8 +1,8 @@
 """Assessment models for quizzes and evaluations."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -113,7 +113,11 @@ class Question(BaseEntity):
         elif self.question_type == QuestionType.SHORT_ANSWER:
             # Simple string matching for demo - in production use NLP
             if isinstance(self.correct_answer, str) and isinstance(submitted_answer, str):
-                return self.points if submitted_answer.lower().strip() == self.correct_answer.lower().strip() else 0.0
+                return (
+                    self.points
+                    if submitted_answer.lower().strip() == self.correct_answer.lower().strip()
+                    else 0.0
+                )
             return 0.0
         elif self.question_type == QuestionType.CODING:
             # Placeholder for code evaluation

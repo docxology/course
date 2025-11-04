@@ -1,16 +1,16 @@
 """Security utilities."""
 
-import secrets
 import hashlib
+import secrets
 from typing import Optional
 
 
 def generate_token(length: int = 32) -> str:
     """Generate a secure random token.
-    
+
     Args:
         length: Length of token in bytes
-        
+
     Returns:
         Hexadecimal token string
     """
@@ -19,23 +19,23 @@ def generate_token(length: int = 32) -> str:
 
 def generate_verification_code(length: int = 6) -> str:
     """Generate a numeric verification code.
-    
+
     Args:
         length: Length of code
-        
+
     Returns:
         Numeric verification code
     """
-    return ''.join(str(secrets.randbelow(10)) for _ in range(length))
+    return "".join(str(secrets.randbelow(10)) for _ in range(length))
 
 
 def hash_content(content: str, algorithm: str = "sha256") -> str:
     """Hash content using specified algorithm.
-    
+
     Args:
         content: Content to hash
         algorithm: Hash algorithm (sha256, sha512, md5)
-        
+
     Returns:
         Hexadecimal hash string
     """
@@ -51,7 +51,7 @@ def hash_content(content: str, algorithm: str = "sha256") -> str:
 
 def generate_api_key() -> str:
     """Generate an API key.
-    
+
     Returns:
         API key string
     """
@@ -67,30 +67,30 @@ def mask_email(email: str) -> str:
     Returns:
         Masked email address
     """
-    if '@' not in email:
+    if "@" not in email:
         return email
 
-    local, domain = email.split('@')
+    local, domain = email.split("@")
 
     if len(local) <= 2:
-        masked_local = local[0] + '*' * len(local)
+        masked_local = local[0] + "*" * len(local)
     else:
-        masked_local = local[0] + '*' * (len(local) - 2) + local[-1]
+        masked_local = local[0] + "*" * (len(local) - 2) + local[-1]
 
     return f"{masked_local}@{domain}"
 
 
 def mask_sensitive_data(data: str, show_chars: int = 4) -> str:
     """Mask sensitive data, showing only specified number of characters.
-    
+
     Args:
         data: Data to mask
         show_chars: Number of characters to show at end
-        
+
     Returns:
         Masked data
     """
     if len(data) <= show_chars:
-        return '*' * len(data)
-    
-    return '*' * (len(data) - show_chars) + data[-show_chars:]
+        return "*" * len(data)
+
+    return "*" * (len(data) - show_chars) + data[-show_chars:]

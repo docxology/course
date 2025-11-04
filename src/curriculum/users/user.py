@@ -2,15 +2,16 @@
 
 import re
 import secrets
-from datetime import datetime, timedelta
-from typing import List, Optional, Dict, Any
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
+
+from curriculum.config import settings
+from curriculum.core.user import ROLE_PERMISSIONS, User, UserPermission, UserRole
 
 # from passlib.context import CryptContext  # Commented out for now
 # from jose import JWTError, jwt  # Commented out for now
 
-from curriculum.config import settings
-from curriculum.core.user import User, UserRole, UserPermission, ROLE_PERMISSIONS
 
 
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # Commented out for now
@@ -18,16 +19,24 @@ from curriculum.core.user import User, UserRole, UserPermission, ROLE_PERMISSION
 # Password validation constants
 MIN_PASSWORD_LENGTH = 8
 PASSWORD_REQUIREMENTS = {
-    "uppercase": r'[A-Z]',
-    "lowercase": r'[a-z]',
-    "digits": r'\d',
-    "special": r'[!@#$%^&*(),.?":{}|<>]'
+    "uppercase": r"[A-Z]",
+    "lowercase": r"[a-z]",
+    "digits": r"\d",
+    "special": r'[!@#$%^&*(),.?":{}|<>]',
 }
 
 # Common weak passwords to reject
 COMMON_PASSWORDS = {
-    "password", "123456", "password123", "admin", "qwerty",
-    "letmein", "welcome", "monkey", "dragon", "password1"
+    "password",
+    "123456",
+    "password123",
+    "admin",
+    "qwerty",
+    "letmein",
+    "welcome",
+    "monkey",
+    "dragon",
+    "password1",
 }
 
 
@@ -49,7 +58,7 @@ class UserService:
             return False, "Email too long"
 
         # Basic email regex (more comprehensive validation would use email-validator library)
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         if not re.match(email_pattern, email):
             return False, "Invalid email format"
 
@@ -67,7 +76,7 @@ class UserService:
             return False, "Username too long"
 
         # Username should only contain alphanumeric characters, hyphens, and underscores
-        if not re.match(r'^[a-zA-Z0-9_-]+$', username):
+        if not re.match(r"^[a-zA-Z0-9_-]+$", username):
             return False, "Username can only contain letters, numbers, hyphens, and underscores"
 
         return True, ""
@@ -122,7 +131,20 @@ class UserService:
         password: str,
         roles: Optional[List[UserRole]] = None,
     ) -> tuple[Optional[User], str]:
-        """Create a new user with comprehensive validation."""
+        """Create a new user with comprehensive validation.
+
+        Args:
+            email: User email address
+            username: Unique username
+            full_name: User's full name
+            password: User password (will be hashed)
+            roles: Optional list of user roles (defaults to [STUDENT])
+
+        Returns:
+            Tuple of (User instance if successful, error message string).
+            If successful, error message is empty string.
+            If failed, User is None and error message contains reason.
+        """
         # Validate inputs
         email_valid, email_error = self._validate_email(email)
         if not email_valid:
@@ -183,16 +205,37 @@ class UserService:
             return None
 
     def get_user(self, user_id: UUID) -> Optional[User]:
-        """Get user by ID."""
+        """Get user by ID.
+
+        Args:
+            user_id: UUID of the user to retrieve
+
+        Returns:
+            User instance if found, None otherwise
+        """
         return self._users.get(user_id)
 
     def get_user_by_email(self, email: str) -> Optional[User]:
-        """Get user by email."""
+        """Get user by email.
+
+        Args:
+            email: Email address to search for
+
+        Returns:
+            User instance if found, None otherwise
+        """
         user_id = self._email_index.get(email)
         return self._users.get(user_id) if user_id else None
 
     def get_user_by_username(self, username: str) -> Optional[User]:
-        """Get user by username."""
+        """Get user by username.
+
+        Args:
+            username: Username to search for
+
+        Returns:
+            User instance if found, None otherwise
+        """
         user_id = self._username_index.get(username)
         return self._users.get(user_id) if user_id else None
 
@@ -203,7 +246,17 @@ class UserService:
         bio: Optional[str] = None,
         avatar_url: Optional[str] = None,
     ) -> Optional[User]:
-        """Update user profile."""
+        """Update user profile.
+
+        Args:
+            user_id: UUID of the user to update
+            full_name: Optional new full name
+            bio: Optional new bio
+            avatar_url: Optional new avatar URL
+
+        Returns:
+            Updated User instance if found, None otherwise
+        """
         user = self.get_user(user_id)
         if not user:
             return None
@@ -219,7 +272,16 @@ class UserService:
         return user
 
     def change_password(self, user_id: UUID, current_password: str, new_password: str) -> bool:
-        """Change user password with current password verification."""
+        """Change user password with current password verification.
+
+        Args:
+            user_id: UUID of the user
+            current_password: Current password for verification
+            new_password: New password to set
+
+        Returns:
+            True if password was changed successfully, False if user not found or current password incorrect
+        """
         user = self.get_user(user_id)
         if not user:
             return False
@@ -234,7 +296,15 @@ class UserService:
         return True
 
     def verify_password(self, user_id: UUID, password: str) -> bool:
-        """Verify user password."""
+        """Verify user password.
+
+        Args:
+            user_id: UUID of the user
+            password: Password to verify
+
+        Returns:
+            True if password is correct, False otherwise
+        """
         user = self.get_user(user_id)
         if not user:
             return False
@@ -340,7 +410,15 @@ class AuthenticationService:
         self.user_service = user_service
 
     def authenticate_user(self, username_or_email: str, password: str) -> Optional[User]:
-        """Authenticate user with username/email and password."""
+        """Authenticate user with username/email and password.
+
+        Args:
+            username_or_email: Username or email address
+            password: User password
+
+        Returns:
+            Authenticated User instance if successful, None if authentication failed
+        """
         # Try username first
         user = self.user_service.get_user_by_username(username_or_email)
 
@@ -361,17 +439,39 @@ class AuthenticationService:
         return user
 
     def create_access_token(self, user_id: UUID, expires_delta: Optional[timedelta] = None) -> str:
-        """Create simple access token (placeholder)."""
+        """Create simple access token (placeholder).
+
+        Args:
+            user_id: UUID of the user
+            expires_delta: Optional token expiration time delta
+
+        Returns:
+            Access token string
+        """
         # In production, use proper JWT
         return f"access_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
 
     def create_refresh_token(self, user_id: UUID) -> str:
-        """Create simple refresh token (placeholder)."""
+        """Create simple refresh token (placeholder).
+
+        Args:
+            user_id: UUID of the user
+
+        Returns:
+            Refresh token string
+        """
         # In production, use proper JWT
         return f"refresh_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
 
     def verify_token(self, token: str) -> Optional[UUID]:
-        """Verify token and return user ID (placeholder)."""
+        """Verify token and return user ID (placeholder).
+
+        Args:
+            token: Token string to verify
+
+        Returns:
+            User UUID if token is valid, None otherwise
+        """
         # In production, use proper JWT verification
         try:
             if token.startswith("access_token_"):

@@ -1,6 +1,6 @@
 """Mobile support and responsive design service."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.content import Content
@@ -47,7 +47,8 @@ class MobileService:
             "id": str(config_id),
             "content_id": str(content_id),
             "platform": platform,
-            "features": features or [
+            "features": features
+            or [
                 "responsive_design",
                 "touch_optimization",
                 "mobile_navigation",

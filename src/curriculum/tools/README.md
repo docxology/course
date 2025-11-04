@@ -36,6 +36,6 @@ token = generate_token(32)
 ## Testing
 
 ```bash
-pytest tests/test_tools/
+pytest tests/unit/test_tools.py
 ```
 

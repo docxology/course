@@ -12,7 +12,9 @@ learning/
 ├── assessment.py  # Assessment management
 ├── progress.py     # Progress tracking and paths
 ├── study_tools.py  # Notes, flashcards, practice
-└── README.md       # Module documentation
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Development Guidelines

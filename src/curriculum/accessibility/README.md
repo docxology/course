@@ -36,6 +36,6 @@ accessible_content = accessibility.create_accessible_version(
 ## Testing
 
 ```bash
-pytest tests/test_accessibility/
+pytest tests/integration/test_accessibility.py
 ```
 

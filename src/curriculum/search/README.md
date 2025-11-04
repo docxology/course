@@ -32,13 +32,14 @@ results = await search.search("python programming", limit=10)
 chart = visualization.create_progress_chart(
     content_id=content_id,
     user_id=user_id,
-    progress_data={"dates": ["2024-01-01"], "scores": [85]},
+    progress_data={"dates": ["2024-01-01"], "scores": [85]},  # Example dates
 )
 ```
 
 ## Testing
 
 ```bash
-pytest tests/test_search/
+pytest tests/integration/test_search.py
+pytest tests/unit/test_search_service.py
 ```
 

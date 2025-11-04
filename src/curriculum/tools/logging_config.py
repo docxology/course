@@ -82,8 +82,7 @@ def setup_logging(
 def create_standard_formatter() -> logging.Formatter:
     """Create standard text formatter for logs."""
     format_string = (
-        "%(asctime)s - %(name)s - %(levelname)s - "
-        "%(funcName)s:%(lineno)d - %(message)s"
+        "%(asctime)s - %(name)s - %(levelname)s - " "%(funcName)s:%(lineno)d - %(message)s"
     )
     return logging.Formatter(
         fmt=format_string,
@@ -131,4 +130,3 @@ def configure_third_party_logging() -> None:
 # Initialize logging on module import
 logger = setup_logging()
 configure_third_party_logging()
-

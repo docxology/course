@@ -81,7 +81,7 @@ src/curriculum/
 │   ├── progress.py     # Progress tracking
 │   └── ...
 ├── users/              # User management and authentication
-│   ├── user.py        # User service and AuthenticationService
+│   ├── user.py        # UserService and AuthenticationService (both in same file)
 │   └── ...
 ├── ai/                 # AI-powered features
 │   ├── ai_features.py # Intelligent tutoring
@@ -545,9 +545,11 @@ Before implementing a feature:
 ### Internal Documentation
 
 - `README.md`: Project overview and setup
-- `AGENTS.md`: AI agent development guide (this file)
+- `AGENTS.md`: AI agent development guide (this file in .cursorrules format)
 - Module `README.md` and `AGENTS.md`: Module-specific documentation
 - Code docstrings: Inline documentation
+
+**Note**: This file (`.cursorrules`) is a Cursor-specific format of the main `AGENTS.md` guide. For the most up-to-date comprehensive documentation, see `AGENTS.md` in the root directory.
 
 ### External Standards
 
@@ -564,4 +566,7 @@ Before implementing a feature:
 
 ---
 
+**Last Updated**: September 2025
+
 **For Questions**: Open an issue on GitHub
+

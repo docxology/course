@@ -9,7 +9,9 @@ The accessibility module ensures inclusive learning experiences for all users.
 ```
 accessibility/
 ├── accessibility.py # WCAG compliance and accessibility features
-└── README.md        # Module documentation
+├── __init__.py      # Module exports
+├── README.md        # Module documentation
+└── AGENTS.md        # This file
 ```
 
 ## Development Guidelines

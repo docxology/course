@@ -1,12 +1,12 @@
 """Teacher service for instructor functionality."""
 
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from datetime import datetime
 
-from curriculum.core.user import User, UserRole
+from curriculum.core.assessment import Assessment, GradingStatus, Submission
 from curriculum.core.content import Content, ContentStatus
-from curriculum.core.assessment import Assessment, Submission, GradingStatus
+from curriculum.core.user import User, UserRole
 
 
 class TeacherService:
@@ -25,16 +25,18 @@ class TeacherService:
         # Mock course data - in production, this would query from database
         courses = []
         for i, course_id in enumerate(course_ids):
-            courses.append({
-                "id": str(course_id),
-                "title": f"Course {i+1}",
-                "description": f"Description for Course {i+1}",
-                "enrolled_students": 25,
-                "total_lessons": 12,
-                "status": "active",
-                "start_date": "2024-01-15T00:00:00Z",
-                "end_date": "2024-05-15T00:00:00Z",
-            })
+            courses.append(
+                {
+                    "id": str(course_id),
+                    "title": f"Course {i+1}",
+                    "description": f"Description for Course {i+1}",
+                    "enrolled_students": 25,
+                    "total_lessons": 12,
+                    "status": "active",
+                    "start_date": "2024-01-15T00:00:00Z",
+                    "end_date": "2024-05-15T00:00:00Z",
+                }
+            )
 
         return courses
 
@@ -48,15 +50,17 @@ class TeacherService:
         # Mock student data
         students = []
         for i, student_id in enumerate(student_ids):
-            students.append({
-                "id": str(student_id),
-                "name": f"Student {i+1}",
-                "email": f"student{i+1}@example.com",
-                "enrollment_date": "2024-01-15T00:00:00Z",
-                "progress": 67.5,  # percentage
-                "last_activity": "2024-01-20T10:30:00Z",
-                "grade": "B+",
-            })
+            students.append(
+                {
+                    "id": str(student_id),
+                    "name": f"Student {i+1}",
+                    "email": f"student{i+1}@example.com",
+                    "enrollment_date": "2024-01-15T00:00:00Z",
+                    "progress": 67.5,  # percentage
+                    "last_activity": "2024-01-20T10:30:00Z",
+                    "grade": "B+",
+                }
+            )
 
         return students
 
@@ -255,8 +259,16 @@ class TeacherService:
                 {"title": "Quiz 2", "course": "Data Structures", "due_in": "5 days"},
             ],
             "recent_activity": [
-                {"type": "grade_submitted", "description": "Graded 5 assignments", "timestamp": "2024-01-20T15:30:00Z"},
-                {"type": "announcement_posted", "description": "Posted course announcement", "timestamp": "2024-01-20T10:15:00Z"},
+                {
+                    "type": "grade_submitted",
+                    "description": "Graded 5 assignments",
+                    "timestamp": "2024-01-20T15:30:00Z",
+                },
+                {
+                    "type": "announcement_posted",
+                    "description": "Posted course announcement",
+                    "timestamp": "2024-01-20T10:15:00Z",
+                },
             ],
             "course_overview": courses[:3],  # Show first 3 courses
         }
@@ -342,13 +354,17 @@ class TeacherService:
             "teacher_id": str(teacher_id),
             "course_id": str(course_id),
             "export_type": export_type,
-            "includes": [
-                "course_content",
-                "student_data",
-                "grades",
-                "analytics",
-                "discussion_posts",
-            ] if export_type == "complete" else ["course_content", "grades"],
+            "includes": (
+                [
+                    "course_content",
+                    "student_data",
+                    "grades",
+                    "analytics",
+                    "discussion_posts",
+                ]
+                if export_type == "complete"
+                else ["course_content", "grades"]
+            ),
             "estimated_size": "250MB",
             "created_at": datetime.now(timezone.utc).isoformat(),
             "download_url": f"/api/teachers/exports/{export_id}/download",

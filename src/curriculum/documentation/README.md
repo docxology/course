@@ -180,7 +180,12 @@ Base entity with UUID, timestamps, and soft delete functionality.
 ## Testing
 
 ```bash
-pytest tests/test_documentation.py -v
+pytest tests/integration/test_documentation.py -v
+pytest tests/integration/test_documentation_unit.py -v
+pytest tests/integration/test_documentation_integration.py -v
+pytest tests/integration/test_documentation_comprehensive.py -v
+pytest tests/integration/test_documentation_edge_cases.py -v
+pytest tests/performance/test_documentation_performance.py -v
 ```
 
 ## Configuration

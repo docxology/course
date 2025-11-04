@@ -34,6 +34,7 @@ content = Content(
 ## Testing
 
 ```bash
-pytest tests/test_core/
+pytest tests/unit/test_core.py
+pytest tests/integration/test_learning.py  # Core models used in integration tests
 ```
 

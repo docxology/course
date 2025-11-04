@@ -1,8 +1,8 @@
 """Study tools service for note-taking, flashcards, and practice."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 import random
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.content import Content
 from curriculum.core.user import User
@@ -47,12 +47,11 @@ class StudyToolsService:
         self._notes[note_id] = note
         return note
 
-    def get_user_notes(self, user_id: UUID, content_id: Optional[UUID] = None) -> List[Dict[str, Any]]:
+    def get_user_notes(
+        self, user_id: UUID, content_id: Optional[UUID] = None
+    ) -> List[Dict[str, Any]]:
         """Get notes for a user."""
-        notes = [
-            note for note in self._notes.values()
-            if note["user_id"] == str(user_id)
-        ]
+        notes = [note for note in self._notes.values() if note["user_id"] == str(user_id)]
 
         if content_id:
             notes = [note for note in notes if note["content_id"] == str(content_id)]
@@ -123,7 +122,7 @@ class StudyToolsService:
         # Update deck statistics
         deck["studied_cards"] += session["cards_studied"]
         deck["correct_answers"] += session["correct_answers"]
-        deck["incorrect_answers"] += (session["cards_studied"] - session["correct_answers"])
+        deck["incorrect_answers"] += session["cards_studied"] - session["correct_answers"]
         deck["last_studied"] = session["end_time"]
 
         self._study_sessions[session_id] = session
@@ -142,14 +141,16 @@ class StudyToolsService:
         # Mock quiz generation - in production, this would analyze content and create questions
         questions = []
         for i in range(question_count):
-            questions.append({
-                "id": f"q_{i}",
-                "question": f"Practice question {i+1} about the content",
-                "type": "multiple_choice",
-                "options": ["Option A", "Option B", "Option C", "Option D"],
-                "correct_answer": "Option A",
-                "explanation": f"Explanation for question {i+1}",
-            })
+            questions.append(
+                {
+                    "id": f"q_{i}",
+                    "question": f"Practice question {i+1} about the content",
+                    "type": "multiple_choice",
+                    "options": ["Option A", "Option B", "Option C", "Option D"],
+                    "correct_answer": "Option A",
+                    "explanation": f"Explanation for question {i+1}",
+                }
+            )
 
         quiz = {
             "id": str(quiz_id),
@@ -191,13 +192,15 @@ class StudyToolsService:
             if is_correct:
                 correct_answers += 1
 
-            results.append({
-                "question_id": question["id"],
-                "user_answer": user_answer,
-                "correct_answer": question["correct_answer"],
-                "is_correct": is_correct,
-                "explanation": question["explanation"],
-            })
+            results.append(
+                {
+                    "question_id": question["id"],
+                    "user_answer": user_answer,
+                    "correct_answer": question["correct_answer"],
+                    "is_correct": is_correct,
+                    "explanation": question["explanation"],
+                }
+            )
 
         score = (correct_answers / total_questions) * 100
         passed = score >= 70
@@ -237,7 +240,9 @@ class StudyToolsService:
                         "type": "lesson",
                         "title": f"Study {day} content",
                         "duration": 60,  # minutes
-                        "priority": "high" if day in ["Monday", "Wednesday", "Friday"] else "medium",
+                        "priority": (
+                            "high" if day in ["Monday", "Wednesday", "Friday"] else "medium"
+                        ),
                     },
                     {
                         "type": "practice",
@@ -267,10 +272,7 @@ class StudyToolsService:
     def get_study_statistics(self, user_id: UUID) -> Dict[str, Any]:
         """Get comprehensive study statistics."""
         user_notes = self.get_user_notes(user_id)
-        user_decks = [
-            deck for deck in self._flashcards.values()
-            if deck["user_id"] == str(user_id)
-        ]
+        user_decks = [deck for deck in self._flashcards.values() if deck["user_id"] == str(user_id)]
 
         return {
             "user_id": str(user_id),
@@ -330,11 +332,11 @@ class StudyToolsService:
                 "user_id": str(user_id),
                 "notes": self.get_user_notes(user_id),
                 "flashcard_decks": [
-                    deck for deck in self._flashcards.values()
-                    if deck["user_id"] == str(user_id)
+                    deck for deck in self._flashcards.values() if deck["user_id"] == str(user_id)
                 ],
                 "study_sessions": [
-                    session for session in self._study_sessions.values()
+                    session
+                    for session in self._study_sessions.values()
                     if session["user_id"] == str(user_id)
                 ],
                 "exported_at": "2024-01-01T00:00:00Z",

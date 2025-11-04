@@ -40,7 +40,7 @@ quality = quality_service.assess_content_quality(content)
 ## Testing
 
 ```bash
-pytest tests/test_content_generation/
+pytest tests/integration/test_content_generation_generator.py
 ```
 
 

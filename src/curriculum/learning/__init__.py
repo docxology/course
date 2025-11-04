@@ -2,18 +2,18 @@
 
 # Models are now imported from core
 from curriculum.core import (
-    LearningEvent,
-    AnalyticsReport,
     ActivityVerb,
-    EventType,
-    DeviceType,
+    AnalyticsReport,
     Assessment,
+    DeviceType,
+    DifficultyLevel,
+    EventType,
+    GradingStatus,
+    LearningEvent,
     Question,
+    QuestionType,
     Submission,
     SubmissionResult,
-    QuestionType,
-    DifficultyLevel,
-    GradingStatus,
 )
 
 # Import services

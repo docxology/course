@@ -1,12 +1,11 @@
 """User and authentication models."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import Field
-from typing import Optional
 
 from curriculum.core.base import BaseEntity
 

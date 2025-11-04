@@ -1,8 +1,8 @@
 """Content creation tools and templates service."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 import json
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.content import Content, ContentFormat, ContentType
 
@@ -127,14 +127,26 @@ class ContentCreationService:
         customizations = customizations or {}
 
         if template["id"] == "lesson_template":
-            title = customizations.get('title', 'Lesson Title')
-            objectives = customizations.get('objectives', '- Understand the main concepts\n- Apply knowledge in practice')
-            introduction = customizations.get('introduction', 'Brief overview of the topic covered in this lesson.')
-            main_content = customizations.get('main_content', 'Detailed explanation with examples and illustrations.')
-            examples = customizations.get('examples', '- Example 1: Basic implementation\n- Example 2: Advanced usage')
-            exercises = customizations.get('exercises', '- Practice Question 1\n- Practice Question 2')
-            summary = customizations.get('summary', 'Key takeaways and important concepts to remember.')
-            
+            title = customizations.get("title", "Lesson Title")
+            objectives = customizations.get(
+                "objectives", "- Understand the main concepts\n- Apply knowledge in practice"
+            )
+            introduction = customizations.get(
+                "introduction", "Brief overview of the topic covered in this lesson."
+            )
+            main_content = customizations.get(
+                "main_content", "Detailed explanation with examples and illustrations."
+            )
+            examples = customizations.get(
+                "examples", "- Example 1: Basic implementation\n- Example 2: Advanced usage"
+            )
+            exercises = customizations.get(
+                "exercises", "- Practice Question 1\n- Practice Question 2"
+            )
+            summary = customizations.get(
+                "summary", "Key takeaways and important concepts to remember."
+            )
+
             return f"""
 # {title}
 
@@ -280,8 +292,12 @@ class ContentCreationService:
             "id": assistant_id,
             "type": assistant_type,
             "name": configuration.get("name", f"AI {assistant_type.title()} Assistant"),
-            "description": configuration.get("description", "AI-powered content creation assistant"),
-            "capabilities": configuration.get("capabilities", ["text_generation", "content_suggestions"]),
+            "description": configuration.get(
+                "description", "AI-powered content creation assistant"
+            ),
+            "capabilities": configuration.get(
+                "capabilities", ["text_generation", "content_suggestions"]
+            ),
             "model": configuration.get("model", "gpt-4"),
             "prompt_templates": configuration.get("prompt_templates", {}),
             "is_active": True,
@@ -405,13 +421,16 @@ Use this generated content as a starting point and customize it for your specifi
             "id": validator_id,
             "name": validation_rules.get("name", "Content Validator"),
             "description": validation_rules.get("description", "Automated content validation"),
-            "rules": validation_rules.get("rules", {
-                "min_length": 100,
-                "max_length": 10000,
-                "required_sections": ["introduction", "main_content", "conclusion"],
-                "check_accessibility": True,
-                "check_seo": True,
-            }),
+            "rules": validation_rules.get(
+                "rules",
+                {
+                    "min_length": 100,
+                    "max_length": 10000,
+                    "required_sections": ["introduction", "main_content", "conclusion"],
+                    "check_accessibility": True,
+                    "check_seo": True,
+                },
+            ),
             "is_active": True,
             "created_at": "2024-01-01T00:00:00Z",
         }
@@ -440,12 +459,16 @@ Use this generated content as a starting point and customize it for your specifi
         # Check length
         content_length = len(content.content_body) if content.content_body else 0
         if content_length < rules["min_length"]:
-            validation_results["issues"].append(f"Content too short: {content_length} < {rules['min_length']}")
+            validation_results["issues"].append(
+                f"Content too short: {content_length} < {rules['min_length']}"
+            )
             validation_results["is_valid"] = False
             validation_results["score"] -= 20
 
         if content_length > rules["max_length"]:
-            validation_results["warnings"].append(f"Content very long: {content_length} > {rules['max_length']}")
+            validation_results["warnings"].append(
+                f"Content very long: {content_length} > {rules['max_length']}"
+            )
 
         # Check required sections
         required_sections = rules["required_sections"]

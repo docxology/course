@@ -1,16 +1,16 @@
 """Analytics API routes."""
 
-from typing import List, Dict, Any, Optional
-from uuid import UUID
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, Depends, Query, Path, status
+from typing import Any, Dict, List, Optional
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from pydantic import BaseModel
 
-from curriculum.core.analytics import LearningEvent, EventType, ActivityVerb
-from curriculum.learning.analytics import AnalyticsService
+from curriculum.core.analytics import ActivityVerb, EventType, LearningEvent
 from curriculum.core.user import User, UserPermission
+from curriculum.learning.analytics import AnalyticsService
 from curriculum.routes.dependencies import get_current_user
-
 
 router = APIRouter()
 
@@ -21,6 +21,7 @@ analytics_service = AnalyticsService()
 # Request/Response models
 class TrackEventRequest(BaseModel):
     """Request model for tracking events."""
+
     verb: ActivityVerb
     event_type: EventType
     object_id: UUID
@@ -33,6 +34,7 @@ class TrackEventRequest(BaseModel):
 
 class UserReportResponse(BaseModel):
     """Response model for user analytics report."""
+
     user_id: str
     total_events: int
     content_views: int
@@ -45,6 +47,7 @@ class UserReportResponse(BaseModel):
 
 class ContentReportResponse(BaseModel):
     """Response model for content analytics report."""
+
     content_id: str
     total_views: int
     unique_viewers: int
@@ -55,6 +58,7 @@ class ContentReportResponse(BaseModel):
 
 class EventResponse(BaseModel):
     """Response model for learning events."""
+
     id: str
     user_id: str
     verb: str
@@ -131,7 +135,9 @@ async def get_user_report(
     current_user: User = Depends(get_current_user),
 ):
     """Get analytics report for a user."""
-    if user_id != current_user.id and not current_user.has_permission(UserPermission.ANALYTICS_VIEW):
+    if user_id != current_user.id and not current_user.has_permission(
+        UserPermission.ANALYTICS_VIEW
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions",
@@ -174,7 +180,9 @@ async def get_user_events(
     current_user: User = Depends(get_current_user),
 ):
     """Get events for a specific user."""
-    if user_id != current_user.id and not current_user.has_permission(UserPermission.ANALYTICS_VIEW):
+    if user_id != current_user.id and not current_user.has_permission(
+        UserPermission.ANALYTICS_VIEW
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions",

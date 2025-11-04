@@ -1,11 +1,11 @@
 """Course management service for teachers."""
 
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from datetime import datetime, timedelta
 
-from curriculum.core.content import Content, ContentStatus, ContentType
 from curriculum.core.assessment import Assessment, Question, QuestionType
+from curriculum.core.content import Content, ContentStatus, ContentType
 
 
 class CourseManagementService:
@@ -136,16 +136,18 @@ class CourseManagementService:
         # Mock content data - in production, this would query from database
         content_list = []
         for i, content_id in enumerate(self._course_content[course_id]):
-            content_list.append({
-                "id": content_id,
-                "title": f"Lesson {i+1}",
-                "content_type": "lesson",
-                "status": "published",
-                "order_index": i,
-                "estimated_duration": 30,
-                "view_count": 45,
-                "last_updated": "2024-01-20T10:00:00Z",
-            })
+            content_list.append(
+                {
+                    "id": content_id,
+                    "title": f"Lesson {i+1}",
+                    "content_type": "lesson",
+                    "status": "published",
+                    "order_index": i,
+                    "estimated_duration": 30,
+                    "view_count": 45,
+                    "last_updated": "2024-01-20T10:00:00Z",
+                }
+            )
 
         return content_list
 
@@ -157,19 +159,21 @@ class CourseManagementService:
         # Mock assessment data
         assessment_list = []
         for i, assessment_id in enumerate(self._course_assessments[course_id]):
-            assessment_list.append({
-                "id": assessment_id,
-                "title": f"Quiz {i+1}",
-                "assessment_type": "quiz",
-                "question_count": 10,
-                "total_points": 100,
-                "passing_score": 70,
-                "attempts_allowed": 2,
-                "submission_count": 25,
-                "average_score": 78.5,
-                "is_published": True,
-                "created_at": "2024-01-15T09:00:00Z",
-            })
+            assessment_list.append(
+                {
+                    "id": assessment_id,
+                    "title": f"Quiz {i+1}",
+                    "assessment_type": "quiz",
+                    "question_count": 10,
+                    "total_points": 100,
+                    "passing_score": 70,
+                    "attempts_allowed": 2,
+                    "submission_count": 25,
+                    "average_score": 78.5,
+                    "is_published": True,
+                    "created_at": "2024-01-15T09:00:00Z",
+                }
+            )
 
         return assessment_list
 
@@ -290,19 +294,25 @@ class CourseManagementService:
             "teacher_id": str(teacher_id),
             "title": syllabus_data.get("title", "Course Syllabus"),
             "content": syllabus_data.get("content", ""),
-            "policies": syllabus_data.get("policies", {
-                "attendance": "Regular attendance expected",
-                "late_submissions": "10% penalty per day",
-                "academic_integrity": "All work must be original",
-            }),
+            "policies": syllabus_data.get(
+                "policies",
+                {
+                    "attendance": "Regular attendance expected",
+                    "late_submissions": "10% penalty per day",
+                    "academic_integrity": "All work must be original",
+                },
+            ),
             "schedule": syllabus_data.get("schedule", []),
-            "grading_scale": syllabus_data.get("grading_scale", {
-                "A": "90-100",
-                "B": "80-89",
-                "C": "70-79",
-                "D": "60-69",
-                "F": "0-59",
-            }),
+            "grading_scale": syllabus_data.get(
+                "grading_scale",
+                {
+                    "A": "90-100",
+                    "B": "80-89",
+                    "C": "70-79",
+                    "D": "60-69",
+                    "F": "0-59",
+                },
+            ),
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 

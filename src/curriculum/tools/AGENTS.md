@@ -12,7 +12,10 @@ tools/
 ├── formatters.py       # Data formatting and transformation
 ├── security.py         # Security and encryption utilities
 ├── file_handling.py    # File operations and validation
-└── README.md           # Module documentation
+├── logging_config.py   # Logging configuration
+├── __init__.py         # Module exports
+├── README.md           # Module documentation
+└── AGENTS.md           # This file
 ```
 
 ## Validation Utilities
@@ -817,7 +820,7 @@ Before adding new utility functions:
 
 ### Internal Documentation
 - `README.md`: Module overview and utility categories
-- `tests/test_tools.py`: Comprehensive utility tests
+- `tests/unit/test_tools.py`: Comprehensive utility tests
 
 ### External References
 - [Python Security Best Practices](https://docs.python.org/3/library/security.html)
@@ -827,7 +830,6 @@ Before adding new utility functions:
 
 ---
 
-**Last Updated**: September 2025
 
 **For Questions**: Check the utility tests for usage examples and edge cases
 

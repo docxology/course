@@ -36,6 +36,6 @@ uvicorn curriculum.routes.main:app --reload
 ## Testing
 
 ```bash
-pytest tests/test_api/
+pytest tests/integration/test_routes.py
 ```
 

@@ -1,9 +1,10 @@
 """Content rendering and compilation service."""
 
-from typing import Dict, Any, Optional
-from uuid import UUID
-import markdown
 import hashlib
+from typing import Any, Dict, Optional
+from uuid import UUID
+
+import markdown
 
 from curriculum.core.content import Content, ContentFormat
 
@@ -18,7 +19,15 @@ class RenderingService:
         )
 
     def render_content(self, content: Content, target_format: str = "html") -> Dict[str, Any]:
-        """Render content to target format."""
+        """Render content to target format.
+
+        Args:
+            content: Content instance to render
+            target_format: Target format (defaults to "html")
+
+        Returns:
+            Dictionary containing rendered content with format, content, title, and metadata
+        """
         if content.format == ContentFormat.MARKDOWN:
             return self._render_markdown(content, target_format)
         elif content.format == ContentFormat.HTML:
@@ -77,7 +86,15 @@ class RenderingService:
         }
 
     def generate_scorm_package(self, content: Content, course_id: str) -> Dict[str, Any]:
-        """Generate SCORM package metadata (placeholder)."""
+        """Generate SCORM package metadata (placeholder).
+
+        Args:
+            content: Content instance to package
+            course_id: Course identifier string
+
+        Returns:
+            Dictionary containing SCORM package metadata including manifest
+        """
         return {
             "package_id": course_id,
             "content_id": str(content.id),
@@ -107,7 +124,14 @@ class RenderingService:
 </manifest>"""
 
     def validate_content(self, content: Content) -> Dict[str, Any]:
-        """Validate content structure and quality."""
+        """Validate content structure and quality.
+
+        Args:
+            content: Content instance to validate
+
+        Returns:
+            Dictionary containing validation results with valid flag, issues, warnings, and score
+        """
         issues = []
         warnings = []
 
@@ -137,12 +161,26 @@ class RenderingService:
         }
 
     def calculate_content_hash(self, content: Content) -> str:
-        """Calculate hash of content for change detection."""
+        """Calculate hash of content for change detection.
+
+        Args:
+            content: Content instance to hash
+
+        Returns:
+            SHA256 hash string of the content
+        """
         content_string = f"{content.title}:{content.content_body}:{content.description}"
         return hashlib.sha256(content_string.encode()).hexdigest()
 
     def optimize_content(self, content: Content) -> Dict[str, Any]:
-        """Optimize content for delivery (placeholder)."""
+        """Optimize content for delivery (placeholder).
+
+        Args:
+            content: Content instance to optimize
+
+        Returns:
+            Dictionary containing optimization results with size metrics and applied optimizations
+        """
         return {
             "content_id": str(content.id),
             "original_size": len(content.content_body) if content.content_body else 0,

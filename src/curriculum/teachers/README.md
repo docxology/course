@@ -48,7 +48,8 @@ enrollment = student_service.enroll_student(
 ## Testing
 
 ```bash
-pytest tests/test_teachers/
+pytest tests/integration/test_teachers_teacher_service.py
+pytest tests/unit/test_teachers.py
 ```
 
 

@@ -1,8 +1,8 @@
 """Content workflow service for managing content creation processes."""
 
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from datetime import datetime, timedelta
 
 from curriculum.core.content import Content, ContentStatus
 from curriculum.core.user import User
@@ -13,8 +13,8 @@ class ContentWorkflowService:
 
     def __init__(self) -> None:
         """Initialize content workflow service."""
-        self._workflows: Dict[UUID, Dict[str, Any]] = {}
-        self._workflow_steps: Dict[UUID, List[Dict[str, Any]]] = {}
+        self._workflows: Dict[str, Dict[str, Any]] = {}
+        self._workflow_steps: Dict[str, List[Dict[str, Any]]] = {}
         self._content_reviews: Dict[UUID, List[Dict[str, Any]]] = {}
 
     def create_content_workflow(
@@ -49,11 +49,12 @@ class ContentWorkflowService:
 
     def get_workflow_status(self, workflow_id: UUID) -> Dict[str, Any]:
         """Get current status of a workflow."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
-        steps = self._workflow_steps.get(workflow_id, [])
+        steps = self._workflow_steps.get(workflow_key, [])
         completed_steps = sum(1 for step in steps if step.get("status") == "completed")
 
         workflow["progress"] = (completed_steps / len(steps)) * 100 if steps else 0
@@ -67,11 +68,12 @@ class ContentWorkflowService:
         assigned_user_id: UUID,
     ) -> Dict[str, Any]:
         """Assign a workflow step to a user."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
-        steps = self._workflow_steps.get(workflow_id, [])
+        steps = self._workflow_steps.get(workflow_key, [])
         if step_index >= len(steps):
             return {"error": "Invalid step index"}
 
@@ -89,11 +91,12 @@ class ContentWorkflowService:
         notes: str = "",
     ) -> Dict[str, Any]:
         """Mark a workflow step as completed."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
-        steps = self._workflow_steps.get(workflow_id, [])
+        steps = self._workflow_steps.get(workflow_key, [])
         if step_index >= len(steps):
             return {"error": "Invalid step index"}
 
@@ -118,7 +121,8 @@ class ContentWorkflowService:
         review_type: str = "internal",
     ) -> Dict[str, Any]:
         """Submit content for review in the workflow."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
@@ -183,23 +187,26 @@ class ContentWorkflowService:
 
     def get_workflow_timeline(self, workflow_id: UUID) -> List[Dict[str, Any]]:
         """Get timeline of workflow events."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return []
 
-        steps = self._workflow_steps.get(workflow_id, [])
+        steps = self._workflow_steps.get(workflow_key, [])
         timeline = []
 
         for i, step in enumerate(steps):
-            timeline.append({
-                "step": i + 1,
-                "title": step.get("title", f"Step {i+1}"),
-                "status": step.get("status", "pending"),
-                "assigned_to": step.get("assigned_to"),
-                "started_at": step.get("started_at"),
-                "completed_at": step.get("completed_at"),
-                "notes": step.get("notes", ""),
-            })
+            timeline.append(
+                {
+                    "step": i + 1,
+                    "title": step.get("title", f"Step {i+1}"),
+                    "status": step.get("status", "pending"),
+                    "assigned_to": step.get("assigned_to"),
+                    "started_at": step.get("started_at"),
+                    "completed_at": step.get("completed_at"),
+                    "notes": step.get("notes", ""),
+                }
+            )
 
         return timeline
 
@@ -262,16 +269,21 @@ class ContentWorkflowService:
         workflow_id: UUID,
     ) -> Dict[str, Any]:
         """Track metrics for workflow performance."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
-        steps = self._workflow_steps.get(workflow_id, [])
+        steps = self._workflow_steps.get(workflow_key, [])
         completed_steps = [s for s in steps if s.get("status") == "completed"]
 
         total_estimated_time = sum(s.get("estimated_duration", 60) for s in steps)
         actual_time = sum(
-            (datetime.fromisoformat(s.get("completed_at", "")) - datetime.fromisoformat(s.get("started_at", ""))).total_seconds() / 60
+            (
+                datetime.fromisoformat(s.get("completed_at", ""))
+                - datetime.fromisoformat(s.get("started_at", ""))
+            ).total_seconds()
+            / 60
             for s in completed_steps
             if s.get("started_at") and s.get("completed_at")
         )
@@ -285,7 +297,9 @@ class ContentWorkflowService:
             "actual_time_spent": actual_time,
             "efficiency": (total_estimated_time / max(actual_time, 1)) * 100,
             "bottlenecks": self._identify_bottlenecks(steps),
-            "average_step_completion_time": actual_time / len(completed_steps) if completed_steps else 0,
+            "average_step_completion_time": (
+                actual_time / len(completed_steps) if completed_steps else 0
+            ),
         }
 
     def _identify_bottlenecks(self, steps: List[Dict[str, Any]]) -> List[str]:
@@ -294,13 +308,17 @@ class ContentWorkflowService:
 
         for step in steps:
             if step.get("status") == "in_progress":
-                duration = 0
+                duration = 0.0
                 if step.get("started_at"):
                     start_time = datetime.fromisoformat(step["started_at"])
-                    duration = (datetime.now(timezone.utc) - start_time).total_seconds() / 3600  # hours
+                    duration = (
+                        datetime.now(timezone.utc) - start_time
+                    ).total_seconds() / 3600  # hours
 
                 if duration > 24:  # More than 24 hours
-                    bottlenecks.append(f"Step '{step.get('title', 'Unknown')}' has been in progress for {duration:.1f} hours")
+                    bottlenecks.append(
+                        f"Step '{step.get('title', 'Unknown')}' has been in progress for {duration:.1f} hours"
+                    )
 
         return bottlenecks
 
@@ -311,7 +329,8 @@ class ContentWorkflowService:
         permissions: Dict[str, str],
     ) -> Dict[str, Any]:
         """Create a collaborative workflow with multiple contributors."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
@@ -332,7 +351,8 @@ class ContentWorkflowService:
         report_type: str = "comprehensive",
     ) -> Dict[str, Any]:
         """Generate a comprehensive workflow report."""
-        workflow = self._workflows.get(workflow_id)
+        workflow_key = str(workflow_id)
+        workflow = self._workflows.get(workflow_key)
         if not workflow:
             return {"error": "Workflow not found"}
 
@@ -361,7 +381,11 @@ class ContentWorkflowService:
             "active_workflows": total_workflows - completed_workflows,
             "completed_workflows": completed_workflows,
             "average_completion_time": 168,  # hours (1 week)
-            "average_progress": sum(w["progress"] for w in self._workflows.values()) / total_workflows if total_workflows > 0 else 0,
+            "average_progress": (
+                sum(w["progress"] for w in self._workflows.values()) / total_workflows
+                if total_workflows > 0
+                else 0
+            ),
             "most_common_bottlenecks": [
                 "Content review delays",
                 "Technical implementation issues",

@@ -1,8 +1,8 @@
 """Student management service for teachers."""
 
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from datetime import datetime
 
 from curriculum.core.user import User, UserRole
 
@@ -13,7 +13,9 @@ class StudentManagementService:
     def __init__(self) -> None:
         """Initialize student management service."""
         self._enrollments: dict[UUID, List[UUID]] = {}  # course_id -> student_ids
-        self._student_grades: dict[UUID, Dict[str, Any]] = {}  # student_id -> grades
+        self._student_grades: dict[UUID, dict[UUID, dict[UUID, Dict[str, Any]]]] = (
+            {}
+        )  # student_id -> course_id -> assessment_id -> grades
         self._student_notes: dict[UUID, List[Dict[str, Any]]] = {}  # teacher_id -> notes
 
     def enroll_student(
@@ -69,17 +71,19 @@ class StudentManagementService:
         # Mock student data - in production, this would query from database
         roster = []
         for i, student_id in enumerate(student_ids):
-            roster.append({
-                "id": str(student_id),
-                "name": f"Student {i+1}",
-                "email": f"student{i+1}@university.edu",
-                "enrollment_date": "2024-01-15T00:00:00Z",
-                "status": "active",
-                "progress": 67.5,  # percentage
-                "last_activity": "2024-01-20T10:30:00Z",
-                "grade": "B+",
-                "attendance_rate": 85,  # percentage
-            })
+            roster.append(
+                {
+                    "id": str(student_id),
+                    "name": f"Student {i+1}",
+                    "email": f"student{i+1}@university.edu",
+                    "enrollment_date": "2024-01-15T00:00:00Z",
+                    "status": "active",
+                    "progress": 67.5,  # percentage
+                    "last_activity": "2024-01-20T10:30:00Z",
+                    "grade": "B+",
+                    "attendance_rate": 85,  # percentage
+                }
+            )
 
         return roster
 
@@ -116,7 +120,7 @@ class StudentManagementService:
     ) -> Dict[str, Any]:
         """Get all grades for a student in a course."""
         student_grades = self._student_grades.get(student_id, {})
-        course_grades = student_grades.get(course_id, {})
+        course_grades: dict[UUID, Dict[str, Any]] = student_grades.get(course_id, {})
 
         # Mock grade data
         return {
@@ -237,7 +241,7 @@ class StudentManagementService:
         self,
         teacher_id: UUID,
         course_id: UUID,
-        criteria: Dict[str, Any] = None,
+        criteria: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
         """Get students who may need additional help."""
         criteria = criteria or {}
@@ -366,7 +370,7 @@ class StudentManagementService:
         report_type: str = "comprehensive",
     ) -> Dict[str, Any]:
         """Generate a comprehensive student report."""
-        student_data = {
+        student_data: Dict[str, Any] = {
             "student_id": str(student_id),
             "course_id": str(course_id),
             "report_type": report_type,
@@ -374,39 +378,41 @@ class StudentManagementService:
         }
 
         if report_type == "comprehensive":
-            student_data.update({
-                "academic_performance": {
-                    "current_grade": "B+",
-                    "quiz_average": 82.5,
-                    "assignment_average": 87.3,
-                    "participation_score": 78,
-                },
-                "engagement_analysis": {
-                    "attendance_rate": 85,
-                    "forum_posts": 12,
-                    "study_group_participation": 3,
-                    "office_hours_visits": 2,
-                },
-                "progress_tracking": {
-                    "lessons_completed": 8,
-                    "total_lessons": 12,
-                    "current_pace": "on_track",
-                    "estimated_completion": "2024-02-15T00:00:00Z",
-                },
-                "areas_of_concern": [
-                    "Struggling with advanced algorithms",
-                    "Low participation in discussions",
-                ],
-                "strengths": [
-                    "Strong understanding of Python basics",
-                    "Consistent assignment submission",
-                ],
-                "recommendations": [
-                    "Additional tutoring for algorithms",
-                    "Encourage discussion participation",
-                    "Continue strong foundation building",
-                ],
-            })
+            student_data.update(
+                {
+                    "academic_performance": {
+                        "current_grade": "B+",
+                        "quiz_average": 82.5,
+                        "assignment_average": 87.3,
+                        "participation_score": 78,
+                    },
+                    "engagement_analysis": {
+                        "attendance_rate": 85,
+                        "forum_posts": 12,
+                        "study_group_participation": 3,
+                        "office_hours_visits": 2,
+                    },
+                    "progress_tracking": {
+                        "lessons_completed": 8,
+                        "total_lessons": 12,
+                        "current_pace": "on_track",
+                        "estimated_completion": "2024-02-15T00:00:00Z",
+                    },
+                    "areas_of_concern": [
+                        "Struggling with advanced algorithms",
+                        "Low participation in discussions",
+                    ],
+                    "strengths": [
+                        "Strong understanding of Python basics",
+                        "Consistent assignment submission",
+                    ],
+                    "recommendations": [
+                        "Additional tutoring for algorithms",
+                        "Encourage discussion participation",
+                        "Continue strong foundation building",
+                    ],
+                }
+            )
 
         return student_data
 
@@ -421,7 +427,9 @@ class StudentManagementService:
         # Calculate class statistics
         total_students = len(roster)
         average_progress = sum(s["progress"] for s in roster) / total_students if roster else 0
-        average_attendance = sum(s["attendance_rate"] for s in roster) / total_students if roster else 0
+        average_attendance = (
+            sum(s["attendance_rate"] for s in roster) / total_students if roster else 0
+        )
 
         return {
             "course_id": str(course_id),

@@ -87,7 +87,7 @@ def set_course_schedule(self, teacher_id: UUID, course_id: UUID, schedule: List[
     return {
         "course_id": str(course_id),
         "schedule": schedule,
-        "academic_calendar": "Spring 2024",
+        "academic_calendar": "Spring Semester",  # Example academic term
         "time_zone": "UTC",
     }
 ```

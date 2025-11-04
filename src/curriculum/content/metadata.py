@@ -4,12 +4,12 @@ from typing import List, Optional
 from uuid import UUID
 
 from curriculum.core.metadata import (
-    Metadata,
     DublinCore,
     LRMIMetadata,
+    Metadata,
+    ResourceType,
     Tag,
     Taxonomy,
-    ResourceType,
 )
 
 
@@ -30,7 +30,17 @@ class MetadataService:
         description: Optional[str] = None,
         resource_type: ResourceType = ResourceType.TEXT,
     ) -> Metadata:
-        """Create metadata for content."""
+        """Create metadata for content.
+
+        Args:
+            content_id: UUID of the content to create metadata for
+            title: Metadata title
+            description: Optional description
+            resource_type: Type of resource (defaults to TEXT)
+
+        Returns:
+            Created Metadata instance
+        """
         dublin_core = DublinCore(
             title=title,
             description=description,
@@ -42,11 +52,25 @@ class MetadataService:
         return metadata
 
     def get_metadata(self, metadata_id: UUID) -> Optional[Metadata]:
-        """Get metadata by ID."""
+        """Get metadata by ID.
+
+        Args:
+            metadata_id: UUID of the metadata to retrieve
+
+        Returns:
+            Metadata instance if found, None otherwise
+        """
         return self._metadata.get(metadata_id)
 
     def get_metadata_by_content(self, content_id: UUID) -> Optional[Metadata]:
-        """Get metadata for specific content."""
+        """Get metadata for specific content.
+
+        Args:
+            content_id: UUID of the content
+
+        Returns:
+            Metadata instance if found, None otherwise
+        """
         for metadata in self._metadata.values():
             if metadata.content_id == content_id:
                 return metadata
@@ -60,7 +84,18 @@ class MetadataService:
         creators: Optional[List[str]] = None,
         subjects: Optional[List[str]] = None,
     ) -> Optional[Metadata]:
-        """Update Dublin Core metadata."""
+        """Update Dublin Core metadata.
+
+        Args:
+            metadata_id: UUID of the metadata to update
+            title: Optional new title
+            description: Optional new description
+            creators: Optional list of creators
+            subjects: Optional list of subjects
+
+        Returns:
+            Updated Metadata instance if found, None otherwise
+        """
         metadata = self.get_metadata(metadata_id)
         if not metadata:
             return None
@@ -84,7 +119,17 @@ class MetadataService:
         learning_resource_type: Optional[List[str]] = None,
         time_required: Optional[int] = None,
     ) -> Optional[Metadata]:
-        """Add or update LRMI metadata."""
+        """Add or update LRMI metadata.
+
+        Args:
+            metadata_id: UUID of the metadata to update
+            educational_use: Optional list of educational use cases
+            learning_resource_type: Optional list of learning resource types
+            time_required: Optional time required in minutes
+
+        Returns:
+            Updated Metadata instance if found, None otherwise
+        """
         metadata = self.get_metadata(metadata_id)
         if not metadata:
             return None
@@ -105,7 +150,16 @@ class MetadataService:
     def add_custom_field(
         self, metadata_id: UUID, field_name: str, field_value: str
     ) -> Optional[Metadata]:
-        """Add custom metadata field."""
+        """Add custom metadata field.
+
+        Args:
+            metadata_id: UUID of the metadata
+            field_name: Name of the custom field
+            field_value: Value for the custom field
+
+        Returns:
+            Updated Metadata instance if found, None otherwise
+        """
         metadata = self.get_metadata(metadata_id)
         if not metadata:
             return None
@@ -115,7 +169,14 @@ class MetadataService:
         return metadata
 
     def create_or_get_tag(self, tag_name: str) -> Tag:
-        """Create a new tag or get existing one."""
+        """Create a new tag or get existing one.
+
+        Args:
+            tag_name: Name of the tag
+
+        Returns:
+            Tag instance (created or existing)
+        """
         slug = tag_name.lower().replace(" ", "-")
 
         # Check if tag exists
@@ -130,17 +191,38 @@ class MetadataService:
         return tag
 
     def get_tag(self, tag_id: UUID) -> Optional[Tag]:
-        """Get tag by ID."""
+        """Get tag by ID.
+
+        Args:
+            tag_id: UUID of the tag
+
+        Returns:
+            Tag instance if found, None otherwise
+        """
         return self._tags.get(tag_id)
 
     def get_tag_by_name(self, tag_name: str) -> Optional[Tag]:
-        """Get tag by name."""
+        """Get tag by name.
+
+        Args:
+            tag_name: Name of the tag
+
+        Returns:
+            Tag instance if found, None otherwise
+        """
         slug = tag_name.lower().replace(" ", "-")
         tag_id = self._tag_name_index.get(slug)
         return self._tags.get(tag_id) if tag_id else None
 
     def increment_tag_usage(self, tag_name: str) -> Optional[Tag]:
-        """Increment tag usage count."""
+        """Increment tag usage count.
+
+        Args:
+            tag_name: Name of the tag
+
+        Returns:
+            Updated Tag instance
+        """
         tag = self.create_or_get_tag(tag_name)
         tag.increment_usage()
         return tag
@@ -152,7 +234,17 @@ class MetadataService:
         parent_id: Optional[UUID] = None,
         level: int = 0,
     ) -> Taxonomy:
-        """Create a taxonomy category."""
+        """Create a taxonomy category.
+
+        Args:
+            name: Taxonomy name
+            path: Taxonomy path
+            parent_id: Optional parent taxonomy ID
+            level: Taxonomy level (defaults to 0)
+
+        Returns:
+            Created Taxonomy instance
+        """
         taxonomy = Taxonomy(
             name=name,
             path=path,
@@ -163,22 +255,43 @@ class MetadataService:
         return taxonomy
 
     def get_taxonomy(self, taxonomy_id: UUID) -> Optional[Taxonomy]:
-        """Get taxonomy by ID."""
+        """Get taxonomy by ID.
+
+        Args:
+            taxonomy_id: UUID of the taxonomy
+
+        Returns:
+            Taxonomy instance if found, None otherwise
+        """
         return self._taxonomies.get(taxonomy_id)
 
     def get_taxonomy_children(self, parent_id: UUID) -> List[Taxonomy]:
-        """Get child taxonomies."""
-        return [
-            tax
-            for tax in self._taxonomies.values()
-            if tax.parent_id == parent_id
-        ]
+        """Get child taxonomies.
+
+        Args:
+            parent_id: UUID of the parent taxonomy
+
+        Returns:
+            List of child Taxonomy instances
+        """
+        return [tax for tax in self._taxonomies.values() if tax.parent_id == parent_id]
 
     def get_all_tags(self) -> List[Tag]:
-        """Get all tags."""
+        """Get all tags.
+
+        Returns:
+            List of all Tag instances
+        """
         return list(self._tags.values())
 
     def get_popular_tags(self, limit: int = 10) -> List[Tag]:
-        """Get most popular tags by usage count."""
+        """Get most popular tags by usage count.
+
+        Args:
+            limit: Maximum number of tags to return (defaults to 10)
+
+        Returns:
+            List of most popular Tag instances, sorted by usage count
+        """
         tags = sorted(self._tags.values(), key=lambda t: t.usage_count, reverse=True)
         return tags[:limit]

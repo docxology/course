@@ -12,7 +12,9 @@ content/
 ├── metadata.py     # Metadata management
 ├── rendering.py    # Multi-format rendering
 ├── version_control.py # Version control
-└── README.md       # Module documentation
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Development Guidelines

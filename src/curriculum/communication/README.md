@@ -43,6 +43,6 @@ message = comm_service.send_message(
 ## Testing
 
 ```bash
-pytest tests/test_communication/
+pytest tests/integration/test_communication.py
 ```
 

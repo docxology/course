@@ -38,6 +38,7 @@ generated = content_creation.generate_content_with_ai(
 ## Testing
 
 ```bash
-pytest tests/test_ai/
+pytest tests/integration/test_ai.py
+pytest tests/integration/test_ai_content_creation_service.py
 ```
 

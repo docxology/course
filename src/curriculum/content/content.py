@@ -3,8 +3,14 @@
 from typing import List, Optional
 from uuid import UUID
 
-from curriculum.core.content import Content, ContentStatus, ContentVersion, ContentFormat
 from curriculum.core.base import PagedResponse
+from curriculum.core.content import (
+    Content,
+    ContentFormat,
+    ContentStatus,
+    ContentType,
+    ContentVersion,
+)
 
 
 class ContentService:
@@ -18,13 +24,25 @@ class ContentService:
     def create_content(
         self,
         title: str,
-        content_type: str,
+        content_type: ContentType,
         format: ContentFormat,
         author_id: UUID,
         description: Optional[str] = None,
         content_body: Optional[str] = None,
     ) -> Content:
-        """Create new content."""
+        """Create new content.
+
+        Args:
+            title: Content title
+            content_type: Type of content (ContentType enum)
+            format: Content format (ContentFormat enum)
+            author_id: ID of the content author
+            description: Optional content description
+            content_body: Optional content body text
+
+        Returns:
+            Created Content instance
+        """
         content = Content(
             title=title,
             description=description,
@@ -38,7 +56,14 @@ class ContentService:
         return content
 
     def get_content(self, content_id: UUID) -> Optional[Content]:
-        """Retrieve content by ID."""
+        """Retrieve content by ID.
+
+        Args:
+            content_id: UUID of the content to retrieve
+
+        Returns:
+            Content instance if found, None otherwise
+        """
         return self._content_store.get(content_id)
 
     def update_content(
@@ -48,7 +73,17 @@ class ContentService:
         description: Optional[str] = None,
         content_body: Optional[str] = None,
     ) -> Optional[Content]:
-        """Update content fields."""
+        """Update content fields.
+
+        Args:
+            content_id: UUID of the content to update
+            title: Optional new title
+            description: Optional new description
+            content_body: Optional new content body
+
+        Returns:
+            Updated Content instance if found, None otherwise
+        """
         content = self.get_content(content_id)
         if not content:
             return None
@@ -64,7 +99,14 @@ class ContentService:
         return content
 
     def delete_content(self, content_id: UUID) -> bool:
-        """Soft delete content."""
+        """Soft delete content.
+
+        Args:
+            content_id: UUID of the content to delete
+
+        Returns:
+            True if content was deleted, False if not found
+        """
         content = self.get_content(content_id)
         if not content:
             return False
@@ -73,7 +115,14 @@ class ContentService:
         return True
 
     def publish_content(self, content_id: UUID) -> Optional[Content]:
-        """Publish content (change status to published)."""
+        """Publish content (change status to published).
+
+        Args:
+            content_id: UUID of the content to publish
+
+        Returns:
+            Published Content instance if successful, None if content not found or not approved
+        """
         content = self.get_content(content_id)
         if not content:
             return None
@@ -85,7 +134,15 @@ class ContentService:
         return None
 
     def transition_status(self, content_id: UUID, new_status: ContentStatus) -> Optional[Content]:
-        """Transition content to a new status."""
+        """Transition content to a new status.
+
+        Args:
+            content_id: UUID of the content to transition
+            new_status: Target status (ContentStatus enum)
+
+        Returns:
+            Updated Content instance if successful, None if content not found or transition invalid
+        """
         content = self.get_content(content_id)
         if not content:
             return None
@@ -103,7 +160,17 @@ class ContentService:
         status: Optional[ContentStatus] = None,
         author_id: Optional[UUID] = None,
     ) -> PagedResponse:
-        """List content with pagination and filtering."""
+        """List content with pagination and filtering.
+
+        Args:
+            page: Page number (1-indexed)
+            page_size: Number of items per page
+            status: Optional filter by content status
+            author_id: Optional filter by author ID
+
+        Returns:
+            PagedResponse containing items, total count, and pagination info
+        """
         contents = list(self._content_store.values())
 
         # Filter by status
@@ -126,7 +193,15 @@ class ContentService:
         return PagedResponse.create(items=items, total=total, page=page, page_size=page_size)
 
     def search_content(self, query: str, limit: int = 20) -> List[Content]:
-        """Search content by title and description."""
+        """Search content by title and description.
+
+        Args:
+            query: Search query string
+            limit: Maximum number of results to return
+
+        Returns:
+            List of matching Content instances
+        """
         query_lower = query.lower()
         results = []
 
@@ -147,7 +222,15 @@ class ContentService:
         return results
 
     def add_tag(self, content_id: UUID, tag: str) -> Optional[Content]:
-        """Add a tag to content."""
+        """Add a tag to content.
+
+        Args:
+            content_id: UUID of the content
+            tag: Tag string to add
+
+        Returns:
+            Updated Content instance if found, None otherwise
+        """
         content = self.get_content(content_id)
         if not content:
             return None
@@ -159,7 +242,15 @@ class ContentService:
         return content
 
     def remove_tag(self, content_id: UUID, tag: str) -> Optional[Content]:
-        """Remove a tag from content."""
+        """Remove a tag from content.
+
+        Args:
+            content_id: UUID of the content
+            tag: Tag string to remove
+
+        Returns:
+            Updated Content instance if found, None otherwise
+        """
         content = self.get_content(content_id)
         if not content:
             return None
@@ -171,7 +262,14 @@ class ContentService:
         return content
 
     def get_children(self, parent_id: UUID) -> List[Content]:
-        """Get all child content of a parent."""
+        """Get all child content of a parent.
+
+        Args:
+            parent_id: UUID of the parent content
+
+        Returns:
+            List of child Content instances
+        """
         return [
             content
             for content in self._content_store.values()
@@ -179,7 +277,14 @@ class ContentService:
         ]
 
     def increment_views(self, content_id: UUID) -> Optional[Content]:
-        """Increment view count for content."""
+        """Increment view count for content.
+
+        Args:
+            content_id: UUID of the content
+
+        Returns:
+            Updated Content instance if found, None otherwise
+        """
         content = self.get_content(content_id)
         if content:
             content.increment_views()
@@ -187,7 +292,14 @@ class ContentService:
         return None
 
     def increment_downloads(self, content_id: UUID) -> Optional[Content]:
-        """Increment download count for content."""
+        """Increment download count for content.
+
+        Args:
+            content_id: UUID of the content
+
+        Returns:
+            Updated Content instance if found, None otherwise
+        """
         content = self.get_content(content_id)
         if content:
             content.increment_downloads()
@@ -195,5 +307,9 @@ class ContentService:
         return None
 
     def get_content_count(self) -> int:
-        """Get total count of non-deleted content."""
+        """Get total count of non-deleted content.
+
+        Returns:
+            Total number of non-deleted content items
+        """
         return sum(1 for c in self._content_store.values() if not c.is_deleted)

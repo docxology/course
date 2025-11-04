@@ -11,7 +11,9 @@ ai/
 ├── ai_features.py     # Intelligent tutoring and recommendations
 ├── content_creation.py # AI-assisted content generation
 ├── research.py        # Research tools and citations
-└── README.md          # Module documentation
+├── __init__.py        # Module exports
+├── README.md          # Module documentation
+└── AGENTS.md          # This file
 ```
 
 ## Development Guidelines

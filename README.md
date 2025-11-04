@@ -63,7 +63,9 @@ src/curriculum/
 │   ├── base.py         # Base entities and mixins
 │   ├── content.py      # Core content models
 │   ├── user.py         # User models
-│   └── metadata.py     # Metadata models
+│   ├── metadata.py     # Metadata models
+│   ├── analytics.py    # Analytics models
+│   └── assessment.py   # Assessment models
 ├── content/             # Content management services
 │   ├── content.py      # Content CRUD operations
 │   ├── metadata.py     # Metadata management
@@ -71,11 +73,14 @@ src/curriculum/
 │   └── version_control.py # Version control
 ├── learning/            # Learning and assessment services
 │   ├── analytics.py    # Learning analytics
-│   ├── assessment.py  # Assessment management
-│   └── progress.py     # Progress tracking
+│   ├── assessment.py    # Assessment management
+│   ├── progress.py     # Progress tracking
+│   └── study_tools.py  # Study tools and aids
 ├── users/              # User management and authentication
-│   ├── user.py        # User service
-│   └── authentication.py # Auth service
+│   ├── user.py         # UserService and AuthenticationService (both in same file)
+│   ├── __init__.py     # Module exports
+│   ├── README.md       # Module documentation
+│   └── AGENTS.md       # Development guide
 ├── ai/                 # AI-powered features
 │   ├── ai_features.py # Intelligent tutoring
 │   ├── content_creation.py # AI content generation
@@ -97,6 +102,16 @@ src/curriculum/
 │   ├── search.py      # Elasticsearch integration
 │   ├── visualization.py # Interactive charts
 │   └── website.py     # Course websites
+├── teachers/           # Teacher and instructor services
+│   ├── teacher.py     # Teacher service
+│   ├── course_management.py # Course management
+│   └── student_management.py # Student management
+├── content_generation/ # Content generation services
+│   ├── generator.py   # Content generation
+│   ├── workflow.py    # Workflow management
+│   └── quality.py     # Quality assessment
+├── documentation/      # Documentation generation
+│   └── generator.py   # Documentation generator
 ├── db/                 # Database layer
 │   ├── base.py        # Database interface
 │   ├── mongodb.py     # MongoDB adapter
@@ -105,27 +120,60 @@ src/curriculum/
 │   ├── main.py        # FastAPI application
 │   ├── content.py     # Content endpoints
 │   ├── users.py       # User endpoints
-│   └── analytics.py   # Analytics endpoints
+│   ├── assessments.py # Assessment endpoints
+│   ├── analytics.py   # Analytics endpoints
+│   └── dependencies.py # API dependencies
 ├── tools/              # Utility functions
 │   ├── validators.py  # Input validation
 │   ├── formatters.py  # Data formatting
 │   ├── security.py    # Security utilities
-│   └── file_handling.py # File operations
+│   ├── file_handling.py # File operations
+│   └── logging_config.py # Logging configuration
 ├── config.py          # Configuration management
 ├── cli.py             # Command-line interface
 └── orchestration.py   # Service coordination layer
 
 tests/                   # Comprehensive test suite
-├── core/               # Core module tests
-├── content/            # Content module tests
-├── learning/           # Learning module tests
-├── ai/                 # AI module tests
-├── communication/      # Communication tests
-├── accessibility/      # Accessibility tests
-├── mobile/             # Mobile tests
+├── unit/               # Unit tests
+│   ├── test_core.py
+│   ├── test_core_models.py
+│   ├── test_config.py
+│   ├── test_tools.py
+│   ├── test_users.py
+│   ├── test_teachers.py
+│   ├── test_mobile.py
+│   └── test_search_service.py
 ├── integration/        # Integration tests
-├── search/             # Search tests
-└── conftest.py         # Test configuration
+│   ├── test_content_content_service.py
+│   ├── test_users_user_service.py
+│   ├── test_learning.py
+│   ├── test_learning_analytics_service.py
+│   ├── test_learning_assessment_service.py
+│   ├── test_ai.py
+│   ├── test_ai_content_creation_service.py
+│   ├── test_communication.py
+│   ├── test_accessibility.py
+│   ├── test_integration.py
+│   ├── test_integration_distribution_service.py
+│   ├── test_search.py
+│   ├── test_teachers_teacher_service.py
+│   ├── test_routes.py
+│   ├── test_db.py
+│   ├── test_documentation.py
+│   ├── test_documentation_unit.py
+│   ├── test_documentation_integration.py
+│   ├── test_documentation_comprehensive.py
+│   ├── test_documentation_edge_cases.py
+│   ├── test_content_generation_generator.py
+│   ├── test_cli.py
+│   ├── test_curriculum_main.py
+│   └── test_orchestration.py
+├── performance/        # Performance tests
+│   └── test_documentation_performance.py
+├── security/           # Security tests
+│   └── test_authentication_security.py
+├── conftest.py         # Test configuration
+└── README.md           # Test suite documentation
 ```
 
 ### Modular Services
@@ -148,6 +196,7 @@ Each module contains specialized services:
 - `AssessmentService`: Assessment creation and auto-grading
 - `AnalyticsService`: xAPI-compliant learning event tracking
 - `ProgressService`: Learning progress and adaptive paths
+- `StudyToolsService`: Study tools and learning aids
 
 **AI Services:**
 - `AIFeaturesService`: Intelligent tutoring and recommendations
@@ -158,21 +207,42 @@ Each module contains specialized services:
 - `CommunicationService`: Forums, messaging, announcements
 - `CollaborationService`: Group projects and peer review
 
+**Accessibility Services:**
+- `AccessibilityService`: WCAG compliance and accessibility features
+
+**Mobile Services:**
+- `MobileService`: Mobile optimization and mobile learning features
+- `OfflineService`: Offline content capabilities
+
 **Integration Services:**
 - `IntegrationService`: LMS integration (Canvas, Moodle, etc.)
 - `ExportService`: Multi-format export (PDF, SCORM, EPUB)
 - `GamificationService`: Points, badges, leaderboards
+- `DistributionService`: Content distribution management
 
 **Search & Discovery:**
 - `SearchService`: Elasticsearch-based full-text search
 - `VisualizationService`: Interactive charts and knowledge maps
 - `WebsiteService`: Course website generation
 
+**Teacher Services:**
+- `TeacherService`: Instructor-specific functionality
+- `CourseManagementService`: Course structure and content management
+- `StudentManagementService`: Student enrollment and grade management
+
+**Content Generation Services:**
+- `ContentGeneratorService`: Automated content generation
+- `ContentWorkflowService`: Content creation workflow management
+- `ContentQualityService`: Content quality assessment and improvement
+
+**Documentation Services:**
+- `DocumentationGeneratorService`: Automated documentation generation with LLM analysis
+
 ## Installation
 
 ### Prerequisites
 
-- Python 3.10 or higher
+- Python 3.11 or higher
 - PostgreSQL 14+ (for relational data)
 - MongoDB 6+ (for content storage)
 - Redis 7+ (for caching)
@@ -216,7 +286,7 @@ pytest
 
 7. Start development server:
 ```bash
-uvicorn curriculum.api.main:app --reload
+uvicorn curriculum.routes.main:app --reload
 ```
 
 ## Usage
@@ -224,8 +294,8 @@ uvicorn curriculum.api.main:app --reload
 ### Creating Content
 
 ```python
-from curriculum.services import ContentService
-from curriculum.models.content import ContentType, ContentFormat
+from curriculum.content import ContentService
+from curriculum.core import ContentType, ContentFormat
 
 content_service = ContentService()
 
@@ -242,8 +312,8 @@ content = content_service.create_content(
 ### Managing Users
 
 ```python
-from curriculum.services import UserService, AuthenticationService
-from curriculum.models.user import UserRole
+from curriculum.users import UserService, AuthenticationService
+from curriculum.core import UserRole
 
 user_service = UserService()
 auth_service = AuthenticationService(user_service)
@@ -265,8 +335,8 @@ access_token = auth_service.create_access_token(authenticated_user.id)
 ### Creating Assessments
 
 ```python
-from curriculum.services import AssessmentService
-from curriculum.models.assessment import QuestionType
+from curriculum.learning import AssessmentService
+from curriculum.core import QuestionType
 
 assessment_service = AssessmentService()
 
@@ -296,8 +366,8 @@ assessment_service.add_question_to_assessment(assessment.id, question.id)
 ### Tracking Analytics
 
 ```python
-from curriculum.services import AnalyticsService
-from curriculum.models.analytics import ActivityVerb, EventType
+from curriculum.learning import AnalyticsService
+from curriculum.core import ActivityVerb, EventType
 
 analytics_service = AnalyticsService()
 
@@ -395,8 +465,4 @@ For issues, questions, or contributions, please open an issue on GitHub.
 
 ---
 
-**Status**: Alpha - Active Development
-
-**Version**: 0.1.0
-
-**Last Updated**: September 2025
+**Status**: Active Development

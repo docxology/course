@@ -8,8 +8,10 @@ The users module provides comprehensive user management, authentication, and aut
 
 ```
 users/
-├── user.py         # User service and authentication service
-└── README.md       # Module documentation
+├── user.py         # UserService and AuthenticationService (both in same file)
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## User Management Architecture
@@ -1138,7 +1140,8 @@ Before implementing user-related features:
 
 ### Internal Documentation
 - `README.md`: Module overview and setup
-- `tests/test_users_user_service.py`: Comprehensive user management tests
+- `tests/integration/test_users_user_service.py`: Comprehensive user management tests
+- `tests/unit/test_users.py`: Unit tests for user models and services
 
 ### External References
 - [JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
@@ -1148,7 +1151,6 @@ Before implementing user-related features:
 
 ---
 
-**Last Updated**: September 2025
 
 **For Questions**: Consult the user service tests for usage examples and security patterns
 

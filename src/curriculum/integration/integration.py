@@ -1,6 +1,6 @@
 """Integration service for LMS and external tools."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.content import Content
@@ -294,10 +294,7 @@ class IntegrationService:
 
     def validate_lti_launch(self, launch_data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate LTI launch request."""
-        required_fields = [
-            "iss", "aud", "sub", "exp", "iat",
-            "lti_message_type", "lti_version"
-        ]
+        required_fields = ["iss", "aud", "sub", "exp", "iat", "lti_message_type", "lti_version"]
 
         validation_result = {
             "valid": True,

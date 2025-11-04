@@ -1,14 +1,14 @@
 """Shared dependencies for API routes."""
 
+from uuid import UUID
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from uuid import UUID
 
+from curriculum.config import settings
 from curriculum.core.user import User
 from curriculum.users.user import UserService
-from curriculum.config import settings
-
 
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/login")
@@ -44,5 +44,3 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         )
 
     return user
-
-

@@ -1,8 +1,8 @@
 """Website and portal service for course delivery."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 import json
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.content import Content
 from curriculum.core.user import User
@@ -158,7 +158,8 @@ class WebsiteService:
     def get_site_pages(self, site_id: UUID) -> List[Dict[str, Any]]:
         """Get all pages for a site."""
         return [
-            page for page in self._pages.values()
+            page
+            for page in self._pages.values()
             if page["site_id"] == str(site_id) and page["is_visible"]
         ]
 
@@ -174,17 +175,46 @@ class WebsiteService:
             "current_lesson": "Variables and Data Types",
             "next_deadline": "2024-02-15T23:59:59Z",
             "recent_activity": [
-                {"type": "lesson_completed", "title": "Python Basics", "date": "2024-01-15T10:30:00Z"},
-                {"type": "quiz_passed", "title": "Variables Quiz", "score": 85, "date": "2024-01-14T14:20:00Z"},
-                {"type": "assignment_submitted", "title": "Hello World Program", "date": "2024-01-13T16:45:00Z"},
+                {
+                    "type": "lesson_completed",
+                    "title": "Python Basics",
+                    "date": "2024-01-15T10:30:00Z",
+                },
+                {
+                    "type": "quiz_passed",
+                    "title": "Variables Quiz",
+                    "score": 85,
+                    "date": "2024-01-14T14:20:00Z",
+                },
+                {
+                    "type": "assignment_submitted",
+                    "title": "Hello World Program",
+                    "date": "2024-01-13T16:45:00Z",
+                },
             ],
             "upcoming_assignments": [
-                {"title": "Functions Exercise", "due_date": "2024-01-20T23:59:59Z", "type": "coding"},
-                {"title": "Data Structures Quiz", "due_date": "2024-01-22T23:59:59Z", "type": "quiz"},
+                {
+                    "title": "Functions Exercise",
+                    "due_date": "2024-01-20T23:59:59Z",
+                    "type": "coding",
+                },
+                {
+                    "title": "Data Structures Quiz",
+                    "due_date": "2024-01-22T23:59:59Z",
+                    "type": "quiz",
+                },
             ],
             "achievements": [
-                {"name": "First Steps", "description": "Completed first lesson", "earned_date": "2024-01-10T09:00:00Z"},
-                {"name": "Quiz Master", "description": "Scored 100% on a quiz", "earned_date": "2024-01-12T11:15:00Z"},
+                {
+                    "name": "First Steps",
+                    "description": "Completed first lesson",
+                    "earned_date": "2024-01-10T09:00:00Z",
+                },
+                {
+                    "name": "Quiz Master",
+                    "description": "Scored 100% on a quiz",
+                    "earned_date": "2024-01-12T11:15:00Z",
+                },
             ],
         }
 
@@ -253,7 +283,8 @@ class WebsiteService:
 
         site_id = UUID(site["id"])
         return [
-            page for page in self._pages.values()
+            page
+            for page in self._pages.values()
             if page["site_id"] == str(site_id) and page.get("page_type") == "announcement"
         ]
 

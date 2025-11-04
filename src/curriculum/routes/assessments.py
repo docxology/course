@@ -1,23 +1,23 @@
 """Assessment API routes."""
 
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from fastapi import APIRouter, HTTPException, Depends, Query, Path, status
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from pydantic import BaseModel
 
 from curriculum.core.assessment import (
     Assessment,
-    Question,
-    Submission,
-    SubmissionResult,
-    QuestionType,
     DifficultyLevel,
     GradingStatus,
+    Question,
+    QuestionType,
+    Submission,
+    SubmissionResult,
 )
-from curriculum.learning.assessment import AssessmentService
 from curriculum.core.user import User, UserPermission
+from curriculum.learning.assessment import AssessmentService
 from curriculum.routes.dependencies import get_current_user
-
 
 router = APIRouter()
 
@@ -28,6 +28,7 @@ assessment_service = AssessmentService()
 # Request/Response models
 class CreateAssessmentRequest(BaseModel):
     """Request model for creating assessment."""
+
     title: str
     description: Optional[str] = None
     instructions: Optional[str] = None
@@ -38,6 +39,7 @@ class CreateAssessmentRequest(BaseModel):
 
 class CreateQuestionRequest(BaseModel):
     """Request model for creating question."""
+
     title: str
     question_text: str
     question_type: QuestionType
@@ -50,12 +52,14 @@ class CreateQuestionRequest(BaseModel):
 
 class SubmitAnswerRequest(BaseModel):
     """Request model for submitting answer."""
+
     question_id: UUID
     answer: Any
 
 
 class AssessmentResponse(BaseModel):
     """Response model for assessment."""
+
     id: str
     title: str
     description: Optional[str] = None
@@ -71,6 +75,7 @@ class AssessmentResponse(BaseModel):
 
 class QuestionResponse(BaseModel):
     """Response model for question."""
+
     id: str
     title: str
     question_text: str
@@ -83,6 +88,7 @@ class QuestionResponse(BaseModel):
 
 class SubmissionResponse(BaseModel):
     """Response model for submission."""
+
     id: str
     assessment_id: str
     user_id: str
@@ -298,7 +304,9 @@ async def get_user_submissions(
     current_user: User = Depends(get_current_user),
 ):
     """Get submissions for a user."""
-    if user_id != current_user.id and not current_user.has_permission(UserPermission.ASSESSMENT_GRADE):
+    if user_id != current_user.id and not current_user.has_permission(
+        UserPermission.ASSESSMENT_GRADE
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions",

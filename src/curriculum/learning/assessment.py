@@ -1,16 +1,16 @@
 """Assessment and evaluation service."""
 
-from datetime import datetime
-from typing import List, Optional, Dict, Any
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.assessment import (
     Assessment,
+    GradingStatus,
     Question,
+    QuestionType,
     Submission,
     SubmissionResult,
-    QuestionType,
-    GradingStatus,
 )
 
 
@@ -203,7 +203,8 @@ class AssessmentService:
     def get_assessment_statistics(self, assessment_id: UUID) -> Dict[str, Any]:
         """Get statistics for an assessment."""
         submissions = [
-            s for s in self._submissions.values()
+            s
+            for s in self._submissions.values()
             if s.assessment_id == assessment_id and s.grading_status == GradingStatus.COMPLETED
         ]
 

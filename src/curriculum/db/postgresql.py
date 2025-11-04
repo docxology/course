@@ -1,18 +1,17 @@
 """PostgreSQL database adapter using SQLAlchemy."""
 
+import json
 from typing import Any, Dict, List, Optional, Type
 from uuid import UUID
-import json
 
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import String, DateTime, Boolean, Float, Text, JSON, ForeignKey
-from sqlalchemy.orm import selectinload
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, String, Text, select
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, selectinload
 
-from curriculum.db.base import DatabaseInterface
-from curriculum.core.base import BaseEntity
 from curriculum.config import settings
+from curriculum.core.base import BaseEntity
+from curriculum.db.base import DatabaseInterface
 
 
 class Base(DeclarativeBase):
@@ -22,6 +21,7 @@ class Base(DeclarativeBase):
 # SQLAlchemy model definitions
 class UserModel(Base):
     """User table model."""
+
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True)
@@ -49,6 +49,7 @@ class UserModel(Base):
 
 class ContentModel(Base):
     """Content table model."""
+
     __tablename__ = "content"
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True)
@@ -60,7 +61,9 @@ class ContentModel(Base):
     content_body: Mapped[Optional[str]] = mapped_column(Text)
     content_url: Mapped[Optional[str]] = mapped_column(String(500))
     file_path: Mapped[Optional[str]] = mapped_column(String(500))
-    parent_id: Mapped[Optional[UUID]] = mapped_column(PGUUID(as_uuid=True), ForeignKey("content.id"))
+    parent_id: Mapped[Optional[UUID]] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("content.id")
+    )
     order_index: Mapped[int] = mapped_column(default=0)
     tags: Mapped[str] = mapped_column(JSON, default=list)
     keywords: Mapped[str] = mapped_column(JSON, default=list)
@@ -186,7 +189,9 @@ class PostgreSQLAdapter(DatabaseInterface):
 
             return [self._sqlalchemy_to_pydantic(model, entity_type) for model in sql_models]
 
-    async def count(self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None) -> int:
+    async def count(
+        self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None
+    ) -> int:
         """Count entities matching filters."""
         async with self.async_session() as session:
             sql_model_class = self._get_sql_model_class(entity_type)

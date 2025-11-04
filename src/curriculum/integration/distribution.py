@@ -1,13 +1,13 @@
 """Content distribution and delivery service."""
 
 import asyncio
-from typing import Dict, List, Optional, Any
-from uuid import UUID
-from datetime import datetime
 import hashlib
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
-from curriculum.core.content import Content, ContentFormat
 from curriculum.config import settings
+from curriculum.core.content import Content, ContentFormat
 
 
 class DistributionService:
@@ -113,10 +113,12 @@ class DistributionService:
                 result = await self.distribute_content(content_id)
                 results[str(content_id)] = result
             except Exception as e:
-                errors.append({
-                    "content_id": str(content_id),
-                    "error": str(e),
-                })
+                errors.append(
+                    {
+                        "content_id": str(content_id),
+                        "error": str(e),
+                    }
+                )
 
         return {
             "total": len(content_ids),

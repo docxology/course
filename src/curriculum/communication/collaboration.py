@@ -1,6 +1,6 @@
 """Collaboration service for group projects and peer review."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.user import User
@@ -244,9 +244,7 @@ class CollaborationService:
 
         # Calculate average score if all reviews are in
         if len(submission["reviews"]) >= assignment["reviewer_count"]:
-            total_score = sum(
-                sum(r["scores"].values()) for r in submission["reviews"]
-            )
+            total_score = sum(sum(r["scores"].values()) for r in submission["reviews"])
             max_score = len(submission["reviews"]) * len(scores) * 5  # Assuming 5-point scale
             submission["average_score"] = total_score / max_score * 100
 
@@ -255,8 +253,7 @@ class CollaborationService:
     def get_group_projects(self, course_id: UUID) -> List[Dict[str, Any]]:
         """Get group projects for a course."""
         return [
-            project for project in self._projects.values()
-            if project["course_id"] == str(course_id)
+            project for project in self._projects.values() if project["course_id"] == str(course_id)
         ]
 
     def get_user_groups(self, user_id: UUID) -> List[Dict[str, Any]]:
@@ -267,12 +264,14 @@ class CollaborationService:
         for project in self._projects.values():
             for group in project["groups"]:
                 if str(user_id) in group["member_ids"]:
-                    user_groups.append({
-                        "id": group["id"],
-                        "title": group["title"],
-                        "type": "project",
-                        "role": "member",
-                    })
+                    user_groups.append(
+                        {
+                            "id": group["id"],
+                            "title": group["title"],
+                            "type": "project",
+                            "role": "member",
+                        }
+                    )
 
         return user_groups
 
@@ -333,15 +332,16 @@ class CollaborationService:
             "total_projects": len(projects),
             "total_groups": total_groups,
             "average_group_size": 4.2,  # Mock average
-            "completed_projects": len([
-                p for p in projects if p["status"] == "completed"
-            ]),
+            "completed_projects": len([p for p in projects if p["status"] == "completed"]),
             "active_collaborations": total_groups * 0.8,  # Mock active percentage
-            "peer_reviews_completed": len([
-                r for a in self._peer_reviews.values()
-                for r in a["reviews"]
-                if a["course_id"] == str(course_id)
-            ]),
+            "peer_reviews_completed": len(
+                [
+                    r
+                    for a in self._peer_reviews.values()
+                    for r in a["reviews"]
+                    if a["course_id"] == str(course_id)
+                ]
+            ),
         }
 
     def create_shared_document(

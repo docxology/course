@@ -2,16 +2,16 @@
 
 from typing import List, Optional
 from uuid import UUID
-from fastapi import APIRouter, HTTPException, Depends, Query, Path, status
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel
 from jose import JWTError, jwt
+from pydantic import BaseModel
 
-from curriculum.core.user import User, UserRole, UserPermission
-from curriculum.users.user import UserService, AuthenticationService
-from curriculum.routes.dependencies import get_current_user as get_user_dependency
 from curriculum.config import settings
-
+from curriculum.core.user import User, UserPermission, UserRole
+from curriculum.routes.dependencies import get_current_user as get_user_dependency
+from curriculum.users.user import AuthenticationService, UserService
 
 router = APIRouter()
 
@@ -26,6 +26,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Request/Response models
 class CreateUserRequest(BaseModel):
     """Request model for creating user."""
+
     email: str
     username: str
     full_name: str
@@ -35,6 +36,7 @@ class CreateUserRequest(BaseModel):
 
 class UpdateUserRequest(BaseModel):
     """Request model for updating user."""
+
     full_name: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
@@ -42,12 +44,14 @@ class UpdateUserRequest(BaseModel):
 
 class LoginRequest(BaseModel):
     """Request model for user login."""
+
     username_or_email: str
     password: str
 
 
 class TokenResponse(BaseModel):
     """Response model for authentication tokens."""
+
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
@@ -56,6 +60,7 @@ class TokenResponse(BaseModel):
 
 class UserResponse(BaseModel):
     """Response model for user."""
+
     id: str
     email: str
     username: str
@@ -139,7 +144,7 @@ async def create_user(request: CreateUserRequest):
         )
 
     # Create user
-    user = user_service.create_user(
+    user, error_message = user_service.create_user(
         email=request.email,
         username=request.username,
         full_name=request.full_name,
@@ -150,7 +155,7 @@ async def create_user(request: CreateUserRequest):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to create user",
+            detail=error_message or "Failed to create user",
         )
 
     return _user_to_response(user)
@@ -230,7 +235,7 @@ async def change_password(
         )
 
     # Change password
-    success = user_service.change_password(user_id, new_password)
+    success = user_service.change_password(user_id, current_password, new_password)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

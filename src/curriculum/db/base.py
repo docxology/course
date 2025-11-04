@@ -6,7 +6,7 @@ from uuid import UUID
 
 from curriculum.core.base import BaseEntity
 
-T = TypeVar('T', bound=BaseEntity)
+T = TypeVar("T", bound=BaseEntity)
 
 
 class DatabaseInterface(ABC):

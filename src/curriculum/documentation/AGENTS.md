@@ -8,7 +8,7 @@ The documentation module provides automated documentation generation with AI-pow
 
 ```
 documentation/
-├── generator.py         # Main documentation generator service
+├── generator.py        # Main documentation generator service
 ├── __init__.py         # Module exports
 ├── README.md           # User documentation
 └── AGENTS.md           # This file

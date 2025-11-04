@@ -10,7 +10,9 @@ The communication module handles all forms of interaction between users, includi
 communication/
 ├── communication.py # Forums and messaging
 ├── collaboration.py  # Group work and peer review
-└── README.md         # Module documentation
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Development Guidelines

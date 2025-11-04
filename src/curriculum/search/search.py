@@ -1,10 +1,10 @@
 """Search service using Elasticsearch."""
 
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from curriculum.core.content import Content
 from curriculum.config import settings
+from curriculum.core.content import Content
 
 
 class SearchService:
@@ -111,7 +111,13 @@ class SearchService:
                     {
                         "multi_match": {
                             "query": query,
-                            "fields": ["title^3", "description^2", "content_body", "tags", "keywords"],
+                            "fields": [
+                                "title^3",
+                                "description^2",
+                                "content_body",
+                                "tags",
+                                "keywords",
+                            ],
                             "type": "best_fields",
                         }
                     }
@@ -122,24 +128,16 @@ class SearchService:
 
         # Add filters
         if content_type:
-            es_query["bool"]["filter"].append({
-                "term": {"content_type": content_type}
-            })
+            es_query["bool"]["filter"].append({"term": {"content_type": content_type}})
 
         if author_id:
-            es_query["bool"]["filter"].append({
-                "term": {"author_id": str(author_id)}
-            })
+            es_query["bool"]["filter"].append({"term": {"author_id": str(author_id)}})
 
         if tags:
-            es_query["bool"]["filter"].append({
-                "terms": {"tags": tags}
-            })
+            es_query["bool"]["filter"].append({"terms": {"tags": tags}})
 
         # Exclude deleted content
-        es_query["bool"]["filter"].append({
-            "term": {"is_deleted": False}
-        })
+        es_query["bool"]["filter"].append({"term": {"is_deleted": False}})
 
         try:
             # Execute search
@@ -160,16 +158,18 @@ class SearchService:
 
             for hit in hits["hits"]:
                 source = hit["_source"]
-                results.append({
-                    "id": source["id"],
-                    "title": source["title"],
-                    "description": source["description"],
-                    "content_type": source["content_type"],
-                    "author_id": source["author_id"],
-                    "tags": source["tags"],
-                    "score": hit["_score"],
-                    "highlight": hit.get("highlight", {}),
-                })
+                results.append(
+                    {
+                        "id": source["id"],
+                        "title": source["title"],
+                        "description": source["description"],
+                        "content_type": source["content_type"],
+                        "author_id": source["author_id"],
+                        "tags": source["tags"],
+                        "score": hit["_score"],
+                        "highlight": hit.get("highlight", {}),
+                    }
+                )
 
             return {
                 "total": hits["total"]["value"],
@@ -248,14 +248,16 @@ class SearchService:
             results = []
             for hit in response["hits"]["hits"]:
                 source = hit["_source"]
-                results.append({
-                    "id": source["id"],
-                    "title": source["title"],
-                    "description": source["description"],
-                    "content_type": source["content_type"],
-                    "tags": source["tags"],
-                    "score": hit["_score"],
-                })
+                results.append(
+                    {
+                        "id": source["id"],
+                        "title": source["title"],
+                        "description": source["description"],
+                        "content_type": source["content_type"],
+                        "tags": source["tags"],
+                        "score": hit["_score"],
+                    }
+                )
 
             return results
 
@@ -309,7 +311,9 @@ class SearchService:
             return {
                 "index_name": self._index_name,
                 "total_docs": stats["indices"][self._index_name]["total"]["docs"]["count"],
-                "size_in_bytes": stats["indices"][self._index_name]["total"]["store"]["size_in_bytes"],
+                "size_in_bytes": stats["indices"][self._index_name]["total"]["store"][
+                    "size_in_bytes"
+                ],
                 "health": "green",  # Would check cluster health in production
             }
         except Exception as e:

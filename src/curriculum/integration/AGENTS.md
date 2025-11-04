@@ -12,7 +12,9 @@ integration/
 ├── distribution.py # Content distribution and CDN
 ├── export.py      # Multi-format export capabilities
 ├── gamification.py # Points, badges, and rewards
-└── README.md      # Module documentation
+├── __init__.py    # Module exports
+├── README.md      # Module documentation
+└── AGENTS.md      # This file
 ```
 
 ## Development Guidelines

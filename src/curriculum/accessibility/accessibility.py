@@ -1,6 +1,6 @@
 """Accessibility service for inclusive learning experiences."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
 from curriculum.core.content import Content
@@ -93,7 +93,9 @@ class AccessibilityService:
             "recommendations": recommendations,
             "score": max(0, 100 - len(issues) * 10),
             "categories": {
-                "perceivable": len([i for i in issues if "color" in i.lower() or "alt" in i.lower()]),
+                "perceivable": len(
+                    [i for i in issues if "color" in i.lower() or "alt" in i.lower()]
+                ),
                 "operable": len([i for i in issues if "keyboard" in i.lower()]),
                 "understandable": len([i for i in issues if "heading" in i.lower()]),
                 "robust": 0,  # Technical validation issues
@@ -142,11 +144,13 @@ class AccessibilityService:
         issues = []
 
         # Check for focusable elements
-        if "tabindex" not in html_content and ("button" in html_content or "a href" in html_content):
+        if "tabindex" not in html_content and (
+            "button" in html_content or "a href" in html_content
+        ):
             issues.append("Missing tabindex attributes for focusable elements")
 
         # Check for skip links
-        if "<a href=\"#main\"" not in html_content:
+        if '<a href="#main"' not in html_content:
             issues.append("Missing skip navigation links")
 
         # Check for proper focus indicators

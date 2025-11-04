@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     # Database
     database_url: str = Field(
         default="postgresql+asyncpg://user:password@localhost:5432/curriculum_db",
-        alias="DATABASE_URL"
+        alias="DATABASE_URL",
     )
     mongodb_url: str = Field(default="mongodb://localhost:27017", alias="MONGODB_URL")
     mongodb_db_name: str = Field(default="curriculum_content", alias="MONGODB_DB_NAME")
@@ -40,16 +40,14 @@ class Settings(BaseSettings):
 
     # CORS
     cors_origins: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8000"],
-        alias="CORS_ORIGINS"
+        default=["http://localhost:3000", "http://localhost:8000"], alias="CORS_ORIGINS"
     )
 
     # File Storage
     upload_dir: str = Field(default="./data/uploads", alias="UPLOAD_DIR")
     max_upload_size: int = Field(default=104857600, alias="MAX_UPLOAD_SIZE")  # 100MB
     allowed_extensions: str = Field(
-        default=".pdf,.docx,.md,.tex,.mp4,.mp3,.jpg,.png,.gif",
-        alias="ALLOWED_EXTENSIONS"
+        default=".pdf,.docx,.md,.tex,.mp4,.mp3,.jpg,.png,.gif", alias="ALLOWED_EXTENSIONS"
     )
 
     # CDN & Cloud Storage
@@ -76,33 +74,27 @@ class Settings(BaseSettings):
     enable_versioning: bool = Field(default=True, alias="ENABLE_VERSIONING")
     enable_analytics: bool = Field(default=True, alias="ENABLE_ANALYTICS")
     enable_ai_features: bool = Field(default=False, alias="ENABLE_AI_FEATURES")
-    
+
     # Logging
     enable_file_logging: bool = Field(default=True, alias="ENABLE_FILE_LOGGING")
     enable_json_logging: bool = Field(default=False, alias="ENABLE_JSON_LOGGING")
     log_file: Optional[str] = Field(default=None, alias="LOG_FILE")
-    
+
     # Rate Limiting
     rate_limit_enabled: bool = Field(default=True, alias="RATE_LIMIT_ENABLED")
     rate_limit_per_minute: int = Field(default=60, alias="RATE_LIMIT_PER_MINUTE")
-    
+
     # Security
-    allowed_hosts: List[str] = Field(
-        default=["*"], 
-        alias="ALLOWED_HOSTS"
-    )
+    allowed_hosts: List[str] = Field(default=["*"], alias="ALLOWED_HOSTS")
     require_https: bool = Field(default=False, alias="REQUIRE_HTTPS")
-    
+
     # Monitoring
     enable_health_check: bool = Field(default=True, alias="ENABLE_HEALTH_CHECK")
     health_check_interval: int = Field(default=30, alias="HEALTH_CHECK_INTERVAL")
     sentry_dsn: Optional[str] = Field(default=None, alias="SENTRY_DSN")
 
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=False,
-        extra="ignore"
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"
     )
 
     @property

@@ -1,8 +1,8 @@
 """Content models for educational materials."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import Field, HttpUrl
@@ -128,13 +128,15 @@ class ContentVersion(BaseEntity):
     # Version metadata
     change_log: Optional[str] = None
     author_id: UUID
-    committed_at: datetime = Field(default_factory=datetime.utcnow)
+    committed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Snapshot of content at this version
     snapshot: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
-    def create_from_content(cls, content: Content, change_log: Optional[str] = None) -> "ContentVersion":
+    def create_from_content(
+        cls, content: Content, change_log: Optional[str] = None
+    ) -> "ContentVersion":
         """Create a version snapshot from content."""
         return cls(
             content_id=content.id,

@@ -1,6 +1,6 @@
 """Progress tracking and learning paths service."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.content import Content
@@ -175,10 +175,7 @@ class ProgressService:
         current_progress: float,
     ) -> List[Dict[str, Any]]:
         """Check if user has achieved milestones."""
-        user_milestones = [
-            m for m in self._milestones.values()
-            if m["course_id"] == str(course_id)
-        ]
+        user_milestones = [m for m in self._milestones.values() if m["course_id"] == str(course_id)]
 
         achievements = []
         for milestone in user_milestones:
@@ -186,12 +183,14 @@ class ProgressService:
                 milestone["is_achieved"] = True
                 milestone["completions"] += 1
 
-                achievements.append({
-                    "milestone_id": milestone["id"],
-                    "title": milestone["title"],
-                    "reward": milestone["reward"],
-                    "achieved_at": "2024-01-01T00:00:00Z",
-                })
+                achievements.append(
+                    {
+                        "milestone_id": milestone["id"],
+                        "title": milestone["title"],
+                        "reward": milestone["reward"],
+                        "achieved_at": "2024-01-01T00:00:00Z",
+                    }
+                )
 
         return achievements
 

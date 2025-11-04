@@ -1,9 +1,9 @@
 """Content quality assessment and improvement service."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
-from datetime import datetime
 import re
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.content import Content
 
@@ -65,11 +65,11 @@ class ContentQualityService:
 
         # Calculate weighted overall score
         overall_score = (
-            length_score["score"] * self._quality_rules["content_length"]["weight"] +
-            structure_score["score"] * self._quality_rules["structure"]["weight"] +
-            readability_score["score"] * self._quality_rules["readability"]["weight"] +
-            technical_score["score"] * self._quality_rules["technical_accuracy"]["weight"] +
-            engagement_score["score"] * self._quality_rules["engagement"]["weight"]
+            length_score["score"] * self._quality_rules["content_length"]["weight"]
+            + structure_score["score"] * self._quality_rules["structure"]["weight"]
+            + readability_score["score"] * self._quality_rules["readability"]["weight"]
+            + technical_score["score"] * self._quality_rules["technical_accuracy"]["weight"]
+            + engagement_score["score"] * self._quality_rules["engagement"]["weight"]
         )
 
         assessment = {
@@ -84,13 +84,16 @@ class ContentQualityService:
                 "technical_accuracy": technical_score,
                 "engagement": engagement_score,
             },
-            "recommendations": self._generate_recommendations(overall_score, {
-                "length": length_score,
-                "structure": structure_score,
-                "readability": readability_score,
-                "technical": technical_score,
-                "engagement": engagement_score,
-            }),
+            "recommendations": self._generate_recommendations(
+                overall_score,
+                {
+                    "length": length_score,
+                    "structure": structure_score,
+                    "readability": readability_score,
+                    "technical": technical_score,
+                    "engagement": engagement_score,
+                },
+            ),
         }
 
         self._quality_scores[content_id] = assessment
@@ -179,10 +182,10 @@ class ContentQualityService:
         rules = self._quality_rules["readability"]
 
         # Simple readability metrics
-        sentences = re.split(r'[.!?]+', content_text)
+        sentences = re.split(r"[.!?]+", content_text)
         sentences = [s.strip() for s in sentences if s.strip()]
 
-        paragraphs = [p.strip() for p in content_text.split('\n\n') if p.strip()]
+        paragraphs = [p.strip() for p in content_text.split("\n\n") if p.strip()]
 
         long_sentences = [s for s in sentences if len(s.split()) > rules["max_sentence_length"]]
         long_paragraphs = [p for p in paragraphs if len(p.split()) > rules["max_paragraph_length"]]
@@ -192,20 +195,28 @@ class ContentQualityService:
 
         if long_sentences:
             score -= min(len(long_sentences) * 5, 30)
-            issues.append(f"{len(long_sentences)} sentences too long (> {rules['max_sentence_length']} words)")
+            issues.append(
+                f"{len(long_sentences)} sentences too long (> {rules['max_sentence_length']} words)"
+            )
 
         if long_paragraphs:
             score -= min(len(long_paragraphs) * 3, 20)
-            issues.append(f"{len(long_paragraphs)} paragraphs too long (> {rules['max_paragraph_length']} words)")
+            issues.append(
+                f"{len(long_paragraphs)} paragraphs too long (> {rules['max_paragraph_length']} words)"
+            )
 
         # Simple Flesch score approximation
-        avg_sentence_length = sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
+        avg_sentence_length = (
+            sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
+        )
         avg_syllables_per_word = 1.5  # Approximation
 
         flesch_score = 206.835 - (1.015 * avg_sentence_length) - (84.6 * avg_syllables_per_word)
         if flesch_score < rules["ideal_flesch_score"] - 10:
             score -= 15
-            issues.append(f"Content may be too difficult to read (Flesch score: {flesch_score:.1f})")
+            issues.append(
+                f"Content may be too difficult to read (Flesch score: {flesch_score:.1f})"
+            )
 
         return {
             "score": max(0, score),
@@ -240,7 +251,9 @@ class ContentQualityService:
             issues.append(f"Possible typos found: {', '.join(found_typos)}")
 
         # Check for broken links (basic pattern matching)
-        url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        url_pattern = (
+            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+        )
         urls = re.findall(url_pattern, content_text)
 
         if urls:
@@ -279,9 +292,9 @@ class ContentQualityService:
 
         # Check for exercises
         exercise_count = (
-            content_text.count("exercise") +
-            content_text.count("practice") +
-            content_text.count("activity")
+            content_text.count("exercise")
+            + content_text.count("practice")
+            + content_text.count("activity")
         )
         if exercise_count < rules["min_exercises"]:
             score -= (rules["min_exercises"] - exercise_count) * 20
@@ -291,7 +304,9 @@ class ContentQualityService:
 
         # Check for interactive elements
         interactive_indicators = ["question", "quiz", "test", "interactive"]
-        interactive_count = sum(content_text.count(indicator) for indicator in interactive_indicators)
+        interactive_count = sum(
+            content_text.count(indicator) for indicator in interactive_indicators
+        )
 
         if rules["interactive_elements"] and interactive_count == 0:
             score -= 15
@@ -321,7 +336,9 @@ class ContentQualityService:
         else:
             return "poor"
 
-    def _generate_recommendations(self, overall_score: float, breakdown: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(
+        self, overall_score: float, breakdown: Dict[str, Any]
+    ) -> List[str]:
         """Generate improvement recommendations."""
         recommendations = []
 
@@ -396,20 +413,22 @@ class ContentQualityService:
 
         # Adjust for content type
         if content_type == "assessment":
-            base_checklist.extend([
-                {
-                    "category": "Questions",
-                    "item": "Questions are clear and unambiguous",
-                    "required": True,
-                    "points": 15,
-                },
-                {
-                    "category": "Answers",
-                    "item": "Correct answers are provided",
-                    "required": True,
-                    "points": 10,
-                },
-            ])
+            base_checklist.extend(
+                [
+                    {
+                        "category": "Questions",
+                        "item": "Questions are clear and unambiguous",
+                        "required": True,
+                        "points": 15,
+                    },
+                    {
+                        "category": "Answers",
+                        "item": "Correct answers are provided",
+                        "required": True,
+                        "points": 10,
+                    },
+                ]
+            )
 
         return base_checklist
 
@@ -435,7 +454,9 @@ class ContentQualityService:
             if "introduction" in item["item"].lower():
                 passed = "introduction" in content_text or "intro" in content_text
             elif "learning objectives" in item["item"].lower():
-                passed = "objective" in content_text or "goal" in content_text or "learn" in content_text
+                passed = (
+                    "objective" in content_text or "goal" in content_text or "learn" in content_text
+                )
             elif "explanation" in item["item"].lower():
                 passed = len(content_text.split()) > 200  # Basic check for sufficient content
             elif "example" in item["item"].lower():
@@ -451,13 +472,15 @@ class ContentQualityService:
             if passed:
                 earned_points += points
 
-            results.append({
-                "item": item["item"],
-                "required": required,
-                "points": points,
-                "passed": passed,
-                "category": item["category"],
-            })
+            results.append(
+                {
+                    "item": item["item"],
+                    "required": required,
+                    "points": points,
+                    "passed": passed,
+                    "category": item["category"],
+                }
+            )
 
         score = (earned_points / total_points) * 100 if total_points > 0 else 0
 

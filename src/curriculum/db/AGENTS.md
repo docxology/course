@@ -11,7 +11,9 @@ db/
 ├── base.py         # Abstract database interface and manager
 ├── mongodb.py      # MongoDB document database adapter
 ├── postgresql.py   # PostgreSQL relational database adapter
-└── README.md       # Module documentation
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Database Interface Design
@@ -629,7 +631,7 @@ Before implementing database changes:
 
 ### Internal Documentation
 - `README.md`: Module overview and setup
-- `tests/test_db.py`: Database integration tests
+- `tests/integration/test_db.py`: Database integration tests
 
 ### External References
 - [MongoDB Async Driver](https://motor.readthedocs.io/)
@@ -638,7 +640,6 @@ Before implementing database changes:
 
 ---
 
-**Last Updated**: September 2025
 
 **For Questions**: Consult the database module tests and README for usage examples
 

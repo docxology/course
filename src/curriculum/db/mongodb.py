@@ -1,16 +1,16 @@
 """MongoDB database adapter."""
 
+import json
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Type
 from uuid import UUID
-from datetime import datetime
-import json
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorDatabase
 from pymongo import ReturnDocument
 
-from curriculum.db.base import DatabaseInterface
-from curriculum.core.base import BaseEntity
 from curriculum.config import settings
+from curriculum.core.base import BaseEntity
+from curriculum.db.base import DatabaseInterface
 
 
 class MongoDBAdapter(DatabaseInterface):
@@ -27,7 +27,7 @@ class MongoDBAdapter(DatabaseInterface):
         self.database = self.client[settings.mongodb_db_name]
 
         # Test connection
-        await self.client.admin.command('ping')
+        await self.client.admin.command("ping")
 
     async def disconnect(self) -> None:
         """Disconnect from MongoDB database."""
@@ -74,11 +74,7 @@ class MongoDBAdapter(DatabaseInterface):
         data = self._entity_to_dict(entity)
         data["_id"] = str(entity.id)
 
-        await collection.replace_one(
-            {"_id": str(entity.id)},
-            data,
-            upsert=True
-        )
+        await collection.replace_one({"_id": str(entity.id)}, data, upsert=True)
 
         return entity
 
@@ -121,7 +117,9 @@ class MongoDBAdapter(DatabaseInterface):
 
         return [self._dict_to_entity(doc, entity_type) for doc in documents]
 
-    async def count(self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None) -> int:
+    async def count(
+        self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None
+    ) -> int:
         """Count entities matching filters."""
         if not self.database:
             raise RuntimeError("Database not connected")

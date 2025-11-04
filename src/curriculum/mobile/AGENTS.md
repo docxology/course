@@ -10,7 +10,9 @@ The mobile module provides mobile-optimized learning experiences and offline cap
 mobile/
 ├── mobile.py      # Mobile optimization and PWA features
 ├── offline.py     # Offline content and sync capabilities
-└── README.md      # Module documentation
+├── __init__.py    # Module exports
+├── README.md      # Module documentation
+└── AGENTS.md      # This file
 ```
 
 ## Development Guidelines

@@ -2,15 +2,15 @@
 
 from typing import List, Optional
 from uuid import UUID
-from fastapi import APIRouter, HTTPException, Depends, Query, Path
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel
 
-from curriculum.core.content import Content, ContentStatus, ContentFormat, ContentType
 from curriculum.content.content import ContentService
 from curriculum.content.rendering import RenderingService
 from curriculum.content.version_control import VersionControlService
 from curriculum.core.base import PagedResponse
-
+from curriculum.core.content import Content, ContentFormat, ContentStatus, ContentType
 
 router = APIRouter()
 
@@ -23,6 +23,7 @@ version_service = VersionControlService()
 # Request/Response models
 class CreateContentRequest(BaseModel):
     """Request model for creating content."""
+
     title: str
     description: Optional[str] = None
     content_type: ContentType
@@ -34,6 +35,7 @@ class CreateContentRequest(BaseModel):
 
 class UpdateContentRequest(BaseModel):
     """Request model for updating content."""
+
     title: Optional[str] = None
     description: Optional[str] = None
     content_body: Optional[str] = None
@@ -42,6 +44,7 @@ class UpdateContentRequest(BaseModel):
 
 class ContentResponse(BaseModel):
     """Response model for content."""
+
     id: str
     title: str
     description: Optional[str] = None
@@ -139,8 +142,7 @@ async def publish_content(content_id: UUID):
     content = content_service.publish_content(content_id)
     if not content:
         raise HTTPException(
-            status_code=400,
-            detail="Cannot publish content. Content must be approved first."
+            status_code=400, detail="Cannot publish content. Content must be approved first."
         )
 
     return {"message": "Content published successfully", "status": content.status}

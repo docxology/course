@@ -12,7 +12,11 @@ core/
 ├── content.py      # Core content models
 ├── user.py         # User models
 ├── metadata.py     # Metadata models
-└── README.md       # Module documentation
+├── analytics.py    # Analytics models
+├── assessment.py   # Assessment models
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Development Guidelines
@@ -73,7 +77,7 @@ def test_content_creation():
 2. Inherit from `BaseEntity`
 3. Add comprehensive type hints and validation
 4. Add to `core/__init__.py`
-5. Write tests in `tests/core/`
+5. Write model tests in `tests/unit/` or `tests/integration/`
 
 ### Common Patterns
 

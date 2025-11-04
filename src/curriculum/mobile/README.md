@@ -38,6 +38,6 @@ offline_package = offline.create_offline_package(
 ## Testing
 
 ```bash
-pytest tests/test_mobile/
+pytest tests/unit/test_mobile.py
 ```
 

@@ -1,12 +1,12 @@
 """Export service for generating various output formats."""
 
-from typing import Dict, List, Optional, Any, BinaryIO
-from uuid import UUID
 import io
 import json
+from typing import Any, BinaryIO, Dict, List, Optional
+from uuid import UUID
 
-from curriculum.core.content import Content
 from curriculum.config import settings
+from curriculum.core.content import Content
 
 
 class ExportService:
@@ -94,8 +94,16 @@ class ExportService:
                     "default": {
                         "title": "Course Organization",
                         "items": [
-                            {"identifier": "item_1", "title": "Lesson 1", "resource": "lesson1.html"},
-                            {"identifier": "item_2", "title": "Lesson 2", "resource": "lesson2.html"},
+                            {
+                                "identifier": "item_1",
+                                "title": "Lesson 1",
+                                "resource": "lesson1.html",
+                            },
+                            {
+                                "identifier": "item_2",
+                                "title": "Lesson 2",
+                                "resource": "lesson2.html",
+                            },
                         ],
                     },
                 },
@@ -371,7 +379,7 @@ class ExportService:
 
     def _format_bytes(self, bytes: int) -> str:
         """Format bytes to human readable format."""
-        for unit in ['B', 'KB', 'MB', 'GB']:
+        for unit in ["B", "KB", "MB", "GB"]:
             if bytes < 1024.0:
                 return f"{bytes:.1f} {unit}"
             bytes /= 1024.0

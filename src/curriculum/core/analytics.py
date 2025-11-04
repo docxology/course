@@ -1,8 +1,8 @@
 """Analytics models for learning event tracking."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -103,7 +103,7 @@ class ContentAnalytics(BaseEntity):
 
     # Time-based metrics
     last_viewed_at: Optional[datetime] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class UserAnalytics(BaseEntity):
@@ -137,7 +137,7 @@ class UserAnalytics(BaseEntity):
     def update_timestamp(self) -> None:
         """Update timestamp and last active."""
         super().update_timestamp()
-        self.last_active_at = datetime.utcnow()
+        self.last_active_at = datetime.now(timezone.utc)
 
 
 class SessionAnalytics(BaseEntity):
@@ -148,7 +148,7 @@ class SessionAnalytics(BaseEntity):
     device_type: DeviceType = DeviceType.UNKNOWN
 
     # Session timing
-    start_time: datetime = Field(default_factory=datetime.utcnow)
+    start_time: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     end_time: Optional[datetime] = None
     duration: Optional[int] = None  # seconds
 
@@ -164,6 +164,6 @@ class SessionAnalytics(BaseEntity):
     def end_session(self) -> None:
         """End the session and calculate duration."""
         if self.end_time is None:
-            self.end_time = datetime.utcnow()
+            self.end_time = datetime.now(timezone.utc)
             if self.start_time:
                 self.duration = int((self.end_time - self.start_time).total_seconds())

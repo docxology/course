@@ -1,10 +1,10 @@
 """Base models and mixins for the Curriculum Repository System."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TimestampMixin(BaseModel):

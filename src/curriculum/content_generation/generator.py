@@ -1,10 +1,10 @@
 """Content generator service for automated content creation."""
 
-from typing import Dict, List, Optional, Any
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
-from datetime import datetime
 
-from curriculum.core.content import Content, ContentType, ContentFormat
+from curriculum.core.content import Content, ContentFormat, ContentType
 
 
 class ContentGeneratorService:
@@ -91,9 +91,7 @@ class ContentGeneratorService:
         )
 
         # Generate actual content
-        generated_content = self._generate_content_body(
-            content_structure, options
-        )
+        generated_content = self._generate_content_body(content_structure, options)
 
         generation_id = f"gen_{len(self._generation_history)}"
 
@@ -126,7 +124,7 @@ class ContentGeneratorService:
         template: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Generate content structure based on template."""
-        structure = {
+        structure: Dict[str, Any] = {
             "title": f"{topic.title()} - Complete Guide",
             "sections": [],
         }
@@ -187,14 +185,18 @@ class ContentGeneratorService:
         ]
 
         if difficulty == "advanced":
-            objectives.extend([
-                f"Evaluate complex {topic} implementations",
-                f"Create innovative solutions using {topic}",
-            ])
+            objectives.extend(
+                [
+                    f"Evaluate complex {topic} implementations",
+                    f"Create innovative solutions using {topic}",
+                ]
+            )
 
         return objectives
 
-    def _generate_quiz_questions(self, topic: str, difficulty: str, count: int) -> List[Dict[str, Any]]:
+    def _generate_quiz_questions(
+        self, topic: str, difficulty: str, count: int
+    ) -> List[Dict[str, Any]]:
         """Generate quiz questions."""
         questions = []
 
@@ -444,9 +446,7 @@ class ContentGeneratorService:
 
     def get_generation_statistics(self) -> Dict[str, Any]:
         """Get content generation statistics."""
-        total_generations = sum(
-            len(history) for history in self._generation_history.values()
-        )
+        total_generations = sum(len(history) for history in self._generation_history.values())
 
         return {
             "total_generations": total_generations,

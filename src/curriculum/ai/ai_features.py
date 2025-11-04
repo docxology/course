@@ -1,12 +1,12 @@
 """AI-powered features service for intelligent tutoring and recommendations."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID, uuid4
 import random
+from typing import Any, Dict, List, Optional
+from uuid import UUID, uuid4
 
+from curriculum.core.assessment import Assessment, Submission
 from curriculum.core.content import Content
 from curriculum.core.user import User
-from curriculum.core.assessment import Assessment, Submission
 
 
 class AIFeaturesService:
@@ -65,12 +65,14 @@ class AIFeaturesService:
                 "id": f"rec_{i}",
                 "content_id": f"content_{i}",
                 "title": f"Recommended Content {i+1}",
-                "reason": random.choice([
-                    "Based on your learning progress",
-                    "Similar to content you've enjoyed",
-                    "Next step in your learning path",
-                    "Popular among similar learners",
-                ]),
+                "reason": random.choice(
+                    [
+                        "Based on your learning progress",
+                        "Similar to content you've enjoyed",
+                        "Next step in your learning path",
+                        "Popular among similar learners",
+                    ]
+                ),
                 "confidence_score": random.uniform(0.6, 0.95),
                 "difficulty_match": random.choice(["perfect", "slightly_challenging", "advanced"]),
                 "estimated_time": random.randint(15, 60),  # minutes
@@ -200,7 +202,9 @@ class AIFeaturesService:
 
         return hints.get(question_type, ["Think carefully about this"])
 
-    def assess_learning_style(self, user_id: UUID, responses: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def assess_learning_style(
+        self, user_id: UUID, responses: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """Assess user's learning style based on responses."""
         # Mock learning style assessment
         styles = ["visual", "auditory", "kinesthetic", "reading/writing"]
@@ -211,10 +215,26 @@ class AIFeaturesService:
             "primary_learning_style": primary_style,
             "secondary_styles": random.sample([s for s in styles if s != primary_style], 2),
             "preferences": {
-                "visual_aids": random.uniform(0.6, 0.9) if primary_style == "visual" else random.uniform(0.3, 0.7),
-                "audio_content": random.uniform(0.6, 0.9) if primary_style == "auditory" else random.uniform(0.3, 0.7),
-                "hands_on_activities": random.uniform(0.6, 0.9) if primary_style == "kinesthetic" else random.uniform(0.3, 0.7),
-                "reading_materials": random.uniform(0.6, 0.9) if primary_style == "reading/writing" else random.uniform(0.3, 0.7),
+                "visual_aids": (
+                    random.uniform(0.6, 0.9)
+                    if primary_style == "visual"
+                    else random.uniform(0.3, 0.7)
+                ),
+                "audio_content": (
+                    random.uniform(0.6, 0.9)
+                    if primary_style == "auditory"
+                    else random.uniform(0.3, 0.7)
+                ),
+                "hands_on_activities": (
+                    random.uniform(0.6, 0.9)
+                    if primary_style == "kinesthetic"
+                    else random.uniform(0.3, 0.7)
+                ),
+                "reading_materials": (
+                    random.uniform(0.6, 0.9)
+                    if primary_style == "reading/writing"
+                    else random.uniform(0.3, 0.7)
+                ),
             },
             "assessed_at": "2024-01-01T00:00:00Z",
         }
@@ -281,10 +301,23 @@ class AIFeaturesService:
         """Extract technical terms from text."""
         # Simple keyword extraction (in production, use NLP)
         technical_keywords = [
-            "algorithm", "function", "variable", "class", "method",
-            "database", "network", "protocol", "encryption", "authentication",
-            "machine learning", "artificial intelligence", "neural network",
-            "data structure", "object-oriented", "inheritance", "polymorphism",
+            "algorithm",
+            "function",
+            "variable",
+            "class",
+            "method",
+            "database",
+            "network",
+            "protocol",
+            "encryption",
+            "authentication",
+            "machine learning",
+            "artificial intelligence",
+            "neural network",
+            "data structure",
+            "object-oriented",
+            "inheritance",
+            "polymorphism",
         ]
 
         found_terms = []

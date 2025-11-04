@@ -11,7 +11,9 @@ search/
 ├── search.py       # Elasticsearch-based search
 ├── visualization.py # Interactive charts and graphs
 ├── website.py      # Course website generation
-└── README.md       # Module documentation
+├── __init__.py     # Module exports
+├── README.md       # Module documentation
+└── AGENTS.md       # This file
 ```
 
 ## Development Guidelines

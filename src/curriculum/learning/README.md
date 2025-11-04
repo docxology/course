@@ -39,6 +39,8 @@ analytics_service.track_content_view(user_id, content_id, duration=300)
 ## Testing
 
 ```bash
-pytest tests/test_learning/
+pytest tests/integration/test_learning.py
+pytest tests/integration/test_learning_analytics_service.py
+pytest tests/integration/test_learning_assessment_service.py
 ```
 

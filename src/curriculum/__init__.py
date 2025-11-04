@@ -3,25 +3,24 @@
 __version__ = "0.1.0"
 __author__ = "Curriculum Repository Team"
 
+# Import tools module to make it accessible
+from curriculum import tools
+from curriculum.accessibility import *
+from curriculum.ai import *
+from curriculum.communication import *
 from curriculum.config import settings
+from curriculum.content import *
+from curriculum.content_generation import *
 
 # Import all core models and services
 from curriculum.core import *
-from curriculum.content import *
-from curriculum.learning import *
-from curriculum.users import *
-from curriculum.ai import *
-from curriculum.communication import *
-from curriculum.accessibility import *
-from curriculum.mobile import *
+from curriculum.documentation import *
 from curriculum.integration import *
+from curriculum.learning import *
+from curriculum.mobile import *
 from curriculum.search import *
 from curriculum.teachers import *
-from curriculum.content_generation import *
-from curriculum.documentation import *
-
-# Import tools module to make it accessible
-from curriculum import tools
+from curriculum.users import *
 
 __all__ = [
     "__version__",
@@ -77,7 +76,6 @@ __all__ = [
     "AccessibilityService",
     "MobileService",
     "OfflineService",
-    "ProgressService",
     "GamificationService",
     "DistributionService",
     "IntegrationService",

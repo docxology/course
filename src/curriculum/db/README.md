@@ -35,6 +35,6 @@ result = await db.get(entity_id, EntityType)
 ## Testing
 
 ```bash
-pytest tests/test_db/
+pytest tests/integration/test_db.py
 ```
 

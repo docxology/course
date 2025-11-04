@@ -1,6 +1,6 @@
 """Offline support service for downloadable content."""
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.content import Content
@@ -135,8 +135,7 @@ class OfflineService:
     def get_offline_content_list(self, user_id: UUID) -> List[Dict[str, Any]]:
         """Get list of content available offline."""
         user_cache = [
-            cache for cache in self._cached_content.values()
-            if cache["user_id"] == str(user_id)
+            cache for cache in self._cached_content.values() if cache["user_id"] == str(user_id)
         ]
 
         return [
@@ -341,13 +340,17 @@ class OfflineService:
             "id": str(backup_id),
             "user_id": str(user_id),
             "type": backup_type,
-            "includes": [
-                "progress_data",
-                "notes",
-                "bookmarks",
-                "settings",
-                "achievements",
-            ] if backup_type == "full" else ["progress_data", "notes"],
+            "includes": (
+                [
+                    "progress_data",
+                    "notes",
+                    "bookmarks",
+                    "settings",
+                    "achievements",
+                ]
+                if backup_type == "full"
+                else ["progress_data", "notes"]
+            ),
             "estimated_size": "5MB",
             "created_at": "2024-01-01T00:00:00Z",
             "download_url": f"/api/backups/{backup_id}/download",

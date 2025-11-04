@@ -1,8 +1,8 @@
 """Communication service for forums, messaging, and announcements."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.user import User
 
@@ -176,10 +176,7 @@ class CommunicationService:
         limit: int = 20,
     ) -> List[Dict[str, Any]]:
         """Get posts from a forum."""
-        posts = [
-            post for post in self._posts.values()
-            if post["forum_id"] == str(forum_id)
-        ]
+        posts = [post for post in self._posts.values() if post["forum_id"] == str(forum_id)]
 
         if category:
             posts = [post for post in posts if post["category"] == category]
@@ -195,10 +192,7 @@ class CommunicationService:
         unread_only: bool = False,
     ) -> List[Dict[str, Any]]:
         """Get messages for a user."""
-        messages = [
-            msg for msg in self._messages.values()
-            if msg["recipient_id"] == str(user_id)
-        ]
+        messages = [msg for msg in self._messages.values() if msg["recipient_id"] == str(user_id)]
 
         if unread_only:
             messages = [msg for msg in messages if not msg["is_read"]]
@@ -208,14 +202,14 @@ class CommunicationService:
     def get_course_announcements(self, course_id: UUID) -> List[Dict[str, Any]]:
         """Get announcements for a course."""
         announcements = [
-            ann for ann in self._announcements.values()
-            if ann["course_id"] == str(course_id)
+            ann for ann in self._announcements.values() if ann["course_id"] == str(course_id)
         ]
 
         # Filter out expired announcements
         current_time = "2024-01-01T00:00:00Z"  # Mock current time
         announcements = [
-            ann for ann in announcements
+            ann
+            for ann in announcements
             if not ann["expires_at"] or ann["expires_at"] > current_time
         ]
 
@@ -247,18 +241,12 @@ class CommunicationService:
 
     def get_communication_statistics(self, course_id: UUID) -> Dict[str, Any]:
         """Get communication statistics for a course."""
-        forum = next(
-            (f for f in self._forums.values() if f["course_id"] == str(course_id)),
-            None
-        )
+        forum = next((f for f in self._forums.values() if f["course_id"] == str(course_id)), None)
 
         if not forum:
             return {"error": "Forum not found"}
 
-        forum_posts = [
-            p for p in self._posts.values()
-            if p["forum_id"] == forum["id"]
-        ]
+        forum_posts = [p for p in self._posts.values() if p["forum_id"] == forum["id"]]
 
         return {
             "course_id": str(course_id),
@@ -266,10 +254,13 @@ class CommunicationService:
             "total_posts": len(forum_posts),
             "total_replies": sum(p["reply_count"] for p in forum_posts),
             "total_participants": forum["total_participants"],
-            "active_posts_last_week": len([
-                p for p in forum_posts
-                if p["created_at"] > "2023-12-25T00:00:00Z"  # Mock last week
-            ]),
+            "active_posts_last_week": len(
+                [
+                    p
+                    for p in forum_posts
+                    if p["created_at"] > "2023-12-25T00:00:00Z"  # Mock last week
+                ]
+            ),
             "popular_categories": [
                 {"name": "Questions", "post_count": 15},
                 {"name": "General Discussion", "post_count": 8},
@@ -341,7 +332,8 @@ class CommunicationService:
     def get_user_conversations(self, user_id: UUID) -> List[Dict[str, Any]]:
         """Get user's message conversations."""
         user_messages = [
-            msg for msg in self._messages.values()
+            msg
+            for msg in self._messages.values()
             if msg["sender_id"] == str(user_id) or msg["recipient_id"] == str(user_id)
         ]
 
@@ -349,7 +341,8 @@ class CommunicationService:
         conversations = {}
         for message in user_messages:
             other_user = (
-                message["recipient_id"] if message["sender_id"] == str(user_id)
+                message["recipient_id"]
+                if message["sender_id"] == str(user_id)
                 else message["sender_id"]
             )
 

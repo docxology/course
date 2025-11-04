@@ -1,8 +1,8 @@
 """Gamification service for points, badges, and leaderboards."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID
 from collections import defaultdict
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 from curriculum.core.user import User
 
@@ -13,7 +13,7 @@ class GamificationService:
     def __init__(self) -> None:
         """Initialize gamification service."""
         self._user_points: dict[UUID, int] = {}
-        self._badges: dict[UUID, dict] = {}
+        self._badges: Dict[str, Dict[str, Any]] = {}
         self._achievements: dict[str, dict] = {}
         self._leaderboards: dict[str, List[Dict[str, Any]]] = {}
 
@@ -143,10 +143,10 @@ class GamificationService:
         criteria: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create a custom badge for a course."""
-        badge_id = UUID(f"custom_{len(self._badges)}")
+        badge_id = f"custom_{len(self._badges)}"
 
         badge = {
-            "id": str(badge_id),
+            "id": badge_id,
             "course_id": str(course_id),
             "name": name,
             "description": description,
@@ -223,7 +223,8 @@ class GamificationService:
     def get_user_achievements(self, user_id: UUID) -> List[Dict[str, Any]]:
         """Get achievements for a user."""
         return [
-            achievement for achievement in self._achievements.values()
+            achievement
+            for achievement in self._achievements.values()
             if achievement["user_id"] == str(user_id)
         ]
 
@@ -430,17 +431,21 @@ class GamificationService:
         achievements = []
 
         if current_progress >= 25:
-            achievements.append({
-                "milestone": "Quarter Complete",
-                "reward_points": 50,
-                "achieved_at": "2024-01-01T00:00:00Z",
-            })
+            achievements.append(
+                {
+                    "milestone": "Quarter Complete",
+                    "reward_points": 50,
+                    "achieved_at": "2024-01-01T00:00:00Z",
+                }
+            )
 
         if current_progress >= 50:
-            achievements.append({
-                "milestone": "Halfway There",
-                "reward_points": 100,
-                "achieved_at": "2024-01-01T00:00:00Z",
-            })
+            achievements.append(
+                {
+                    "milestone": "Halfway There",
+                    "reward_points": 100,
+                    "achieved_at": "2024-01-01T00:00:00Z",
+                }
+            )
 
         return achievements

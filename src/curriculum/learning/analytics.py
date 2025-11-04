@@ -1,17 +1,17 @@
 """Analytics and tracking service."""
 
-from datetime import datetime
-from typing import List, Optional, Dict, Any
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.analytics import (
-    LearningEvent,
     ActivityVerb,
-    EventType,
-    DeviceType,
     ContentAnalytics,
-    UserAnalytics,
+    DeviceType,
+    EventType,
+    LearningEvent,
     SessionAnalytics,
+    UserAnalytics,
 )
 
 

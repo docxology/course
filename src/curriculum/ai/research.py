@@ -1,8 +1,8 @@
 """Research tools service for citations and bibliography management."""
 
-from typing import Dict, List, Optional, Any
-from uuid import UUID, uuid4
 import re
+from typing import Any, Dict, List, Optional
+from uuid import UUID, uuid4
 
 from curriculum.core.content import Content
 
@@ -115,7 +115,7 @@ class ResearchToolsService:
         year = citation["publication_year"]
         title = citation["title"]
 
-        return f'{author_str}. {title}. {year}.'
+        return f"{author_str}. {title}. {year}."
 
     def create_bibliography(
         self,
@@ -160,7 +160,7 @@ class ResearchToolsService:
         # Simple regex patterns for citation extraction
         patterns = [
             # APA-style: Author (Year)
-            r'([A-Za-z\s]+)\s*\(\s*(\d{4})\s*\)',
+            r"([A-Za-z\s]+)\s*\(\s*(\d{4})\s*\)",
             # MLA-style: Author "Title"
             r'([A-Za-z\s]+)\s*"([^"]+)"',
             # Basic title extraction
@@ -173,11 +173,13 @@ class ResearchToolsService:
             for match in matches:
                 if len(match) == 2:
                     author, detail = match
-                    extracted.append({
-                        "authors": [author.strip()],
-                        "title": detail.strip() if '"' not in detail else detail.strip('"'),
-                        "confidence": 0.7,  # Mock confidence score
-                    })
+                    extracted.append(
+                        {
+                            "authors": [author.strip()],
+                            "title": detail.strip() if '"' not in detail else detail.strip('"'),
+                            "confidence": 0.7,  # Mock confidence score
+                        }
+                    )
 
         return extracted
 
@@ -222,7 +224,9 @@ class ResearchToolsService:
                 continue
 
             # Simple text search
-            searchable_text = f"{citation['title']} {' '.join(citation['authors'])} {citation['source_type']}"
+            searchable_text = (
+                f"{citation['title']} {' '.join(citation['authors'])} {citation['source_type']}"
+            )
             if query.lower() in searchable_text.lower():
                 results.append(citation)
 
@@ -254,7 +258,11 @@ class ResearchToolsService:
             "valid": len(errors) == 0,
             "errors": errors,
             "warnings": [
-                "Consider adding DOI for better verification" if "doi" not in citation_data.get("source_details", {}) else None,
+                (
+                    "Consider adding DOI for better verification"
+                    if "doi" not in citation_data.get("source_details", {})
+                    else None
+                ),
             ],
         }
 
@@ -268,17 +276,19 @@ class ResearchToolsService:
         citations = []
 
         # Mock parsing - would actually parse BibTeX format
-        lines = bibtex_text.strip().split('\n')
+        lines = bibtex_text.strip().split("\n")
         for line in lines:
-            if 'title=' in line:
-                title = line.split('title=')[1].strip('{},')
-                citations.append({
-                    "title": title,
-                    "authors": ["Unknown Author"],  # Would parse actual authors
-                    "publication_year": 2020,  # Would parse actual year
-                    "source_type": "article",
-                    "imported": True,
-                })
+            if "title=" in line:
+                title = line.split("title=")[1].strip("{},")
+                citations.append(
+                    {
+                        "title": title,
+                        "authors": ["Unknown Author"],  # Would parse actual authors
+                        "publication_year": 2020,  # Would parse actual year
+                        "source_type": "article",
+                        "imported": True,
+                    }
+                )
 
         return citations
 
@@ -320,7 +330,7 @@ class ResearchToolsService:
         for citation_id in bibliography["citation_ids"]:
             citation = self._citations.get(UUID(citation_id))
             if citation:
-                authors_str = '\nAU  - '.join(citation['authors'])
+                authors_str = "\nAU  - ".join(citation["authors"])
                 ris_entry = (
                     f"TY  - JOUR\n"
                     f"TI  - {citation['title']}\n"
@@ -334,24 +344,19 @@ class ResearchToolsService:
 
     def get_research_statistics(self, user_id: UUID) -> Dict[str, Any]:
         """Get research statistics for user."""
-        user_citations = [
-            c for c in self._citations.values()
-            if c["user_id"] == str(user_id)
-        ]
+        user_citations = [c for c in self._citations.values() if c["user_id"] == str(user_id)]
 
         return {
             "user_id": str(user_id),
             "total_citations": len(user_citations),
-            "bibliographies": len([
-                b for b in self._bibliographies.values()
-                if b["user_id"] == str(user_id)
-            ]),
-            "research_notes": len([
-                n for n in self._research_notes.values()
-                if n["user_id"] == str(user_id)
-            ]),
-            "citation_styles_used": list(set([
-                self.format_citation(UUID(c["id"])) for c in user_citations[:5]  # Sample
-            ])),
+            "bibliographies": len(
+                [b for b in self._bibliographies.values() if b["user_id"] == str(user_id)]
+            ),
+            "research_notes": len(
+                [n for n in self._research_notes.values() if n["user_id"] == str(user_id)]
+            ),
+            "citation_styles_used": list(
+                set([self.format_citation(UUID(c["id"])) for c in user_citations[:5]])  # Sample
+            ),
             "most_common_source_types": ["article", "book", "website"],
         }
