@@ -9,8 +9,8 @@
 ## 📋 Quick Navigation
 
 ### 🏠 Main Views
-- **📄 Package Overview:** [00_package_overview.md](00_package_overview.md)
-- **📄 Complete Combined:** [llm_analysis_complete.md](llm_analysis_complete.md)
+- **📄 Package Overview:** [llm_analysis_complete.md](../llm_analysis_complete.md)
+- **📄 Complete Combined:** [llm_analysis_complete.md](../llm_analysis_complete.md)
 - **📁 Domain Organization:** [by_domain/](by_domain/)
 - **🔗 Dependency Graph:** [cross_references/dependency_graph.md](cross_references/dependency_graph.md)
 

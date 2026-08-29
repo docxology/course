@@ -82,14 +82,14 @@ graph TD
 
 ### Alternative Views
 
-- **📁 By Type:** [modules/](by_type/modules/) | [files/](by_type/files/)
-- **🔗 Cross References:** [dependency_graph.md](cross_references/dependency_graph.md)
+- **📁 By Type:** the domain directories below (no by-type split exists in this generated tree)
+- **🔗 Cross References:** [dependency_graph.md](../cross_references/dependency_graph.md)
 
 ### Root Access
 
 - **📁 Main Directory:** [../](.)
-- **📄 Package Overview:** [../00_package_overview.md](../00_package_overview.md)
-- **📄 Combined File:** [../llm_analysis_complete.md](../llm_analysis_complete.md)
+- **📄 Package Overview:** [../llm_analysis_complete.md](../../llm_analysis_complete.md)
+- **📄 Combined File:** [../llm_analysis_complete.md](../../llm_analysis_complete.md)
 
 ## Usage Tips
 

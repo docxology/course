@@ -151,7 +151,7 @@ User → Assessment → Progress → Analytics → Recommendations
 ## Navigation
 
 - **📁 Back to Domain View:** [../by_domain/index.md](../by_domain/index.md)
-- **📁 Root Documentation:** [../../index.md](../../index.md)
+- **📁 Root Documentation:** [../index.md](../index.md)
 - **🔗 Module Details:** Browse individual domain folders
 
 ---

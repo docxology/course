@@ -61,10 +61,10 @@ The Core domain provides:
 - [📁 All Domains](../index.md)
 
 ### Related Domains
-- [📁 Content](../content/index.md) - Content management
-- [📁 Learning](../learning/index.md) - Learning features
-- [📁 Database](../db/index.md) - Data layer
-- [📁 Tools](../tools/index.md) - Utilities
+- [📁 Content](../content/) - Content management
+- [📁 Learning](../learning/) - Learning features
+- [📁 Database](../db/) - Data layer
+- [📁 Tools](../tools/) - Utilities
 
 ---
 
