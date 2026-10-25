@@ -42,7 +42,7 @@ def enroll_student(self, teacher_id: UUID, course_id: UUID, student_id: UUID):
     enrollment = {
         "student_id": str(student_id),
         "course_id": str(course_id),
-        "enrolled_at": datetime.utcnow(),
+        "enrolled_at": datetime.now(timezone.utc),
         "status": "active",
     }
 
@@ -154,7 +154,7 @@ def track_student_progress(self, student_id: UUID, progress_data: Dict[str, Any]
     key = f"{student_id}_progress"
     self._student_progress[key] = {
         "overall_progress": progress_data["overall"],
-        "last_updated": datetime.utcnow(),
+        "last_updated": datetime.now(timezone.utc),
         "risk_level": self._calculate_risk_level(progress_data),
     }
 ```
@@ -167,7 +167,7 @@ def update_student_grade(self, student_id: UUID, assessment_id: str, grade: floa
 
     self._student_grades[student_id][assessment_id] = {
         "grade": grade,
-        "graded_at": datetime.utcnow(),
+        "graded_at": datetime.now(timezone.utc),
         "grade_letter": self._calculate_letter_grade(grade),
     }
 ```

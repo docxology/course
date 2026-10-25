@@ -187,7 +187,7 @@ def create_citation(self, user_id: UUID, citation_data: Dict[str, Any]) -> Dict[
         "publication_year": citation_data["year"],
         "source_type": citation_data["type"],
         "is_verified": False,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
 ```
 

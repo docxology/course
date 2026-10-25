@@ -199,7 +199,7 @@ def _write_module_documentation(self, module_name: str, module_data: Dict[str, A
 def _export_json(self, output_file: Optional[str] = None) -> str:
     """Export complete documentation as JSON."""
     complete_data = {
-        "generated_at": datetime.utcnow().isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "modules": self._module_docs,
         "files": self._file_docs,
         "methods": self._method_docs,

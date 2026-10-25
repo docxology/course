@@ -361,8 +361,8 @@ def create_access_token(self, user_id: UUID, expires_delta: Optional[timedelta] 
     to_encode = {
         "sub": str(user_id),
         "type": "access",
-        "exp": datetime.utcnow() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes)),
-        "iat": datetime.utcnow()
+        "exp": datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes)),
+        "iat": datetime.now(timezone.utc)
     }
 
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
@@ -372,8 +372,8 @@ def create_refresh_token(self, user_id: UUID) -> str:
     to_encode = {
         "sub": str(user_id),
         "type": "refresh",
-        "exp": datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days),
-        "iat": datetime.utcnow()
+        "exp": datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days),
+        "iat": datetime.now(timezone.utc)
     }
 
     return jwt.encode(to_encode, settings.refresh_key, algorithm=settings.algorithm)

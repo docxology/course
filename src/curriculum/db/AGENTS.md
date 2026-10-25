@@ -133,8 +133,8 @@ class ContentModel(Base):
     content_body = Column(Text)
     status = Column(String(50), default="draft")
     author_id = Column(UUID(as_uuid=True), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 ```
 
 ## Development Patterns
@@ -425,7 +425,7 @@ async def _log_query(self, query: str, duration: float, success: bool) -> None:
         "query": query[:100],  # Truncate long queries
         "duration_ms": duration * 1000,
         "success": success,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
     if duration > 1.0:  # Log slow queries

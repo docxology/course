@@ -246,14 +246,14 @@ Each module contains specialized services:
 - PostgreSQL 14+ (for relational data)
 - MongoDB 6+ (for content storage)
 - Redis 7+ (for caching)
-- Elasticsearch 8+ (optional, for search)
+- Elasticsearch 9+ (optional, for search)
 
 ### Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-org/curriculum-repository.git
-cd curriculum-repository
+git clone https://github.com/docxology/course.git
+cd course
 ```
 
 2. Create a virtual environment:
@@ -265,6 +265,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
+pip install -e ".[dev]"  # editable install so `curriculum` is importable
 ```
 
 4. Configure environment:
@@ -273,15 +274,16 @@ cp .env.example .env
 # Edit .env with your configuration
 ```
 
-5. Initialize databases:
+5. Start the backing services:
 ```bash
-# Run database migrations (when implemented)
-alembic upgrade head
+docker compose up -d postgres mongo redis elasticsearch
 ```
+No migration tooling is configured; services create their own schemas on first use.
 
 6. Run tests:
 ```bash
-pytest
+pytest tests/ -v
+# or: make test
 ```
 
 7. Start development server:

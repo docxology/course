@@ -206,8 +206,8 @@ def generate_password_reset_token(user_id: UUID) -> str:
     token_data = {
         "user_id": str(user_id),
         "type": "password_reset",
-        "exp": datetime.utcnow() + timedelta(hours=1),
-        "iat": datetime.utcnow()
+        "exp": datetime.now(timezone.utc) + timedelta(hours=1),
+        "iat": datetime.now(timezone.utc)
     }
     return jwt.encode(token_data, settings.secret_key, algorithm="HS256")
 ```
@@ -686,7 +686,7 @@ def create_detailed_validation_error(field: str, value: Any, rule: str, message:
 def log_security_event(event_type: str, details: Dict[str, Any], severity: str = "medium") -> None:
     """Log security-related events."""
     security_log = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "event_type": event_type,
         "severity": severity,
         "details": mask_sensitive_data(details),

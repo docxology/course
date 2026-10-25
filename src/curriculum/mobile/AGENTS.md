@@ -106,8 +106,8 @@ def cache_content_for_offline(self, content_id: UUID, user_id: UUID):
     cache_entry = {
         "content_id": str(content_id),
         "user_id": str(user_id),
-        "cached_at": datetime.utcnow(),
-        "expires_at": datetime.utcnow() + timedelta(hours=24),
+        "cached_at": datetime.now(timezone.utc),
+        "expires_at": datetime.now(timezone.utc) + timedelta(hours=24),
         "is_compressed": True,
     }
     self._cached_content[str(uuid4())] = cache_entry

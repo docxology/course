@@ -169,7 +169,7 @@ def track_content_progress(self, user_id: UUID, content_id: UUID, progress: floa
     key = f"{user_id}_{content_id}"
     self._user_progress[key] = {
         "progress_percentage": progress,
-        "last_updated": datetime.utcnow(),
+        "last_updated": datetime.now(timezone.utc),
     }
 ```
 

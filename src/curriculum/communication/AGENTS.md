@@ -49,7 +49,7 @@ def send_notification(self, user_id: UUID, notification_type: str, message: str)
         "type": notification_type,
         "message": message,
         "is_read": False,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     self._notifications.append(notification)
 ```
@@ -79,7 +79,7 @@ def create_reply(self, post_id: UUID, author_id: UUID, content: str):
         "post_id": str(post_id),
         "author_id": str(author_id),
         "content": content,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
 
     # Update post reply count
@@ -165,7 +165,7 @@ def moderate_content(self, content_id: UUID, action: str, reason: str = ""):
         "action": action,
         "reason": reason,
         "moderator_id": moderator_id,
-        "timestamp": datetime.utcnow(),
+        "timestamp": datetime.now(timezone.utc),
     }
 
     if action == "delete":
@@ -184,7 +184,7 @@ def create_notification(self, user_id: UUID, type: str, message: str):
         "type": type,
         "message": message,
         "is_read": False,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     return notification
 ```

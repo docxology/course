@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.11+
 - Git
 - A code editor (VS Code, PyCharm, etc.)
 - Basic understanding of FastAPI, Pydantic, and pytest
@@ -15,7 +15,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/curriculum-repository/course.git
+   git clone https://github.com/docxology/course.git
    cd course
    ```
 
@@ -45,8 +45,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ### Branching Strategy
 
-- **main**: Production-ready code
-- **develop**: Development branch for new features
+- **main**: Default branch and production-ready code
 - **feature/***: Feature branches
 - **bugfix/***: Bug fix branches
 - **hotfix/***: Critical bug fixes for production
@@ -55,8 +54,8 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 1. **Create a feature branch:**
    ```bash
-   git checkout develop
-   git pull origin develop
+   git checkout main
+   git pull origin main
    git checkout -b feature/your-feature-name
    ```
 
@@ -110,7 +109,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ## Pull Request Process
 
-1. **Create a pull request** targeting the `develop` branch
+1. **Create a pull request** targeting the `main` branch
 2. **Provide a clear description** of the changes
 3. **Reference related issues** if applicable
 4. **Ensure all tests pass** in CI
@@ -152,7 +151,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ## Security
 
-- Report security vulnerabilities to security@curriculum-repository.com
+- Report security vulnerabilities privately via https://github.com/docxology/course/security/advisories/new
 - Do not create public issues for security vulnerabilities
 - Follow responsible disclosure practices
 

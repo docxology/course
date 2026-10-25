@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: '3.11'
 
@@ -31,35 +31,14 @@ jobs:
         twine check dist/*
 
     - name: Create GitHub release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v3
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        name: Release ${{ github.ref_name }}
         draft: false
         prerelease: false
-
-    - name: Upload release assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/curriculum-repository-${{ github.ref_name }}.tar.gz
-        asset_name: curriculum-repository-${{ github.ref_name }}.tar.gz
-        asset_content_type: application/gzip
-
-    - name: Upload wheel asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/curriculum_repository-${{ github.ref_name }}-py3-none-any.whl
-        asset_name: curriculum_repository-${{ github.ref_name }}-py3-none-any.whl
-        asset_content_type: application/zip
+        files: |
+          dist/*.tar.gz
+          dist/*.whl
 
     - name: Publish to PyPI
       if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && !contains(github.ref, 'rc')

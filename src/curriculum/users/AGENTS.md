@@ -124,13 +124,13 @@ class AuthenticationService:
 
     def create_access_token(self, user_id: UUID, expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT access token."""
-        expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
+        expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
 
         to_encode = {
             "sub": str(user_id),
             "type": "access",
             "exp": expire,
-            "iat": datetime.utcnow(),
+            "iat": datetime.now(timezone.utc),
             "iss": settings.app_name,
             "aud": settings.allowed_audiences
         }
@@ -139,13 +139,13 @@ class AuthenticationService:
 
     def create_refresh_token(self, user_id: UUID) -> str:
         """Create JWT refresh token with longer expiration."""
-        expire = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
+        expire = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)
 
         to_encode = {
             "sub": str(user_id),
             "type": "refresh",
             "exp": expire,
-            "iat": datetime.utcnow()
+            "iat": datetime.now(timezone.utc)
         }
 
         return jwt.encode(to_encode, settings.refresh_key, algorithm=settings.algorithm)
@@ -198,7 +198,7 @@ def authenticate_user(self, username_or_email: str, password: str) -> Optional[U
         return None
 
     # Check if account is locked
-    if user.locked_until and user.locked_until > datetime.utcnow():
+    if user.locked_until and user.locked_until > datetime.now(timezone.utc):
         return None
 
     # Verify password
@@ -374,7 +374,7 @@ def record_login(self, user_id: UUID) -> Optional[User]:
     if not user:
         return None
 
-    user.last_login_at = datetime.utcnow()
+    user.last_login_at = datetime.now(timezone.utc)
     user.login_count += 1
     user.failed_login_attempts = 0  # Reset failed attempts
     user.locked_until = None  # Unlock if locked
@@ -391,7 +391,7 @@ def record_failed_login(self, user_id: UUID) -> None:
 
     # Lock account after max attempts
     if user.failed_login_attempts >= settings.max_login_attempts:
-        user.locked_until = datetime.utcnow() + timedelta(minutes=settings.lockout_duration_minutes)
+        user.locked_until = datetime.now(timezone.utc) + timedelta(minutes=settings.lockout_duration_minutes)
 ```
 
 2. **Session Analytics**:
@@ -405,7 +405,7 @@ def get_user_sessions(self, user_id: UUID, days: int = 30) -> List[Dict[str, Any
         return []
 
     sessions = []
-    current_date = datetime.utcnow()
+    current_date = datetime.now(timezone.utc)
 
     for i in range(min(user.login_count, days)):
         session_date = current_date - timedelta(days=i)
@@ -503,8 +503,8 @@ def generate_password_reset_token(user_id: UUID, expires_in: int = 3600) -> str:
     token_data = {
         "user_id": str(user_id),
         "type": "password_reset",
-        "exp": datetime.utcnow() + timedelta(seconds=expires_in),
-        "iat": datetime.utcnow()
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=expires_in),
+        "iat": datetime.now(timezone.utc)
     }
 
     return jwt.encode(token_data, settings.secret_key, algorithm="HS256")
@@ -522,7 +522,7 @@ def check_account_security(self, user_id: UUID) -> Dict[str, Any]:
     recommendations = []
 
     # Check password age
-    if user.updated_at and (datetime.utcnow() - user.updated_at).days > 90:
+    if user.updated_at and (datetime.now(timezone.utc) - user.updated_at).days > 90:
         issues.append("Password is older than 90 days")
         recommendations.append("Consider updating your password")
 
@@ -532,7 +532,7 @@ def check_account_security(self, user_id: UUID) -> Dict[str, Any]:
         recommendations.append("Review recent login activity")
 
     # Check session activity
-    if user.last_login_at and (datetime.utcnow() - user.last_login_at).days > 30:
+    if user.last_login_at and (datetime.now(timezone.utc) - user.last_login_at).days > 30:
         recommendations.append("Account has been inactive for over 30 days")
 
     return {
@@ -740,7 +740,7 @@ def implement_account_lockout(self, user_id: UUID) -> None:
     attempts = user.failed_login_attempts
     if attempts >= 5:
         lockout_minutes = min(attempts * 2, 1440)  # Max 24 hours
-        user.locked_until = datetime.utcnow() + timedelta(minutes=lockout_minutes)
+        user.locked_until = datetime.now(timezone.utc) + timedelta(minutes=lockout_minutes)
 
 def check_suspicious_activity(self, user_id: UUID, login_ip: str, user_agent: str) -> bool:
     """Check for suspicious login activity."""
@@ -777,13 +777,13 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 # Include audience and issuer claims
 def create_access_token(self, user_id: UUID) -> str:
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode = {
         "sub": str(user_id),
         "type": "access",
         "exp": expire,
-        "iat": datetime.utcnow(),
+        "iat": datetime.now(timezone.utc),
         "iss": "curriculum-repository",
         "aud": ["curriculum-api", "curriculum-web"]
     }
@@ -992,7 +992,7 @@ def export_user_data(self, user_id: UUID) -> Dict[str, Any]:
         },
         "activity_data": self._get_user_activity_data(user_id),
         "preferences": user.preferences,
-        "exported_at": datetime.utcnow()
+        "exported_at": datetime.now(timezone.utc)
     }
 
 def delete_user_data(self, user_id: UUID) -> bool:
@@ -1107,7 +1107,7 @@ def check_time_based_access(self, user_id: UUID, resource: str) -> bool:
     if not user:
         return False
 
-    current_time = datetime.utcnow().time()
+    current_time = datetime.now(timezone.utc).time()
 
     # Example: Students can only access system during business hours
     if user.has_role(UserRole.STUDENT):
@@ -1118,7 +1118,7 @@ def check_time_based_access(self, user_id: UUID, resource: str) -> bool:
             return False
 
     # Example: Weekend restrictions
-    if datetime.utcnow().weekday() >= 5:  # Saturday or Sunday
+    if datetime.now(timezone.utc).weekday() >= 5:  # Saturday or Sunday
         if user.has_role(UserRole.STUDENT):
             return False  # Students can't access on weekends
 
