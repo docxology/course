@@ -134,7 +134,7 @@ class ContentModel(Base):
     status = Column(String(50), default="draft")
     author_id = Column(UUID(as_uuid=True), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 ```
 
 ## Development Patterns

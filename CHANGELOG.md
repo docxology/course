@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced error handling and validation throughout
 - Updated dependencies to latest stable versions
 - Improved code quality with type hints and linting
+- Refreshed pinned dependencies, GitHub Actions versions and Docker/Elasticsearch images
+- Replaced archived `actions/create-release` / `actions/upload-release-asset` with `softprops/action-gh-release`
+- Corrected repository URLs, branch workflow, Python version claims and contacts in README, CONTRIBUTING and CODE_OF_CONDUCT
+- Replaced deprecated `datetime.utcnow()` examples in module guides with `datetime.now(timezone.utc)`
 
 ### Removed
 
@@ -41,13 +45,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stray nested `uv` project under `src/` (`src/pyproject.toml`, `src/uv.lock`, `src/main.py`, `src/.python-version`)
 - Superseded `CRITICAL_FIXES_NEEDED.md` (every listed fix is recorded as applied in `FIXES_APPLIED.md`)
 - Stale `*.py.backup` copies of test files
-
-### Changed
-
-- Refreshed pinned dependencies, GitHub Actions versions and Docker/Elasticsearch images
-- Replaced archived `actions/create-release` / `actions/upload-release-asset` with `softprops/action-gh-release`
-- Corrected repository URLs, branch workflow, Python version claims and contacts in README, CONTRIBUTING and CODE_OF_CONDUCT
-- Replaced deprecated `datetime.utcnow()` examples in module guides with `datetime.now(timezone.utc)`
 
 ### Fixed
 
