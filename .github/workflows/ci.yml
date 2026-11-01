@@ -54,7 +54,7 @@ jobs:
         pytest tests/ -m integration --cov=src --cov-report=xml --cov-append --cov-report=term-missing
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # codecov/codecov-action@v7.1.1
       with:
         files: ./coverage.xml
         flags: unittests
