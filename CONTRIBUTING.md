@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ### Prerequisites
 
-- Python 3.11+
+- the bound in `pyproject.toml` or newer
 - Git
 - A code editor (VS Code, PyCharm, etc.)
 - Basic understanding of FastAPI, Pydantic, and pytest
