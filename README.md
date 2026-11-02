@@ -242,7 +242,7 @@ Each module contains specialized services:
 
 ### Prerequisites
 
-- Python 3.11 or higher
+- the bound in `pyproject.toml` or newer
 - PostgreSQL 14+ (for relational data)
 - MongoDB 6+ (for content storage)
 - Redis 7+ (for caching)
