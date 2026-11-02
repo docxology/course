@@ -29,7 +29,7 @@ services:
 
   # PostgreSQL database
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15-alpine@sha256:54e0dd8e8cddcdbb9156c2486eed5a43eccb7214d7c6828097d41ce049fb3984
     environment:
       - POSTGRES_DB=curriculum_db
       - POSTGRES_USER=curriculum
@@ -47,7 +47,7 @@ services:
 
   # MongoDB for content storage
   mongo:
-    image: mongo:6-jammy
+    image: mongo:6-jammy@sha256:a90cef0143bed76540c2b7e6f299a02165e59b07e459b2fd7fef031c5accf5fd
     environment:
       - MONGO_INITDB_DATABASE=curriculum_content
     ports:
@@ -63,7 +63,7 @@ services:
 
   # Redis for caching and sessions
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine@sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f
     ports:
       - "6379:6379"
     volumes:
@@ -77,7 +77,7 @@ services:
 
   # Elasticsearch for search
   elasticsearch:
-    image: elasticsearch:9.1.1
+    image: elasticsearch:9.1.1@sha256:272cbfbe31d87291a06bcd7cb3c7243dc8df50c04df987bc62a7c31ca9b4681a
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -95,7 +95,7 @@ services:
 
   # Nginx reverse proxy
   nginx:
-    image: nginx:alpine
+    image: nginx:alpine@sha256:785835ea65db4bba6f021acc0f3be91b0fef76a53fe41f8588c6698d2aed0606
     ports:
       - "80:80"
       - "443:443"
@@ -108,7 +108,7 @@ services:
 
   # Filebeat for log shipping
   filebeat:
-    image: docker.elastic.co/beats/filebeat:9.1.1
+    image: docker.elastic.co/beats/filebeat:9.1.1@sha256:edd6524f30277886069dc563da3d3af0ee89751a9e32825367b14b7a658c662e
     user: root
     volumes:
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
@@ -117,7 +117,7 @@ services:
 
   # Prometheus for metrics
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:latest@sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2
     ports:
       - "9090:9090"
     volumes:
@@ -133,7 +133,7 @@ services:
 
   # Grafana for dashboards
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:latest@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205
     ports:
       - "3000:3000"
     environment:
