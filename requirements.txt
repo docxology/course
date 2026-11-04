@@ -20,7 +20,7 @@ python-multipart==0.0.20
 markdown==3.9
 pypandoc==1.17
 python-magic==0.4.27
-Pillow==11.3.0
+Pillow==13.0.0
 
 # Educational Standards
 lxml==6.0.2
