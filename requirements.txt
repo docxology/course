@@ -45,7 +45,7 @@ httpx==0.28.1
 faker==40.43.0
 
 # Code Quality
-black==25.9.0
+black==26.10.1
 flake8==7.3.0
 mypy==1.18.2
 pylint==4.1.3
