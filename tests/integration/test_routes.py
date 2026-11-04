@@ -240,9 +240,11 @@ class TestRouteStructure:
 
     def test_route_tags(self):
         """Test that routes have proper tags."""
-        # Check that routes are properly tagged
-        content_routes = [route for route in app.routes if "/content" in str(route.path)]
-        user_routes = [route for route in app.routes if "/users" in str(route.path)]
+        # FastAPI 0.162 wraps included routers in a private _IncludedRouter, so app.routes no longer
+        # lists their paths. The generated OpenAPI paths are the stable, public view.
+        paths = list(app.openapi().get("paths", {}))
+        content_routes = [p for p in paths if "/content" in p]
+        user_routes = [p for p in paths if "/users" in p]
 
         # Should have tagged routes
         assert len(content_routes) > 0
