@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "course"
+authors:
+  - family-names: Friedman
+    given-names: Daniel Ari
+    orcid: "https://orcid.org/0000-0001-6232-9096"
+repository-code: "https://github.com/docxology/course"
+abstract: "Curriculum Repository System: a FastAPI platform for authoring and delivering courses, modules and lessons in Markdown, HTML, LaTeX, PDF and SCORM, backed by PostgreSQL, MongoDB, Redis and Elasticsearch, with auto-graded assessments, xAPI analytics, Dublin Core metadata and JWT role-based access."
+license: MIT
