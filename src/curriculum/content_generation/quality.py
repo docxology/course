@@ -252,7 +252,8 @@ class ContentQualityService:
 
         # Check for broken links (basic pattern matching)
         url_pattern = (
-            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+            # Same character set as the old `[$-_@.&+]...` form, with the `$-_` range spelled out.
+            r"https?://[!$%&'()*+,\-./0-9:;<=>?@A-Z\[\\\]^_a-z]+"
         )
         urls = re.findall(url_pattern, content_text)
 
