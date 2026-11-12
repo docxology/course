@@ -1,5 +1,11 @@
 # Curriculum Repository System
 
+<p align="center">
+  <a href="https://github.com/docxology/course/actions/workflows/ci.yml"><img alt="ci.yml workflow status on main" src="https://github.com/docxology/course/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
+  <img alt="Requires Python 3.11 or newer" src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white">
+</p>
+
 A comprehensive educational content management and delivery platform built with Python, designed to host, manage, and deliver educational content across multiple formats and platforms.
 
 ## Overview
@@ -237,6 +243,46 @@ Each module contains specialized services:
 
 **Documentation Services:**
 - `DocumentationGeneratorService`: Automated documentation generation with LLM analysis
+
+### Package map
+
+Generated on 2026-11-12 from the `import` statements under `src/curriculum/`. An arrow from A to B means code in A imports B; arrows already implied by a longer path are left out, so the picture shows layering rather than every edge. It shows 12 of the package's 19 top-level parts: the largest ones that import or are imported by others.
+
+```mermaid
+flowchart LR
+    accTitle: Internal dependency map of the curriculum package
+    accDescr: Generated from import statements in src/curriculum. Each box is a subpackage or module of the package; an arrow from A to B means code in A imports B; arrows already implied by a longer path are omitted. Most-imported: core, learning, content.
+    n_content_generation["content_generation/"]
+    n_integration["integration/"]
+    n_learning["learning/"]
+    n_ai["ai/"]
+    n_routes["routes/"]
+    n_teachers["teachers/"]
+    n_search["search/"]
+    n_core["core/"]
+    n_content["content/"]
+    n_mobile["mobile/"]
+    n_communication["communication/"]
+    n_orchestration["orchestration.py"]
+    n_learning --> n_core
+    n_teachers --> n_core
+    n_ai --> n_core
+    n_content --> n_core
+    n_content_generation --> n_core
+    n_integration --> n_core
+    n_orchestration --> n_content
+    n_orchestration --> n_integration
+    n_orchestration --> n_learning
+    n_search --> n_core
+    n_orchestration --> n_ai
+    n_orchestration --> n_search
+    n_routes --> n_content
+    n_communication --> n_core
+    n_mobile --> n_core
+    n_orchestration --> n_communication
+    n_orchestration --> n_mobile
+    n_routes --> n_learning
+```
 
 ## Installation
 
