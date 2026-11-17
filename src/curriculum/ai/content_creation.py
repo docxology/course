@@ -1,8 +1,7 @@
 """Content creation tools and templates service."""
 
-import json
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
 from curriculum.core.content import Content, ContentFormat, ContentType
 
@@ -17,6 +16,23 @@ class ContentCreationService:
         self._ai_assistants: dict[str, dict] = {}
 
         self._initialize_templates()
+        self._initialize_assistants()
+
+    def _initialize_assistants(self) -> None:
+        """Initialize default AI assistants."""
+        self._ai_assistants = {
+            "ai_content_writer_0": {
+                "id": "ai_content_writer_0",
+                "type": "content_writer",
+                "name": "AI Content Writer Assistant",
+                "description": "AI-powered content creation assistant",
+                "capabilities": ["text_generation", "content_suggestions"],
+                "model": "gpt-4",
+                "prompt_templates": {},
+                "is_active": True,
+                "created_at": "2024-01-01T00:00:00Z",
+            }
+        }
 
     def _initialize_templates(self) -> None:
         """Initialize content creation templates."""
@@ -234,41 +250,65 @@ class ContentCreationService:
     def generate_content_outline(
         self,
         topic: str,
-        content_type: str = "lesson",
+        content_type: Union[str, int] = "lesson",
         estimated_duration: int = 60,
+        sections: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Generate content outline using AI assistance."""
-        # Mock AI-generated outline
-        outline = {
+        if isinstance(content_type, int):
+            section_count = content_type
+            resolved_content_type = "lesson"
+        else:
+            resolved_content_type = content_type
+            section_count = sections if sections is not None else 4
+
+        base_sections: List[Dict[str, Any]] = [
+            {
+                "title": "Introduction",
+                "description": f"Overview of {topic}",
+                "estimated_time": 10,
+                "difficulty": "beginner",
+            },
+            {
+                "title": "Core Concepts",
+                "description": f"Key concepts in {topic}",
+                "estimated_time": 25,
+                "difficulty": "intermediate",
+            },
+            {
+                "title": "Practical Applications",
+                "description": f"How to apply {topic} in practice",
+                "estimated_time": 20,
+                "difficulty": "intermediate",
+            },
+            {
+                "title": "Assessment",
+                "description": "Check understanding",
+                "estimated_time": 5,
+                "difficulty": "mixed",
+            },
+        ]
+
+        if section_count <= len(base_sections):
+            section_items = base_sections[: max(0, section_count)]
+        else:
+            section_items = list(base_sections)
+            for idx in range(len(base_sections), section_count):
+                section_items.append(
+                    {
+                        "title": f"Advanced Topic {idx - len(base_sections) + 1}",
+                        "description": f"Extended exploration of {topic}",
+                        "estimated_time": 15,
+                        "difficulty": "advanced",
+                    }
+                )
+
+        return {
             "topic": topic,
-            "content_type": content_type,
+            "content_type": resolved_content_type,
             "estimated_duration": estimated_duration,
-            "sections": [
-                {
-                    "title": "Introduction",
-                    "description": f"Overview of {topic}",
-                    "estimated_time": 10,
-                    "difficulty": "beginner",
-                },
-                {
-                    "title": "Core Concepts",
-                    "description": f"Key concepts in {topic}",
-                    "estimated_time": 25,
-                    "difficulty": "intermediate",
-                },
-                {
-                    "title": "Practical Applications",
-                    "description": f"How to apply {topic} in practice",
-                    "estimated_time": 20,
-                    "difficulty": "intermediate",
-                },
-                {
-                    "title": "Assessment",
-                    "description": "Check understanding",
-                    "estimated_time": 5,
-                    "difficulty": "mixed",
-                },
-            ],
+            "outline": section_items,
+            "sections": section_items,
             "learning_objectives": [
                 f"Understand the fundamentals of {topic}",
                 f"Apply {topic} concepts in practical scenarios",
@@ -277,8 +317,6 @@ class ContentCreationService:
             "prerequisites": ["Basic knowledge", "Required tools"],
             "resources": ["Reference materials", "External links"],
         }
-
-        return outline
 
     def create_ai_assistant(
         self,
@@ -331,10 +369,12 @@ class ContentCreationService:
 Based on your prompt: "{prompt}"
 
 ## Introduction
-This content was generated using AI assistance to help you create educational materials more efficiently.
+This content was generated using AI assistance to help you create
+educational materials more efficiently.
 
 ## Main Content
-The generated content includes structured sections, examples, and exercises tailored to your specifications.
+The generated content includes structured sections, examples, and exercises
+tailored to your specifications.
 
 ## Key Points
 - AI can help with content creation
@@ -381,13 +421,14 @@ Use this generated content as a starting point and customize it for your specifi
         difficulty: str = "mixed",
     ) -> Dict[str, Any]:
         """Generate quiz questions from existing content."""
-        # Mock quiz generation from content
         questions = []
 
         for i in range(question_count):
             question = {
                 "id": f"q_{i}",
-                "question": f"Based on the content, what is the main concept discussed in section {i+1}?",
+                "question": (
+                    f"Based on the content, what is the main concept discussed in section {i+1}?"
+                ),
                 "type": "multiple_choice",
                 "options": [
                     f"Concept {i+1}A",
@@ -402,6 +443,7 @@ Use this generated content as a starting point and customize it for your specifi
             questions.append(question)
 
         return {
+            "quiz_id": str(uuid4()),
             "content_id": str(content_id),
             "quiz_title": "Generated Quiz",
             "question_count": len(questions),
@@ -412,70 +454,104 @@ Use this generated content as a starting point and customize it for your specifi
 
     def create_content_validator(
         self,
-        validation_rules: Dict[str, Any],
+        validation_rules: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Create content validation rules."""
+        validation_rules = validation_rules or {}
         validator_id = f"validator_{len(self._content_generators)}"
+
+        default_rules: Dict[str, Any] = {
+            "min_length": 100,
+            "max_length": 10000,
+            "required_sections": ["introduction", "main_content", "conclusion"],
+            "check_accessibility": True,
+            "check_seo": True,
+        }
+        custom_rules = validation_rules.get("rules")
+        if isinstance(custom_rules, dict):
+            default_rules.update(custom_rules)
 
         validator = {
             "id": validator_id,
+            "validator_id": validator_id,
             "name": validation_rules.get("name", "Content Validator"),
             "description": validation_rules.get("description", "Automated content validation"),
-            "rules": validation_rules.get(
-                "rules",
-                {
-                    "min_length": 100,
-                    "max_length": 10000,
-                    "required_sections": ["introduction", "main_content", "conclusion"],
-                    "check_accessibility": True,
-                    "check_seo": True,
-                },
-            ),
+            "rules": default_rules,
             "is_active": True,
             "created_at": "2024-01-01T00:00:00Z",
         }
 
+        self._content_generators[validator_id] = validator
         return validator
 
     def validate_content_structure(
         self,
-        content: Content,
-        validator_id: str,
+        content: Union[Content, Dict[str, Any]],
+        validator_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Validate content structure and quality."""
-        validator = self._content_generators.get(validator_id)
-        if not validator:
-            return {"error": "Validator not found"}
+        if validator_id is not None:
+            validator = self._content_generators.get(validator_id)
+            if not validator:
+                return {"error": "Validator not found"}
+            rules = validator["rules"]
+        else:
+            rules = {
+                "min_length": 10,
+                "max_length": 10000,
+                "required_sections": [],
+                "check_accessibility": True,
+                "check_seo": True,
+            }
 
-        rules = validator["rules"]
-        validation_results = {
-            "content_id": str(content.id),
+        if isinstance(content, Content):
+            content_id_str = str(content.id)
+            title_str = content.title
+            description_str = content.description or ""
+            body_str = content.content_body or ""
+        else:
+            content_id_str = str(content.get("id", ""))
+            title_str = str(content.get("title", ""))
+            description_str = str(content.get("description", ""))
+            body_str = str(content.get("content_body", ""))
+
+        validation_results: Dict[str, Any] = {
+            "content_id": content_id_str,
             "is_valid": True,
+            "valid": True,
             "issues": [],
             "warnings": [],
             "score": 100,
         }
 
-        # Check length
-        content_length = len(content.content_body) if content.content_body else 0
-        if content_length < rules["min_length"]:
+        if not title_str.strip():
+            validation_results["issues"].append("Missing content title")
+            validation_results["is_valid"] = False
+            validation_results["score"] -= 20
+
+        content_length = len(body_str)
+        min_length = int(rules.get("min_length", 10))
+        max_length = int(rules.get("max_length", 10000))
+
+        if content_length < min_length:
             validation_results["issues"].append(
-                f"Content too short: {content_length} < {rules['min_length']}"
+                f"Content too short: {content_length} < {min_length}"
             )
             validation_results["is_valid"] = False
             validation_results["score"] -= 20
 
-        if content_length > rules["max_length"]:
+        if content_length > max_length:
             validation_results["warnings"].append(
-                f"Content very long: {content_length} > {rules['max_length']}"
+                f"Content very long: {content_length} > {max_length}"
             )
 
-        # Check required sections
-        required_sections = rules["required_sections"]
+        required_sections = list(rules.get("required_sections", []))
         missing_sections = []
+        normalized_body = body_str.lower().replace("_", " ")
 
         for section in required_sections:
-            if section.lower() not in content.content_body.lower():
+            section_norm = section.lower().replace("_", " ")
+            if section.lower() not in body_str.lower() and section_norm not in normalized_body:
                 missing_sections.append(section)
 
         if missing_sections:
@@ -483,18 +559,17 @@ Use this generated content as a starting point and customize it for your specifi
             validation_results["is_valid"] = False
             validation_results["score"] -= len(missing_sections) * 15
 
-        # Check accessibility
-        if rules["check_accessibility"]:
-            if "<img" in content.content_body and "alt=" not in content.content_body:
+        if rules.get("check_accessibility", True):
+            if "<img" in body_str and "alt=" not in body_str:
                 validation_results["warnings"].append("Images missing alt text")
 
-        # Check SEO
-        if rules["check_seo"]:
-            if len(content.title) < 30:
+        if rules.get("check_seo", True):
+            if len(title_str) < 30:
                 validation_results["warnings"].append("Title too short for SEO")
-            if not content.description:
+            if not description_str:
                 validation_results["warnings"].append("Missing description for SEO")
 
+        validation_results["valid"] = bool(validation_results["is_valid"])
         return validation_results
 
     def get_content_creation_statistics(self) -> Dict[str, Any]:
@@ -516,7 +591,7 @@ Use this generated content as a starting point and customize it for your specifi
         permissions: Dict[str, str],
     ) -> Dict[str, Any]:
         """Create a collaboration space for content creation."""
-        space_id = UUID(f"collab_{content_id}")
+        space_id = uuid4()
 
         collaboration_space = {
             "id": str(space_id),

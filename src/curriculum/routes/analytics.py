@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 
 from curriculum.core.analytics import ActivityVerb, EventType, LearningEvent
@@ -76,7 +76,7 @@ class EventResponse(BaseModel):
 async def track_event(
     request: TrackEventRequest,
     current_user: User = Depends(get_current_user),
-):
+) -> EventResponse:
     """Track a learning event."""
     event = analytics_service.track_event(
         user_id=current_user.id,
@@ -98,7 +98,7 @@ async def track_content_view(
     content_id: UUID,
     duration: Optional[int] = None,
     current_user: User = Depends(get_current_user),
-):
+) -> EventResponse:
     """Track content view event."""
     event = analytics_service.track_content_view(
         user_id=current_user.id,
@@ -116,7 +116,7 @@ async def track_assessment_completion(
     passed: bool,
     duration: int,
     current_user: User = Depends(get_current_user),
-):
+) -> EventResponse:
     """Track assessment completion event."""
     event = analytics_service.track_assessment_completion(
         user_id=current_user.id,
@@ -133,7 +133,7 @@ async def track_assessment_completion(
 async def get_user_report(
     user_id: UUID,
     current_user: User = Depends(get_current_user),
-):
+) -> UserReportResponse:
     """Get analytics report for a user."""
     if user_id != current_user.id and not current_user.has_permission(
         UserPermission.ANALYTICS_VIEW
@@ -158,7 +158,7 @@ async def get_user_report(
 
 
 @router.get("/content/{content_id}/report", response_model=ContentReportResponse)
-async def get_content_report(content_id: UUID):
+async def get_content_report(content_id: UUID) -> ContentReportResponse:
     """Get analytics report for content."""
     report = analytics_service.generate_content_report(content_id)
 
@@ -178,7 +178,7 @@ async def get_user_events(
     event_type: Optional[EventType] = Query(None, description="Filter by event type"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum number of events"),
     current_user: User = Depends(get_current_user),
-):
+) -> List[EventResponse]:
     """Get events for a specific user."""
     if user_id != current_user.id and not current_user.has_permission(
         UserPermission.ANALYTICS_VIEW
@@ -198,7 +198,7 @@ async def get_content_events(
     content_id: UUID,
     event_type: Optional[EventType] = Query(None, description="Filter by event type"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum number of events"),
-):
+) -> List[EventResponse]:
     """Get events for specific content."""
     events = analytics_service.get_events_by_content(content_id, event_type, limit)
 
@@ -206,7 +206,7 @@ async def get_content_events(
 
 
 @router.get("/dashboard/overview", response_model=Dict[str, Any])
-async def get_dashboard_overview(current_user: User = Depends(get_current_user)):
+async def get_dashboard_overview(current_user: User = Depends(get_current_user)) -> Dict[str, Any]:
     """Get dashboard overview statistics."""
     if not current_user.has_permission(UserPermission.ANALYTICS_VIEW):
         raise HTTPException(
@@ -233,7 +233,7 @@ async def export_analytics_report(
     start_date: Optional[datetime] = Query(None, description="Start date"),
     end_date: Optional[datetime] = Query(None, description="End date"),
     current_user: User = Depends(get_current_user),
-):
+) -> Dict[str, Any]:
     """Export analytics report."""
     if not current_user.has_permission(UserPermission.ANALYTICS_EXPORT):
         raise HTTPException(
@@ -264,5 +264,5 @@ def _event_to_response(event: LearningEvent) -> EventResponse:
         success=event.success,
         score=event.score,
         duration=event.duration,
-        timestamp=event.timestamp.isoformat(),
+        timestamp=event.created_at.isoformat(),
     )

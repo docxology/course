@@ -1,15 +1,14 @@
 """Integration tests for the Curriculum Repository System."""
 
 import pytest
-from uuid import uuid4
 
 from curriculum.content.content import ContentService
-from curriculum.users.user import UserService, AuthenticationService
-from curriculum.learning.assessment import AssessmentService
-from curriculum.learning.analytics import AnalyticsService
-from curriculum.core.content import ContentType, ContentFormat, ContentStatus
-from curriculum.core.user import UserRole
 from curriculum.core.assessment import QuestionType
+from curriculum.core.content import ContentFormat, ContentStatus, ContentType
+from curriculum.core.user import UserRole
+from curriculum.learning.analytics import AnalyticsService
+from curriculum.learning.assessment import AssessmentService
+from curriculum.users.user import AuthenticationService, UserService
 
 
 @pytest.mark.integration
@@ -36,28 +35,30 @@ class TestIntegration:
     def test_complete_user_journey(self, services):
         """Test complete user journey from registration to content consumption."""
         # 1. Create user
-        user = services["user"].create_user(
+        user, error = services["user"].create_user(
             email="journey@example.com",
             username="journeyuser",
             full_name="Journey User",
-            password="password123",
+            password="JourneyPass123!",
         )
+        assert error == ""
         assert user is not None
         assert user.email == "journey@example.com"
 
         # 2. Authenticate user
-        authenticated = services["auth"].authenticate_user("journeyuser", "password123")
+        authenticated = services["auth"].authenticate_user("journeyuser", "JourneyPass123!")
         assert authenticated is not None
         assert authenticated.id == user.id
 
         # 3. Create instructor
-        instructor = services["user"].create_user(
+        instructor, error = services["user"].create_user(
             email="instructor@example.com",
             username="instructor",
             full_name="Test Instructor",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.INSTRUCTOR],
         )
+        assert error == ""
         assert instructor is not None
         assert UserRole.INSTRUCTOR in instructor.roles
 
@@ -79,18 +80,19 @@ class TestIntegration:
             content_id=content.id,
         )
         assert view_event is not None
-        assert hasattr(view_event, 'id')
+        assert hasattr(view_event, "id")
 
     def test_content_lifecycle(self, services):
         """Test content creation and lifecycle management."""
         # Create author
-        author = services["user"].create_user(
+        author, error = services["user"].create_user(
             email="author@example.com",
             username="author",
             full_name="Content Author",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.CONTENT_CREATOR],
         )
+        assert error == ""
         assert author is not None
 
         # Create content
@@ -121,13 +123,14 @@ class TestIntegration:
     def test_assessment_workflow(self, services):
         """Test assessment creation and submission workflow."""
         # Create instructor
-        instructor = services["user"].create_user(
+        instructor, error = services["user"].create_user(
             email="instructor2@example.com",
             username="instructor2",
             full_name="Instructor Two",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.INSTRUCTOR],
         )
+        assert error == ""
         assert instructor is not None
 
         # Create assessment
@@ -160,22 +163,23 @@ class TestIntegration:
     def test_analytics_tracking(self, services):
         """Test analytics event tracking."""
         # Create user
-        user = services["user"].create_user(
+        user, error = services["user"].create_user(
             email="analytics@example.com",
             username="analyticsuser",
             full_name="Analytics User",
-            password="password123",
+            password="JourneyPass123!",
         )
+        assert error == ""
         assert user is not None
 
         # Create content
-        author = services["user"].create_user(
+        author, error = services["user"].create_user(
             email="author2@example.com",
             username="author2",
             full_name="Author Two",
-            password="password123",
+            password="JourneyPass123!",
         )
-        
+
         content = services["content"].create_content(
             title="Analytics Content",
             content_type=ContentType.LESSON,
@@ -198,34 +202,39 @@ class TestIntegration:
     def test_permission_system(self, services):
         """Test user permission system."""
         # Create users with different roles
-        student = services["user"].create_user(
+        student, error = services["user"].create_user(
             email="student@example.com",
             username="student",
             full_name="Student User",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.STUDENT],
         )
+        assert error == ""
         assert student is not None
 
-        instructor = services["user"].create_user(
+        instructor, error = services["user"].create_user(
             email="instructor3@example.com",
             username="instructor3",
             full_name="Instructor Three",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.INSTRUCTOR],
         )
+        assert error == ""
         assert instructor is not None
 
-        admin = services["user"].create_user(
+        admin, error = services["user"].create_user(
             email="admin@example.com",
             username="admin",
             full_name="Admin User",
-            password="password123",
+            password="JourneyPass123!",
             roles=[UserRole.ADMIN],
         )
+        assert error == ""
         assert admin is not None
 
         # Verify role assignments
+        assert error == ""
+        assert student is not None and instructor is not None and admin is not None
         assert UserRole.STUDENT in student.roles
         assert UserRole.INSTRUCTOR in instructor.roles
         assert UserRole.ADMIN in admin.roles

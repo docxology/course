@@ -1,11 +1,18 @@
 """Study tools service for note-taking, flashcards, and practice."""
 
 import random
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
-from curriculum.core.content import Content
-from curriculum.core.user import User
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class StudyToolsService:
@@ -24,11 +31,11 @@ class StudyToolsService:
         content_id: UUID,
         title: str,
         content: str,
-        tags: List[str] = None,
+        tags: Optional[List[str]] = None,
         is_public: bool = False,
     ) -> Dict[str, Any]:
         """Create a study note."""
-        note_id = UUID(f"note_{user_id}_{len(self._notes)}")
+        note_id = uuid4()
 
         note = {
             "id": str(note_id),
@@ -58,6 +65,26 @@ class StudyToolsService:
 
         return sorted(notes, key=lambda x: x["updated_at"], reverse=True)
 
+    def generate_flashcards(
+        self,
+        content_id: UUID,
+        count: int = 5,
+    ) -> Dict[str, Any]:
+        """Generate flashcards for a content item."""
+        cards = [
+            {
+                "id": f"card_{i + 1}",
+                "question": f"Review question {i + 1} for content {content_id}",
+                "answer": f"Key concept explanation {i + 1}",
+            }
+            for i in range(count)
+        ]
+        return {
+            "content_id": str(content_id),
+            "count": len(cards),
+            "flashcards": cards,
+        }
+
     def create_flashcard_deck(
         self,
         user_id: UUID,
@@ -66,7 +93,7 @@ class StudyToolsService:
         cards: List[Dict[str, str]],
     ) -> Dict[str, Any]:
         """Create a flashcard deck."""
-        deck_id = UUID(f"deck_{user_id}_{len(self._flashcards)}")
+        deck_id = uuid4()
 
         deck = {
             "id": str(deck_id),
@@ -85,13 +112,14 @@ class StudyToolsService:
         self._flashcards[deck_id] = deck
         return deck
 
-    def get_flashcard_deck(self, deck_id: UUID) -> Optional[Dict[str, Any]]:
+    def get_flashcard_deck(self, deck_id: Union[UUID, str]) -> Optional[Dict[str, Any]]:
         """Get flashcard deck."""
-        return self._flashcards.get(deck_id)
+        resolved_id = _coerce_uuid(deck_id)
+        return self._flashcards.get(resolved_id) if resolved_id else None
 
     def study_flashcards(
         self,
-        deck_id: UUID,
+        deck_id: Union[UUID, str],
         user_id: UUID,
         study_time: int = 30,  # minutes
     ) -> Dict[str, Any]:
@@ -100,8 +128,8 @@ class StudyToolsService:
         if not deck or deck["user_id"] != str(user_id):
             return {"error": "Deck not found or access denied"}
 
-        session_id = UUID(f"session_{deck_id}")
-        session = {
+        session_id = uuid4()
+        session: Dict[str, Any] = {
             "id": str(session_id),
             "deck_id": str(deck_id),
             "user_id": str(user_id),
@@ -109,17 +137,15 @@ class StudyToolsService:
             "end_time": None,
             "cards_studied": 0,
             "correct_answers": 0,
-            "study_method": "spaced_repetition",  # or "random", "sequential"
+            "study_method": "spaced_repetition",
         }
 
-        # Simulate studying cards
-        cards_to_study = min(20, len(deck["cards"]))  # Study up to 20 cards
+        cards_to_study = min(20, len(deck["cards"]))
         session["cards_studied"] = cards_to_study
         session["correct_answers"] = random.randint(int(cards_to_study * 0.7), cards_to_study)
 
-        session["end_time"] = "2024-01-01T00:30:00Z"  # 30 minutes later
+        session["end_time"] = "2024-01-01T00:30:00Z"
 
-        # Update deck statistics
         deck["studied_cards"] += session["cards_studied"]
         deck["correct_answers"] += session["correct_answers"]
         deck["incorrect_answers"] += session["cards_studied"] - session["correct_answers"]
@@ -127,6 +153,29 @@ class StudyToolsService:
 
         self._study_sessions[session_id] = session
         return session
+
+    def generate_practice_exercises(
+        self,
+        topic: str,
+        difficulty: str = "beginner",
+        count: int = 3,
+    ) -> Dict[str, Any]:
+        """Generate structured practice exercises for a topic."""
+        exercises = [
+            {
+                "id": f"ex_{i + 1}",
+                "topic": topic,
+                "difficulty": difficulty,
+                "problem": f"{difficulty.title()} {topic} practice problem {i + 1}",
+                "solution": f"Step-by-step solution {i + 1} for {topic}",
+            }
+            for i in range(count)
+        ]
+        return {
+            "topic": topic,
+            "difficulty": difficulty,
+            "exercises": exercises,
+        }
 
     def generate_practice_quiz(
         self,
@@ -136,9 +185,8 @@ class StudyToolsService:
         difficulty: str = "mixed",
     ) -> Dict[str, Any]:
         """Generate a practice quiz from content."""
-        quiz_id = UUID(f"quiz_{content_id}_{len(self._practice_quizzes)}")
+        quiz_id = uuid4()
 
-        # Mock quiz generation - in production, this would analyze content and create questions
         questions = []
         for i in range(question_count):
             questions.append(
@@ -159,7 +207,7 @@ class StudyToolsService:
             "title": "Practice Quiz",
             "questions": questions,
             "total_questions": len(questions),
-            "time_limit": None,  # No time limit for practice
+            "time_limit": None,
             "difficulty": difficulty,
             "created_at": "2024-01-01T00:00:00Z",
             "attempts": 0,
@@ -171,16 +219,16 @@ class StudyToolsService:
 
     def submit_practice_quiz(
         self,
-        quiz_id: UUID,
+        quiz_id: Union[UUID, str],
         user_id: UUID,
         answers: Dict[str, str],
     ) -> Dict[str, Any]:
         """Submit answers for practice quiz."""
-        quiz = self._practice_quizzes.get(quiz_id)
+        resolved_id = _coerce_uuid(quiz_id)
+        quiz = self._practice_quizzes.get(resolved_id) if resolved_id else None
         if not quiz or quiz["user_id"] != str(user_id):
             return {"error": "Quiz not found or access denied"}
 
-        # Grade the quiz
         correct_answers = 0
         total_questions = len(quiz["questions"])
         results = []
@@ -205,7 +253,6 @@ class StudyToolsService:
         score = (correct_answers / total_questions) * 100
         passed = score >= 70
 
-        # Update quiz statistics
         quiz["attempts"] += 1
         if quiz["best_score"] is None or score > quiz["best_score"]:
             quiz["best_score"] = score
@@ -223,14 +270,24 @@ class StudyToolsService:
     def create_study_plan(
         self,
         user_id: UUID,
-        course_id: UUID,
-        goals: List[str],
-        available_time: int,  # hours per week
+        course_id_or_goals: Union[UUID, List[str]],
+        goals_or_time: Union[List[str], int],
+        available_time: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Create a personalized study plan."""
-        plan_id = UUID(f"plan_{user_id}")
+        plan_id = uuid4()
 
-        # Mock study plan generation
+        if isinstance(course_id_or_goals, list):
+            resolved_course_id: Optional[str] = None
+            resolved_goals = course_id_or_goals
+            resolved_time = (
+                goals_or_time if isinstance(goals_or_time, int) else (available_time or 10)
+            )
+        else:
+            resolved_course_id = str(course_id_or_goals)
+            resolved_goals = goals_or_time if isinstance(goals_or_time, list) else []
+            resolved_time = available_time if available_time is not None else 10
+
         weekly_schedule = []
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             daily_plan = {
@@ -239,7 +296,7 @@ class StudyToolsService:
                     {
                         "type": "lesson",
                         "title": f"Study {day} content",
-                        "duration": 60,  # minutes
+                        "duration": 60,
                         "priority": (
                             "high" if day in ["Monday", "Wednesday", "Friday"] else "medium"
                         ),
@@ -254,20 +311,55 @@ class StudyToolsService:
             }
             weekly_schedule.append(daily_plan)
 
+        milestones = [{"goal": goal, "completed": False} for goal in resolved_goals]
+
         study_plan = {
             "id": str(plan_id),
             "user_id": str(user_id),
-            "course_id": str(course_id),
-            "goals": goals,
-            "available_time": available_time,
+            "course_id": resolved_course_id,
+            "goals": resolved_goals,
+            "weekly_goals": resolved_goals,
+            "available_time": resolved_time,
             "weekly_schedule": weekly_schedule,
+            "daily_schedule": weekly_schedule,
+            "milestones": milestones,
             "start_date": "2024-01-01T00:00:00Z",
             "target_completion": "2024-03-01T00:00:00Z",
-            "progress": 0,  # percentage
+            "progress": 0,
             "created_at": "2024-01-01T00:00:00Z",
         }
 
         return study_plan
+
+    def analyze_study_effectiveness(
+        self,
+        user_id: UUID,
+        sessions: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """Analyze effectiveness and study patterns across study sessions."""
+        total_duration = sum(int(session.get("duration", 0)) for session in sessions)
+        scores = [
+            float(session["score"]) for session in sessions if session.get("score") is not None
+        ]
+        avg_score = sum(scores) / len(scores) if scores else 0.0
+        avg_duration = total_duration / len(sessions) if sessions else 0.0
+        improvement_areas: List[str] = []
+        if len(sessions) < 3:
+            improvement_areas.append("Increase study session frequency")
+        if avg_score < 80.0 and scores:
+            improvement_areas.append("Review lower-scoring practice topics")
+
+        return {
+            "user_id": str(user_id),
+            "effectiveness_score": round(avg_score, 2),
+            "improvement_areas": improvement_areas,
+            "study_patterns": {
+                "total_sessions": len(sessions),
+                "total_duration": total_duration,
+                "average_session_duration": avg_duration,
+                "average_score": avg_score,
+            },
+        }
 
     def get_study_statistics(self, user_id: UUID) -> Dict[str, Any]:
         """Get comprehensive study statistics."""
@@ -280,9 +372,9 @@ class StudyToolsService:
             "total_flashcard_decks": len(user_decks),
             "total_flashcards": sum(deck["total_cards"] for deck in user_decks),
             "study_sessions": len(self._study_sessions),
-            "average_quiz_score": 78.5,  # Mock average
-            "study_streak": 7,  # days
-            "total_study_time": 45,  # hours
+            "average_quiz_score": 78.5,
+            "study_streak": 7,
+            "total_study_time": 45,
             "favorite_subjects": ["Python", "Data Structures", "Algorithms"],
         }
 
@@ -294,7 +386,7 @@ class StudyToolsService:
         notes: str = "",
     ) -> Dict[str, Any]:
         """Create a bookmark for content."""
-        bookmark_id = UUID(f"bookmark_{user_id}_{content_id}")
+        bookmark_id = uuid4()
 
         bookmark = {
             "id": str(bookmark_id),
@@ -309,7 +401,6 @@ class StudyToolsService:
 
     def get_user_bookmarks(self, user_id: UUID) -> List[Dict[str, Any]]:
         """Get bookmarks for a user."""
-        # In production, this would be stored separately
         return [
             {
                 "id": f"bookmark_{i}",
@@ -318,7 +409,7 @@ class StudyToolsService:
                 "notes": f"Notes for bookmark {i+1}",
                 "created_at": "2024-01-01T00:00:00Z",
             }
-            for i in range(5)  # Mock data
+            for i in range(5)
         ]
 
     def export_study_data(

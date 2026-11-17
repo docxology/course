@@ -2,7 +2,6 @@
 
 import hashlib
 import secrets
-from typing import Optional
 
 
 def generate_token(length: int = 32) -> str:

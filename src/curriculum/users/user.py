@@ -1,20 +1,16 @@
 """User management and authentication services."""
 
+import hashlib
 import re
 import secrets
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from uuid import UUID
+
+import jwt
 
 from curriculum.config import settings
 from curriculum.core.user import ROLE_PERMISSIONS, User, UserPermission, UserRole
-
-# from passlib.context import CryptContext  # Commented out for now
-# from jose import JWTError, jwt  # Commented out for now
-
-
-
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # Commented out for now
 
 # Password validation constants
 MIN_PASSWORD_LENGTH = 8
@@ -106,22 +102,22 @@ class UserService:
 
     def _hash_password(self, password: str) -> str:
         """Hash password using secure method."""
-        # In production, use proper password hashing like bcrypt
-        # For now, use a simple but more secure method than the current implementation
         salt = secrets.token_hex(16)
-        # Simple PBKDF2-like approach (in production, use proper implementation)
-        return f"hashed_{salt}_{password}"
+        digest = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), 260000)
+        return f"hashed_pbkdf2_sha256$260000${salt}${digest.hex()}"
 
     def _verify_password(self, password: str, hashed_password: str) -> bool:
-        """Verify password against hash."""
-        # In production, use proper password verification
-        # For now, extract salt and verify
-        if not hashed_password.startswith("hashed_"):
+        """Verify a salted password digest in constant time."""
+        try:
+            algorithm, iterations, salt, expected = hashed_password.split("$")
+            if algorithm != "hashed_pbkdf2_sha256" or int(iterations) != 260000:
+                return False
+            actual = hashlib.pbkdf2_hmac(
+                "sha256", password.encode(), bytes.fromhex(salt), int(iterations)
+            ).hex()
+            return secrets.compare_digest(actual, expected)
+        except (ValueError, TypeError):
             return False
-        parts = hashed_password.split("_", 2)
-        if len(parts) != 3:
-            return False
-        return parts[2] == password
 
     def create_user(
         self,
@@ -178,7 +174,7 @@ class UserService:
             full_name=full_name,
             hashed_password=hashed_password,
             roles=user_roles,
-            permissions=custom_permissions,
+            custom_permissions=custom_permissions,
         )
 
         # Store user
@@ -280,7 +276,8 @@ class UserService:
             new_password: New password to set
 
         Returns:
-            True if password was changed successfully, False if user not found or current password incorrect
+            True if password was changed successfully; False if the user is missing
+            or the current password is incorrect
         """
         user = self.get_user(user_id)
         if not user:
@@ -290,8 +287,9 @@ class UserService:
         if not self.verify_password(user_id, current_password):
             return False
 
-        # Update password
-        user.hashed_password = f"hashed_{new_password}"
+        if not self._validate_password_strength(new_password)[0]:
+            return False
+        user.hashed_password = self._hash_password(new_password)
         user.update_timestamp()
         return True
 
@@ -309,7 +307,7 @@ class UserService:
         if not user:
             return False
 
-        return user.hashed_password == f"hashed_{password}"
+        return self._verify_password(password, user.hashed_password)
 
     def add_role(self, user_id: UUID, role: UserRole) -> Optional[User]:
         """Add role to user."""
@@ -439,7 +437,7 @@ class AuthenticationService:
         return user
 
     def create_access_token(self, user_id: UUID, expires_delta: Optional[timedelta] = None) -> str:
-        """Create simple access token (placeholder).
+        """Create a signed, expiring access token.
 
         Args:
             user_id: UUID of the user
@@ -448,11 +446,19 @@ class AuthenticationService:
         Returns:
             Access token string
         """
-        # In production, use proper JWT
-        return f"access_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
+        expires = datetime.now(timezone.utc) + (
+            expires_delta
+            if expires_delta is not None
+            else timedelta(minutes=settings.access_token_expire_minutes)
+        )
+        return jwt.encode(
+            {"sub": str(user_id), "exp": expires, "token_type": "access"},
+            settings.secret_key,
+            algorithm=settings.algorithm,
+        )
 
     def create_refresh_token(self, user_id: UUID) -> str:
-        """Create simple refresh token (placeholder).
+        """Create a signed, expiring refresh token.
 
         Args:
             user_id: UUID of the user
@@ -460,11 +466,19 @@ class AuthenticationService:
         Returns:
             Refresh token string
         """
-        # In production, use proper JWT
-        return f"refresh_token_{user_id}_{datetime.now(timezone.utc).isoformat()}"
+        return jwt.encode(
+            {
+                "sub": str(user_id),
+                "exp": datetime.now(timezone.utc)
+                + timedelta(days=settings.refresh_token_expire_days),
+                "token_type": "refresh",
+            },
+            settings.secret_key,
+            algorithm=settings.algorithm,
+        )
 
     def verify_token(self, token: str) -> Optional[UUID]:
-        """Verify token and return user ID (placeholder).
+        """Verify an access token signature, expiry, and purpose.
 
         Args:
             token: Token string to verify
@@ -472,14 +486,26 @@ class AuthenticationService:
         Returns:
             User UUID if token is valid, None otherwise
         """
-        # In production, use proper JWT verification
+        return self._verify_token(token, "access")
+
+    def verify_refresh_token(self, token: str) -> Optional[UUID]:
+        """Verify a refresh token independently of access tokens."""
+        return self._verify_token(token, "refresh")
+
+    def _verify_token(self, token: str, expected_type: str) -> Optional[UUID]:
+        """Require the signed token's expiry, subject, and intended purpose."""
         try:
-            if token.startswith("access_token_"):
-                user_id_str = token.split("_")[2]
-                return UUID(user_id_str)
-        except (IndexError, ValueError):
-            pass
-        return None
+            payload = jwt.decode(
+                token,
+                settings.secret_key,
+                algorithms=[settings.algorithm],
+                options={"require": ["exp", "sub", "token_type"]},
+            )
+            if payload["token_type"] != expected_type:
+                return None
+            return UUID(payload["sub"])
+        except (jwt.InvalidTokenError, ValueError, KeyError):
+            return None
 
     def has_permission(self, user_id: UUID, permission: UserPermission) -> bool:
         """Check if user has a specific permission."""

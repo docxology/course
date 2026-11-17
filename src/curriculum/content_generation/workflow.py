@@ -4,9 +4,6 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from curriculum.core.content import Content, ContentStatus
-from curriculum.core.user import User
-
 
 class ContentWorkflowService:
     """Service for managing content creation workflows."""
@@ -317,7 +314,10 @@ class ContentWorkflowService:
 
                 if duration > 24:  # More than 24 hours
                     bottlenecks.append(
-                        f"Step '{step.get('title', 'Unknown')}' has been in progress for {duration:.1f} hours"
+                        (
+                            f"Step '{step.get('title', 'Unknown')}' has been in "
+                            f"progress for {duration:.1f} hours"
+                        )
                     )
 
         return bottlenecks

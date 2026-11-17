@@ -18,13 +18,12 @@ RUN apt-get update \
         gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
-
-# Copy project
-COPY . .
+# Install the same locked runtime dependencies exercised by CI.
+COPY pyproject.toml uv.lock README.md ./
+RUN pip install --no-cache-dir uv==0.13.8
+COPY src ./src
+RUN uv sync --frozen --no-dev --no-editable --python /usr/local/bin/python
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \

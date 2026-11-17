@@ -1,10 +1,12 @@
 """Metadata management service."""
 
-from typing import List, Optional
+from typing import List, Optional, Sequence, Union
 from uuid import UUID
 
 from curriculum.core.metadata import (
     DublinCore,
+    EducationalUse,
+    LearningResourceType,
     LRMIMetadata,
     Metadata,
     ResourceType,
@@ -115,8 +117,8 @@ class MetadataService:
     def add_lrmi_metadata(
         self,
         metadata_id: UUID,
-        educational_use: Optional[List[str]] = None,
-        learning_resource_type: Optional[List[str]] = None,
+        educational_use: Optional[Sequence[Union[EducationalUse, str]]] = None,
+        learning_resource_type: Optional[Sequence[Union[LearningResourceType, str]]] = None,
         time_required: Optional[int] = None,
     ) -> Optional[Metadata]:
         """Add or update LRMI metadata.
@@ -138,9 +140,11 @@ class MetadataService:
             metadata.lrmi = LRMIMetadata()
 
         if educational_use is not None:
-            metadata.lrmi.educational_use = educational_use
+            metadata.lrmi.educational_use = [EducationalUse(item) for item in educational_use]
         if learning_resource_type is not None:
-            metadata.lrmi.learning_resource_type = learning_resource_type
+            metadata.lrmi.learning_resource_type = [
+                LearningResourceType(item) for item in learning_resource_type
+            ]
         if time_required is not None:
             metadata.lrmi.time_required = time_required
 

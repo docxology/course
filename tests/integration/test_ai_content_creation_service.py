@@ -1,10 +1,11 @@
 """Tests for Content Creation Service."""
 
-import pytest
 from uuid import uuid4
 
+import pytest
+
 from curriculum.ai.content_creation import ContentCreationService
-from curriculum.core.content import ContentType, ContentFormat
+from curriculum.core.content import ContentFormat, ContentType
 
 
 @pytest.mark.integration
@@ -113,28 +114,32 @@ class TestContentCreationService:
 
     def test_create_content_validator(self, content_creation_service):
         """Test creating content validator."""
-        validator = content_creation_service.create_content_validator({
-            "name": "Basic Validator",
-            "rules": {
-                "min_length": 100,
-                "max_length": 10000,
-                "required_sections": ["introduction", "main_content"],
-            },
-        })
+        validator = content_creation_service.create_content_validator(
+            {
+                "name": "Basic Validator",
+                "rules": {
+                    "min_length": 100,
+                    "max_length": 10000,
+                    "required_sections": ["introduction", "main_content"],
+                },
+            }
+        )
 
         assert validator["name"] == "Basic Validator"
         assert validator["rules"]["min_length"] == 100
 
     def test_validate_content_structure(self, content_creation_service, sample_content):
         """Test validating content structure."""
-        validator = content_creation_service.create_content_validator({
-            "name": "Test Validator",
-            "rules": {
-                "min_length": 50,
-                "max_length": 10000,
-                "required_sections": ["introduction", "main_content"],
-            },
-        })
+        validator = content_creation_service.create_content_validator(
+            {
+                "name": "Test Validator",
+                "rules": {
+                    "min_length": 50,
+                    "max_length": 10000,
+                    "required_sections": ["introduction", "main_content"],
+                },
+            }
+        )
 
         validation = content_creation_service.validate_content_structure(
             content=sample_content,

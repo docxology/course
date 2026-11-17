@@ -1,0 +1,10 @@
+site_name: Curriculum Repository
+site_url: https://docxology.github.io/course/
+repo_url: https://github.com/docxology/course
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Manuscript status: manuscript/MANUSCRIPT_STATUS.md
+exclude_docs: |
+  generated/

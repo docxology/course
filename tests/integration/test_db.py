@@ -1,13 +1,14 @@
 """Tests for database module."""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
+import pytest
+
+from curriculum.core.content import Content, ContentType
 from curriculum.db.base import DatabaseManager
 from curriculum.db.mongodb import MongoDBAdapter
 from curriculum.db.postgresql import PostgreSQLAdapter
-from curriculum.core.content import Content, ContentType
 
 
 @pytest.mark.integration
@@ -72,31 +73,31 @@ class TestDatabaseManager:
         with pytest.raises(ValueError):
             db_manager.get_database("nonexistent")
 
-    def test_initialize_all(self):
+    async def test_initialize_all(self):
         """Test initializing all databases."""
         db_manager = DatabaseManager()
-        mock_db1 = MagicMock()
-        mock_db2 = MagicMock()
+        mock_db1 = AsyncMock()
+        mock_db2 = AsyncMock()
 
         db_manager.register_database("db1", mock_db1)
         db_manager.register_database("db2", mock_db2)
 
-        # Should not raise any exceptions
-        # (In real implementation, this would be async)
-        pass
+        await db_manager.initialize_all()
+        mock_db1.connect.assert_awaited_once()
+        mock_db2.connect.assert_awaited_once()
 
-    def test_shutdown_all(self):
+    async def test_shutdown_all(self):
         """Test shutting down all databases."""
         db_manager = DatabaseManager()
-        mock_db1 = MagicMock()
-        mock_db2 = MagicMock()
+        mock_db1 = AsyncMock()
+        mock_db2 = AsyncMock()
 
         db_manager.register_database("db1", mock_db1)
         db_manager.register_database("db2", mock_db2)
 
-        # Should not raise any exceptions
-        # (In real implementation, this would be async)
-        pass
+        await db_manager.shutdown_all()
+        mock_db1.disconnect.assert_awaited_once()
+        mock_db2.disconnect.assert_awaited_once()
 
 
 @pytest.mark.integration
@@ -114,18 +115,18 @@ class TestMongoDBAdapter:
         assert mongodb_adapter.client is None
         assert mongodb_adapter.database is None
 
-    @patch('motor.motor_asyncio.AsyncIOMotorClient')
+    @patch("curriculum.db.mongodb.AsyncIOMotorClient")
     async def test_mongodb_connect(self, mock_client_class, mongodb_adapter):
         """Test MongoDB connection."""
         mock_client = MagicMock()
-        mock_client.admin.command.return_value = None
+        mock_client.admin.command = AsyncMock(return_value=None)
         mock_client_class.return_value = mock_client
 
         await mongodb_adapter.connect()
 
         assert mongodb_adapter.client == mock_client
         assert mongodb_adapter.database is not None
-        mock_client.admin.command.assert_called_once_with('ping')
+        mock_client.admin.command.assert_called_once_with("ping")
 
     async def test_mongodb_disconnect(self, mongodb_adapter):
         """Test MongoDB disconnection."""
@@ -141,13 +142,16 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
         content = Content(
             title="Test Content",
             content_type=ContentType.LESSON,
             format="markdown",
-            author_id=uuid4()
+            author_id=uuid4(),
         )
 
         result = await mongodb_adapter.create(content)
@@ -161,10 +165,15 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mock_collection.find_one.return_value = {
             "_id": str(uuid4()),
             "title": "Test Content",
-            "content_type": "lesson"
+            "content_type": "lesson",
+            "format": "markdown",
+            "author_id": str(uuid4()),
         }
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
@@ -180,13 +189,16 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
         content = Content(
             title="Test Content",
             content_type=ContentType.LESSON,
             format="markdown",
-            author_id=uuid4()
+            author_id=uuid4(),
         )
 
         result = await mongodb_adapter.update(content)
@@ -200,6 +212,9 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mock_collection.delete_one.return_value = MagicMock(deleted_count=1)
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
@@ -215,9 +230,24 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mock_collection.find.return_value.to_list.return_value = [
-            {"_id": str(uuid4()), "title": "Content 1"},
-            {"_id": str(uuid4()), "title": "Content 2"}
+            {
+                "_id": str(uuid4()),
+                "title": "Content 1",
+                "content_type": "lesson",
+                "format": "markdown",
+                "author_id": str(uuid4()),
+            },
+            {
+                "_id": str(uuid4()),
+                "title": "Content 2",
+                "content_type": "lesson",
+                "format": "markdown",
+                "author_id": str(uuid4()),
+            },
         ]
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
@@ -232,6 +262,9 @@ class TestMongoDBAdapter:
         mongodb_adapter.database = MagicMock()
 
         mock_collection = MagicMock()
+        for method in ("insert_one", "find_one", "replace_one", "delete_one", "count_documents"):
+            setattr(mock_collection, method, AsyncMock())
+        mock_collection.find.return_value.to_list = AsyncMock()
         mock_collection.count_documents.return_value = 5
         mongodb_adapter.database.__getitem__ = MagicMock(return_value=mock_collection)
 
@@ -253,7 +286,7 @@ class TestMongoDBAdapter:
             title="Test Content",
             content_type=ContentType.LESSON,
             format="markdown",
-            author_id=uuid4()
+            author_id=uuid4(),
         )
 
         result = mongodb_adapter._entity_to_dict(content)
@@ -269,7 +302,9 @@ class TestMongoDBAdapter:
             "title": "Test Content",
             "content_type": "lesson",
             "format": "markdown",
-            "created_at": "2024-01-01T00:00:00Z"
+            "author_id": str(uuid4()),
+            "format": "markdown",
+            "created_at": "2024-01-01T00:00:00Z",
         }
 
         result = mongodb_adapter._dict_to_entity(data, Content)
@@ -299,7 +334,7 @@ class TestPostgreSQLAdapter:
         assert postgresql_adapter.engine is not None
         assert postgresql_adapter.async_session is not None
 
-    @patch('sqlalchemy.ext.asyncio.create_async_engine')
+    @patch("sqlalchemy.ext.asyncio.create_async_engine")
     def test_postgresql_connect(self, mock_create_engine, postgresql_adapter):
         """Test PostgreSQL connection."""
         mock_engine = MagicMock()
@@ -320,25 +355,23 @@ class TestPostgreSQLAdapter:
         """Test getting SQL model class."""
         # This would need actual SQLAlchemy model classes
         # For now, just test that the method exists
-        assert hasattr(postgresql_adapter, '_get_sql_model_class')
+        assert hasattr(postgresql_adapter, "_get_sql_model_class")
 
     def test_pydantic_to_sqlalchemy(self, postgresql_adapter):
         """Test converting Pydantic model to SQLAlchemy."""
-        content = Content(
+        Content(
             title="Test Content",
             content_type=ContentType.LESSON,
             format="markdown",
-            author_id=uuid4()
+            author_id=uuid4(),
         )
 
         # This would need actual SQLAlchemy model classes
         # For now, just test that the method exists
-        assert hasattr(postgresql_adapter, '_pydantic_to_sqlalchemy')
+        assert hasattr(postgresql_adapter, "_pydantic_to_sqlalchemy")
 
     def test_sqlalchemy_to_pydantic(self, postgresql_adapter):
         """Test converting SQLAlchemy model to Pydantic."""
         # This would need actual SQLAlchemy model classes
         # For now, just test that the method exists
-        assert hasattr(postgresql_adapter, '_sqlalchemy_to_pydantic')
-
-
+        assert hasattr(postgresql_adapter, "_sqlalchemy_to_pydantic")

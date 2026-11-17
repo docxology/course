@@ -1,10 +1,7 @@
 """Gamification service for points, badges, and leaderboards."""
 
-from collections import defaultdict
 from typing import Any, Dict, List, Optional
-from uuid import UUID
-
-from curriculum.core.user import User
+from uuid import UUID, uuid4
 
 
 class GamificationService:
@@ -100,7 +97,6 @@ class GamificationService:
         """Check if user is eligible for any badges."""
         badges_earned = []
 
-        # Mock badge checking logic based on reason
         if reason == "lesson_completed":
             badge = self._badges.get("first_steps")
             if badge:
@@ -120,7 +116,6 @@ class GamificationService:
 
     def get_user_badges(self, user_id: UUID) -> List[Dict[str, Any]]:
         """Get badges earned by a user."""
-        # In production, this would query a user_badges table
         return [
             {
                 "badge_id": "first_steps",
@@ -169,7 +164,6 @@ class GamificationService:
         limit: int = 10,
     ) -> List[Dict[str, Any]]:
         """Get leaderboard for specified category."""
-        # Mock leaderboard data
         if category == "points":
             return [
                 {
@@ -246,7 +240,6 @@ class GamificationService:
 
     def calculate_level_progress(self, user_id: UUID, course_id: UUID) -> Dict[str, Any]:
         """Calculate user's level progress."""
-        # Mock level calculation
         return {
             "user_id": str(user_id),
             "course_id": str(course_id),
@@ -266,7 +259,7 @@ class GamificationService:
         rewards: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create a challenge for students."""
-        challenge_id = UUID(f"challenge_{challenge_type}")
+        challenge_id = uuid4()
 
         challenge = {
             "id": str(challenge_id),
@@ -286,7 +279,6 @@ class GamificationService:
 
     def join_challenge(self, challenge_id: UUID, user_id: UUID) -> Dict[str, Any]:
         """Join a challenge."""
-        # Mock challenge joining
         return {
             "challenge_id": str(challenge_id),
             "user_id": str(user_id),
@@ -403,7 +395,7 @@ class GamificationService:
         reward_points: int,
     ) -> Dict[str, Any]:
         """Create a progress milestone."""
-        milestone_id = UUID(f"milestone_{course_id}")
+        milestone_id = uuid4()
 
         milestone = {
             "id": str(milestone_id),
@@ -427,7 +419,6 @@ class GamificationService:
         current_progress: float,
     ) -> List[Dict[str, Any]]:
         """Check if user has achieved any milestones."""
-        # Mock milestone checking
         achievements = []
 
         if current_progress >= 25:

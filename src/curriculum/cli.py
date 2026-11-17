@@ -157,13 +157,13 @@ class {class_name}Service:
     # Determine appropriate module directory
     module_dir = Path(f"src/curriculum/{service_name}")
     if not module_dir.exists():
-        module_dir = Path(f"src/curriculum")  # Fallback to root if module doesn't exist
+        module_dir = Path("src/curriculum")  # Fallback to root if module doesn't exist
     service_path = module_dir / f"{service_name}.py"
     service_path.write_text(service_content)
 
     click.echo(f"✓ Created service: {service_path}")
-    click.echo(f"  Don't forget to:")
-    click.echo(f"  1. Add to appropriate module's __init__.py")
+    click.echo("  Don't forget to:")
+    click.echo("  1. Add to appropriate module's __init__.py")
     click.echo(
         f"  2. Create tests in tests/integration/test_{service_name}_service.py or tests/unit/"
     )

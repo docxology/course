@@ -1,10 +1,11 @@
 """Tests for communication module."""
 
-import pytest
 from uuid import uuid4
 
-from curriculum.communication.communication import CommunicationService
+import pytest
+
 from curriculum.communication.collaboration import CollaborationService
+from curriculum.communication.communication import CommunicationService
 
 
 @pytest.mark.integration
@@ -19,10 +20,10 @@ class TestCommunicationService:
     def test_communication_service_initialization(self, communication_service):
         """Test communication service initialization."""
         assert communication_service is not None
-        assert hasattr(communication_service, '_forums')
-        assert hasattr(communication_service, '_posts')
-        assert hasattr(communication_service, '_messages')
-        assert hasattr(communication_service, '_announcements')
+        assert hasattr(communication_service, "_forums")
+        assert hasattr(communication_service, "_posts")
+        assert hasattr(communication_service, "_messages")
+        assert hasattr(communication_service, "_announcements")
 
     def test_create_forum(self, communication_service):
         """Test creating a forum."""
@@ -34,7 +35,7 @@ class TestCommunicationService:
             title="Test Forum",
             description="A test forum",
             moderator_id=moderator_id,
-            is_public=False
+            is_public=False,
         )
 
         assert forum["course_id"] == str(course_id)
@@ -53,7 +54,7 @@ class TestCommunicationService:
             author_id=author_id,
             title="Test Post",
             content="This is a test post content",
-            category="General Discussion"
+            category="General Discussion",
         )
 
         assert post["forum_id"] == str(forum_id)
@@ -68,9 +69,7 @@ class TestCommunicationService:
         author_id = uuid4()
 
         reply = communication_service.create_reply(
-            post_id=post_id,
-            author_id=author_id,
-            content="This is a reply to the post"
+            post_id=post_id, author_id=author_id, content="This is a reply to the post"
         )
 
         assert reply["post_id"] == str(post_id)
@@ -86,7 +85,7 @@ class TestCommunicationService:
             sender_id=sender_id,
             recipient_id=recipient_id,
             subject="Test Subject",
-            content="Test message content"
+            content="Test message content",
         )
 
         assert message["sender_id"] == str(sender_id)
@@ -105,7 +104,7 @@ class TestCommunicationService:
             author_id=author_id,
             title="Important Announcement",
             content="This is an important announcement",
-            priority="urgent"
+            priority="urgent",
         )
 
         assert announcement["course_id"] == str(course_id)
@@ -122,10 +121,7 @@ class TestCommunicationService:
         # Create some posts
         for i in range(3):
             communication_service.create_post(
-                forum_id=forum_id,
-                author_id=uuid4(),
-                title=f"Post {i}",
-                content=f"Content {i}"
+                forum_id=forum_id, author_id=uuid4(), title=f"Post {i}", content=f"Content {i}"
             )
 
         posts = communication_service.get_forum_posts(forum_id)
@@ -143,7 +139,7 @@ class TestCommunicationService:
                 sender_id=uuid4(),
                 recipient_id=user_id,
                 subject=f"Message {i}",
-                content=f"Content {i}"
+                content=f"Content {i}",
             )
 
         messages = communication_service.get_user_messages(user_id)
@@ -161,7 +157,7 @@ class TestCommunicationService:
                 course_id=course_id,
                 author_id=uuid4(),
                 title=f"Announcement {i}",
-                content=f"Content {i}"
+                content=f"Content {i}",
             )
 
         announcements = communication_service.get_course_announcements(course_id)
@@ -175,10 +171,7 @@ class TestCommunicationService:
         recipient_id = uuid4()
 
         message = communication_service.send_message(
-            sender_id=sender_id,
-            recipient_id=recipient_id,
-            subject="Test",
-            content="Test"
+            sender_id=sender_id, recipient_id=recipient_id, subject="Test", content="Test"
         )
 
         result = communication_service.mark_message_read(message["id"], recipient_id)
@@ -191,10 +184,7 @@ class TestCommunicationService:
         moderator_id = uuid4()
 
         post = communication_service.create_post(
-            forum_id=forum_id,
-            author_id=uuid4(),
-            title="Test Post",
-            content="Content"
+            forum_id=forum_id, author_id=uuid4(), title="Test Post", content="Content"
         )
 
         result = communication_service.pin_post(post["id"], moderator_id)
@@ -207,10 +197,7 @@ class TestCommunicationService:
         moderator_id = uuid4()
 
         post = communication_service.create_post(
-            forum_id=forum_id,
-            author_id=uuid4(),
-            title="Test Post",
-            content="Content"
+            forum_id=forum_id, author_id=uuid4(), title="Test Post", content="Content"
         )
 
         result = communication_service.lock_post(post["id"], moderator_id)
@@ -223,18 +210,12 @@ class TestCommunicationService:
 
         # Create forum and some posts
         forum = communication_service.create_forum(
-            course_id=course_id,
-            title="Test Forum",
-            description="Test",
-            moderator_id=uuid4()
+            course_id=course_id, title="Test Forum", description="Test", moderator_id=uuid4()
         )
 
         for i in range(5):
             communication_service.create_post(
-                forum_id=forum["id"],
-                author_id=uuid4(),
-                title=f"Post {i}",
-                content=f"Content {i}"
+                forum_id=forum["id"], author_id=uuid4(), title=f"Post {i}", content=f"Content {i}"
             )
 
         stats = communication_service.get_communication_statistics(course_id)
@@ -249,17 +230,14 @@ class TestCommunicationService:
         moderator_id = uuid4()
 
         post = communication_service.create_post(
-            forum_id=forum_id,
-            author_id=uuid4(),
-            title="Test Post",
-            content="Content"
+            forum_id=forum_id, author_id=uuid4(), title="Test Post", content="Content"
         )
 
         moderation = communication_service.moderate_content(
             content_id=post["id"],
             moderator_id=moderator_id,
             action="approve",
-            reason="Good content"
+            reason="Good content",
         )
 
         assert moderation["content_id"] == post["id"]
@@ -275,7 +253,7 @@ class TestCommunicationService:
             course_id=course_id,
             organizer_id=organizer_id,
             title="Test Study Group",
-            description="A test study group"
+            description="A test study group",
         )
 
         assert group["course_id"] == str(course_id)
@@ -291,10 +269,7 @@ class TestCommunicationService:
         other_users = [uuid4(), uuid4()]
         for other_user in other_users:
             communication_service.send_message(
-                sender_id=other_user,
-                recipient_id=user_id,
-                subject="Test",
-                content="Test"
+                sender_id=other_user, recipient_id=user_id, subject="Test", content="Test"
             )
 
         conversations = communication_service.get_user_conversations(user_id)
@@ -310,7 +285,7 @@ class TestCommunicationService:
             user_id=user_id,
             title="Test Notification",
             message="This is a test notification",
-            notification_type="info"
+            notification_type="info",
         )
 
         assert notification["user_id"] == str(user_id)
@@ -329,7 +304,7 @@ class TestCommunicationService:
                 user_id=user_id,
                 title=f"Notification {i}",
                 message=f"Message {i}",
-                notification_type="info"
+                notification_type="info",
             )
 
         notifications = communication_service.get_user_notifications(user_id)
@@ -347,7 +322,7 @@ class TestCommunicationService:
                 user_id=user_id,
                 title=f"Unread {i}",
                 message=f"Message {i}",
-                notification_type="info"
+                notification_type="info",
             )
 
         notifications = communication_service.get_user_notifications(user_id, unread_only=True)
@@ -368,9 +343,9 @@ class TestCollaborationService:
     def test_collaboration_service_initialization(self, collaboration_service):
         """Test collaboration service initialization."""
         assert collaboration_service is not None
-        assert hasattr(collaboration_service, '_projects')
-        assert hasattr(collaboration_service, '_workspaces')
-        assert hasattr(collaboration_service, '_peer_reviews')
+        assert hasattr(collaboration_service, "_projects")
+        assert hasattr(collaboration_service, "_workspaces")
+        assert hasattr(collaboration_service, "_peer_reviews")
 
     def test_create_group_project(self, collaboration_service):
         """Test creating a group project."""
@@ -383,7 +358,7 @@ class TestCollaborationService:
             description="A test group project",
             instructor_id=instructor_id,
             max_group_size=5,
-            due_date="2024-02-01T23:59:59Z"
+            due_date="2024-02-01T23:59:59Z",
         )
 
         assert project["course_id"] == str(course_id)
@@ -402,7 +377,7 @@ class TestCollaborationService:
             title="Test Study Group",
             description="A test study group",
             organizer_id=organizer_id,
-            max_members=8
+            max_members=8,
         )
 
         assert group["course_id"] == str(course_id)
@@ -419,11 +394,7 @@ class TestCollaborationService:
         # Mock group structure
         collaboration_service._projects = {
             f"project_{course_id}": {
-                "groups": [{
-                    "id": str(group_id),
-                    "member_ids": [],
-                    "max_members": 5
-                }]
+                "groups": [{"id": str(group_id), "member_ids": [], "max_members": 5}]
             }
         }
 
@@ -440,7 +411,7 @@ class TestCollaborationService:
             group_id=group_id,
             name="Test Workspace",
             description="A test workspace",
-            tools=["documents", "chat"]
+            tools=["documents", "chat"],
         )
 
         assert workspace["group_id"] == str(group_id)
@@ -459,7 +430,7 @@ class TestCollaborationService:
             description="A test peer review assignment",
             instructor_id=instructor_id,
             submission_deadline="2024-02-01T23:59:59Z",
-            review_deadline="2024-02-05T23:59:59Z"
+            review_deadline="2024-02-05T23:59:59Z",
         )
 
         assert assignment["course_id"] == str(course_id)
@@ -473,17 +444,13 @@ class TestCollaborationService:
         user_id = uuid4()
 
         # Mock assignment structure
-        collaboration_service._peer_reviews = {
-            assignment_id: {
-                "submissions": []
-            }
-        }
+        collaboration_service._peer_reviews = {assignment_id: {"submissions": []}}
 
         submission = collaboration_service.submit_for_review(
             assignment_id=assignment_id,
             user_id=user_id,
             submission_title="My Submission",
-            submission_content="This is my work"
+            submission_content="This is my work",
         )
 
         assert submission["assignment_id"] == str(assignment_id)
@@ -498,12 +465,7 @@ class TestCollaborationService:
 
         # Mock submission structure
         collaboration_service._peer_reviews = {
-            uuid4(): {
-                "submissions": [{
-                    "id": str(submission_id),
-                    "reviews": []
-                }]
-            }
+            uuid4(): {"submissions": [{"id": str(submission_id), "reviews": []}]}
         }
 
         review = collaboration_service.submit_review(
@@ -511,7 +473,7 @@ class TestCollaborationService:
             reviewer_id=reviewer_id,
             decision="approve",
             feedback="Good work!",
-            score=85
+            score=85,
         )
 
         assert review["submission_id"] == str(submission_id)
@@ -525,10 +487,7 @@ class TestCollaborationService:
 
         # Mock some projects
         collaboration_service._projects = {
-            f"project_{course_id}": {
-                "course_id": str(course_id),
-                "title": "Test Project"
-            }
+            f"project_{course_id}": {"course_id": str(course_id), "title": "Test Project"}
         }
 
         projects = collaboration_service.get_group_projects(course_id)
@@ -543,11 +502,7 @@ class TestCollaborationService:
         # Mock group membership
         collaboration_service._projects = {
             "project_1": {
-                "groups": [{
-                    "id": "group_1",
-                    "member_ids": [str(user_id)],
-                    "title": "Test Group"
-                }]
+                "groups": [{"id": "group_1", "member_ids": [str(user_id)], "title": "Test Group"}]
             }
         }
 
@@ -560,18 +515,9 @@ class TestCollaborationService:
         group_id = uuid4()
 
         # Mock group structure
-        collaboration_service._projects = {
-            "project_1": {
-                "groups": [{
-                    "id": str(group_id)
-                }]
-            }
-        }
+        collaboration_service._projects = {"project_1": {"groups": [{"id": str(group_id)}]}}
 
-        role_assignments = {
-            "user1": "leader",
-            "user2": "contributor"
-        }
+        role_assignments = {"user1": "leader", "user2": "contributor"}
 
         result = collaboration_service.assign_group_roles(group_id, role_assignments)
 
@@ -588,7 +534,7 @@ class TestCollaborationService:
             title="Test Task",
             description="A test collaboration task",
             assignee_id=assignee_id,
-            due_date="2024-02-01T23:59:59Z"
+            due_date="2024-02-01T23:59:59Z",
         )
 
         assert task["workspace_id"] == str(workspace_id)
@@ -616,7 +562,7 @@ class TestCollaborationService:
             workspace_id=workspace_id,
             title="Test Document",
             content="This is a shared document",
-            author_id=author_id
+            author_id=author_id,
         )
 
         assert document["workspace_id"] == str(workspace_id)
@@ -631,19 +577,11 @@ class TestCollaborationService:
 
         # Mock document structure
         collaboration_service._workspaces = {
-            "workspace_1": {
-                "files": [{
-                    "id": str(document_id),
-                    "type": "document",
-                    "editors": []
-                }]
-            }
+            "workspace_1": {"files": [{"id": str(document_id), "type": "document", "editors": []}]}
         }
 
         result = collaboration_service.add_collaborator(
-            document_id=document_id,
-            user_id=user_id,
-            permission="edit"
+            document_id=document_id, user_id=user_id, permission="edit"
         )
 
         assert "message" in result
@@ -657,5 +595,3 @@ class TestCollaborationService:
 
         assert isinstance(activity, list)
         # Should return mock activity data
-
-

@@ -1,9 +1,10 @@
 """Tests for Content Service."""
 
-import pytest
 from uuid import uuid4
 
-from curriculum.core.content import ContentStatus, ContentFormat, ContentType
+import pytest
+
+from curriculum.core.content import ContentFormat, ContentStatus, ContentType
 
 
 @pytest.mark.unit
@@ -38,7 +39,7 @@ class TestContentService:
             description="Introduction to Python",
         )
         assert content is not None
-        
+
         # Retrieve it
         retrieved = content_service.get_content(content.id)
 
@@ -57,7 +58,7 @@ class TestContentService:
             author_id=author_id,
         )
         assert content is not None
-        
+
         # Update it
         updated = content_service.update_content(
             content.id,
@@ -80,7 +81,7 @@ class TestContentService:
             author_id=author_id,
         )
         assert content is not None
-        
+
         # Delete it
         result = content_service.delete_content(content.id)
 
@@ -100,14 +101,14 @@ class TestContentService:
         )
         assert content is not None
         assert content.status == ContentStatus.DRAFT
-        
+
         # Go through proper workflow: DRAFT -> INTERNAL_REVIEW -> EXTERNAL_REVIEW -> APPROVED
         content.transition_to(ContentStatus.INTERNAL_REVIEW)
         assert content.status == ContentStatus.INTERNAL_REVIEW
-        
+
         content.transition_to(ContentStatus.EXTERNAL_REVIEW)
         assert content.status == ContentStatus.EXTERNAL_REVIEW
-        
+
         content.transition_to(ContentStatus.APPROVED)
         assert content.status == ContentStatus.APPROVED
 
@@ -146,7 +147,7 @@ class TestContentService:
             description="Introduction to Python programming",
         )
         assert content is not None
-        
+
         # Search for it
         results = content_service.search_content("Python")
 
@@ -164,7 +165,7 @@ class TestContentService:
             author_id=author_id,
         )
         assert content is not None
-        
+
         # Add tag
         updated = content_service.add_tag(content.id, "python")
 
@@ -182,7 +183,7 @@ class TestContentService:
             author_id=author_id,
         )
         assert content is not None
-        
+
         # Add then remove tag
         content_service.add_tag(content.id, "test")
         updated = content_service.remove_tag(content.id, "test")
@@ -235,7 +236,7 @@ class TestContentService:
 
         # Increment views
         content_service.increment_views(content.id)
-        
+
         # Retrieve to check
         updated = content_service.get_content(content.id)
         assert updated.view_count == initial_views + 1
@@ -255,7 +256,7 @@ class TestContentService:
 
         # Increment downloads
         content_service.increment_downloads(content.id)
-        
+
         # Retrieve to check
         updated = content_service.get_content(content.id)
         assert updated.download_count == initial_downloads + 1

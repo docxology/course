@@ -1,9 +1,9 @@
 """Edge case tests for documentation generation service."""
 
 import json
-import pytest
-from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 from curriculum.documentation import DocumentationGeneratorService
 
@@ -35,23 +35,20 @@ class TestDocumentationEdgeCases:
 
         # Create invalid Python file
         invalid_file = package_dir / "invalid.py"
-        invalid_file.write_text('''
+        invalid_file.write_text("""
 This is not valid Python code!!!
 It has syntax errors and invalid syntax.
 class InvalidClass:
     def method(self):
         # Missing quotes
         print("Hello World)
-''')
+""")
 
         return package_dir
 
     def test_empty_package_handling(self, doc_service, empty_package):
         """Test handling of empty packages."""
-        result = doc_service.generate_documentation(
-            package_path=str(empty_package),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(empty_package), use_llm=False)
 
         # Should handle empty package gracefully
         assert result["status"] == "success"
@@ -61,8 +58,7 @@ class InvalidClass:
     def test_invalid_python_file_handling(self, doc_service, invalid_package):
         """Test handling of invalid Python files."""
         result = doc_service.generate_documentation(
-            package_path=str(invalid_package),
-            use_llm=False
+            package_path=str(invalid_package), use_llm=False
         )
 
         # Should handle invalid files gracefully
@@ -78,13 +74,11 @@ class InvalidClass:
 
     def test_nonexistent_package_handling(self, doc_service):
         """Test handling of nonexistent package paths."""
-        result = doc_service.generate_documentation(
-            package_path="/nonexistent/path",
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path="/nonexistent/path", use_llm=False)
 
         # Should handle gracefully
-        assert result["status"] == "success"
+        assert result["status"] == "error"
+        assert "does not exist" in result["error"]
         assert result["modules_documented"] == 0
         assert result["files_documented"] == 0
 
@@ -99,8 +93,7 @@ class InvalidClass:
             restricted_dir.chmod(0o000)  # No permissions
 
             result = doc_service.generate_documentation(
-                package_path=str(restricted_dir),
-                use_llm=False
+                package_path=str(restricted_dir), use_llm=False
             )
 
             # Should handle permission errors gracefully
@@ -113,8 +106,7 @@ class InvalidClass:
             restricted_file.write_text('"""Test file."""')
 
             result = doc_service.generate_documentation(
-                package_path=str(restricted_dir),
-                use_llm=False
+                package_path=str(restricted_dir), use_llm=False
             )
 
             assert result["status"] == "success"
@@ -193,7 +185,7 @@ def test_function() -> None:
     def test_binary_file_handling(self, doc_service, tmp_path):
         """Test handling of binary files."""
         binary_file = tmp_path / "binary_file"
-        binary_file.write_bytes(b'\x00\x01\x02\x03\x04')  # Binary content
+        binary_file.write_bytes(b"\x00\x01\x02\x03\x04")  # Binary content
 
         file_doc = doc_service._extract_file_documentation(binary_file)
 
@@ -256,8 +248,7 @@ class ClassB:
 
         # Should handle circular imports gracefully
         result = doc_service.generate_documentation(
-            package_path=str(circular_package),
-            use_llm=False
+            package_path=str(circular_package), use_llm=False
         )
 
         assert result["status"] == "success"
@@ -279,10 +270,7 @@ class DeepClass:
     pass
 ''')
 
-        result = doc_service.generate_documentation(
-            package_path=str(deep_package),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(deep_package), use_llm=False)
 
         # Should handle deep structures
         assert result["status"] == "success"
@@ -311,17 +299,14 @@ def valid_function() -> None:
 
         # Invalid file
         invalid_file = mixed_package / "invalid.py"
-        invalid_file.write_text('''
+        invalid_file.write_text("""
 Invalid Python code with syntax errors!!!
 class InvalidClass:
     def method(self):
         print("Hello World)  # Missing quote
-''')
+""")
 
-        result = doc_service.generate_documentation(
-            package_path=str(mixed_package),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(mixed_package), use_llm=False)
 
         # Should handle mixed files
         assert result["status"] == "success"
@@ -373,7 +358,7 @@ class HugeClass{i}:
 
     def test_network_timeout_handling(self, doc_service):
         """Test handling of network timeouts."""
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             # Simulate network timeout
             mock_post.side_effect = Exception("Connection timeout")
 
@@ -384,7 +369,7 @@ class HugeClass{i}:
 
     def test_invalid_llm_response_handling(self, doc_service):
         """Test handling of invalid LLM responses."""
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             # Return invalid JSON
             mock_post.return_value.status_code = 200
             mock_post.return_value.json.return_value = {"invalid": "response"}
@@ -418,7 +403,7 @@ class HugeClass{i}:
                 doc_service._cache_response(cache_key, {"test": "data"})
                 cached = doc_service._get_cached_response(cache_key)
                 results.append(cached is not None)
-            except Exception as e:
+            except Exception:
                 results.append(False)
 
         # Run multiple threads
@@ -432,8 +417,8 @@ class HugeClass{i}:
         for thread in threads:
             thread.join()
 
-        # Most operations should succeed (allow for some race conditions in testing)
-        assert sum(results) >= 3  # At least 3 out of 5 should succeed
+        # Every reader must see a complete cache snapshot.
+        assert results == [True] * 5
 
     def test_extremely_nested_imports(self, doc_service, tmp_path):
         """Test handling of extremely nested import structures."""
@@ -469,10 +454,7 @@ def helper_function() -> None:
     pass
 ''')
 
-        result = doc_service.generate_documentation(
-            package_path=str(nested_package),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(nested_package), use_llm=False)
 
         # Should handle complex import structures
         assert result["status"] == "success"
@@ -512,7 +494,7 @@ def malformed_function(
         long_doc_file = tmp_path / "long_doc.py"
 
         # Create file with extremely long docstring
-        long_docstring = '"""' + 'A' * 10000 + '"""'  # 10KB docstring
+        long_docstring = '"""' + "A" * 10000 + '"""'  # 10KB docstring
 
         long_doc_content = f'''
 {long_docstring}
@@ -591,12 +573,8 @@ def function_{i}() -> None:
 ''')
 
         # Test processing large package
-        result = doc_service.generate_documentation(
-            package_path=str(large_package),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(large_package), use_llm=False)
 
         # Should handle large packages
         assert result["status"] == "success"
-        assert result["modules_documented"] == 50
-
+        assert result["modules_documented"] == 100

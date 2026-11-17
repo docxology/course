@@ -1,16 +1,14 @@
 """MongoDB database adapter."""
 
-import json
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Type
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorDatabase
-from pymongo import ReturnDocument
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from curriculum.config import settings
 from curriculum.core.base import BaseEntity
-from curriculum.db.base import DatabaseInterface
+from curriculum.db.base import DatabaseInterface, T
 
 
 class MongoDBAdapter(DatabaseInterface):
@@ -34,9 +32,9 @@ class MongoDBAdapter(DatabaseInterface):
         if self.client:
             self.client.close()
 
-    async def create(self, entity: BaseEntity) -> BaseEntity:
+    async def create(self, entity: T) -> T:
         """Create a new entity."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(type(entity))
@@ -49,9 +47,9 @@ class MongoDBAdapter(DatabaseInterface):
 
         return entity
 
-    async def get(self, entity_id: UUID, entity_type: Type[BaseEntity]) -> Optional[BaseEntity]:
+    async def get(self, entity_id: UUID, entity_type: Type[T]) -> Optional[T]:
         """Get entity by ID."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(entity_type)
@@ -63,9 +61,9 @@ class MongoDBAdapter(DatabaseInterface):
             return self._dict_to_entity(document, entity_type)
         return None
 
-    async def update(self, entity: BaseEntity) -> BaseEntity:
+    async def update(self, entity: T) -> T:
         """Update existing entity."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(type(entity))
@@ -78,9 +76,9 @@ class MongoDBAdapter(DatabaseInterface):
 
         return entity
 
-    async def delete(self, entity_id: UUID, entity_type: Type[BaseEntity]) -> bool:
+    async def delete(self, entity_id: UUID, entity_type: Type[T]) -> bool:
         """Delete entity."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(entity_type)
@@ -92,13 +90,13 @@ class MongoDBAdapter(DatabaseInterface):
 
     async def list(
         self,
-        entity_type: Type[BaseEntity],
+        entity_type: Type[T],
         filters: Optional[Dict[str, Any]] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> List[BaseEntity]:
+    ) -> List[T]:
         """List entities with optional filtering and pagination."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(entity_type)
@@ -117,11 +115,9 @@ class MongoDBAdapter(DatabaseInterface):
 
         return [self._dict_to_entity(doc, entity_type) for doc in documents]
 
-    async def count(
-        self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None
-    ) -> int:
+    async def count(self, entity_type: Type[T], filters: Optional[Dict[str, Any]] = None) -> int:
         """Count entities matching filters."""
-        if not self.database:
+        if self.database is None:
             raise RuntimeError("Database not connected")
 
         collection_name = self._get_collection_name(entity_type)
@@ -131,7 +127,7 @@ class MongoDBAdapter(DatabaseInterface):
 
         return await collection.count_documents(query)
 
-    def _get_collection_name(self, entity_type: Type[BaseEntity]) -> str:
+    def _get_collection_name(self, entity_type: Type[T]) -> str:
         """Get MongoDB collection name for entity type."""
         # Convert class name to snake_case collection name
         class_name = entity_type.__name__
@@ -151,6 +147,7 @@ class MongoDBAdapter(DatabaseInterface):
     def _entity_to_dict(self, entity: BaseEntity) -> Dict[str, Any]:
         """Convert entity to dictionary for MongoDB storage."""
         data = entity.model_dump()
+        data["_id"] = str(entity.id)
 
         # Convert datetime objects to ISO format strings
         for key, value in data.items():
@@ -162,17 +159,18 @@ class MongoDBAdapter(DatabaseInterface):
 
         return data
 
-    def _dict_to_entity(self, data: Dict[str, Any], entity_type: Type[BaseEntity]) -> BaseEntity:
+    def _dict_to_entity(self, data: Dict[str, Any], entity_type: Type[T]) -> T:
         """Convert MongoDB document to entity."""
-        # Convert ISO datetime strings back to datetime objects
-        for key, value in data.items():
+        # Work on a copy so driver documents remain available to callers.
+        values = dict(data)
+        mongo_id = values.pop("_id", None)
+        if mongo_id is not None:
+            values["id"] = UUID(str(mongo_id))
+        for key in ("created_at", "updated_at", "deleted_at"):
+            value = values.get(key)
             if isinstance(value, str) and self._is_iso_datetime(value):
-                data[key] = datetime.fromisoformat(value)
-            elif key == "_id":
-                data["id"] = UUID(data["_id"])
-                del data["_id"]
-
-        return entity_type(**data)
+                values[key] = datetime.fromisoformat(value)
+        return entity_type(**values)
 
     def _is_iso_datetime(self, value: str) -> bool:
         """Check if string is ISO datetime format."""

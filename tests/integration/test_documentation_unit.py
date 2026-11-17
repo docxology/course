@@ -2,10 +2,10 @@
 
 import json
 import os
-import pytest
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone
+from unittest.mock import patch
+
+import pytest
 
 from curriculum.documentation import DocumentationGeneratorService
 
@@ -37,12 +37,12 @@ class TestDocumentationGeneratorServiceUnit:
                                 "docstring": "A test method.",
                                 "parameters": [
                                     {"name": "self", "annotation": None},
-                                    {"name": "param", "annotation": "str"}
+                                    {"name": "param", "annotation": "str"},
                                 ],
                                 "return_type": "str",
-                                "is_async": False
+                                "is_async": False,
                             }
-                        ]
+                        ],
                     }
                 ],
                 "functions": [
@@ -51,17 +51,17 @@ class TestDocumentationGeneratorServiceUnit:
                         "docstring": "A test function.",
                         "parameters": [
                             {"name": "arg1", "annotation": "int"},
-                            {"name": "arg2", "annotation": "str"}
+                            {"name": "arg2", "annotation": "str"},
                         ],
                         "return_type": "bool",
-                        "is_async": True
+                        "is_async": True,
                     }
                 ],
                 "imports": [
                     {"type": "import", "modules": ["os", "sys"]},
-                    {"type": "from_import", "module": "typing", "names": ["List", "Optional"]}
-                ]
-            }
+                    {"type": "from_import", "module": "typing", "names": ["List", "Optional"]},
+                ],
+            },
         }
 
     @pytest.fixture
@@ -85,26 +85,24 @@ class TestDocumentationGeneratorServiceUnit:
                             "docstring": "Initialize test class.",
                             "parameters": [{"name": "self", "annotation": None}],
                             "return_type": None,
-                            "is_async": False
+                            "is_async": False,
                         }
-                    ]
+                    ],
                 }
             ],
             "functions": [
                 {
                     "name": "test_function",
                     "docstring": "Test function docstring.",
-                    "parameters": [
-                        {"name": "param1", "annotation": "str"}
-                    ],
+                    "parameters": [{"name": "param1", "annotation": "str"}],
                     "return_type": "int",
-                    "is_async": False
+                    "is_async": False,
                 }
             ],
             "imports": [
                 {"type": "import", "modules": ["json"]},
-                {"type": "from_import", "module": "pathlib", "names": ["Path"]}
-            ]
+                {"type": "from_import", "module": "pathlib", "names": ["Path"]},
+            ],
         }
 
     def test_service_initialization(self, doc_service):
@@ -167,14 +165,15 @@ class TestDocumentationGeneratorServiceUnit:
         if cache_file.exists():
             # Manually modify the JSON to have an old timestamp
             import time
+
             old_time = time.time() - (31 * 24 * 3600)  # 31 days ago
             old_timestamp = datetime.fromtimestamp(old_time, tz=timezone.utc).isoformat()
 
             # Read and modify the JSON data
-            with open(cache_file, 'r') as f:
+            with open(cache_file, "r") as f:
                 cache_data = json.load(f)
             cache_data["cached_at"] = old_timestamp
-            with open(cache_file, 'w') as f:
+            with open(cache_file, "w") as f:
                 json.dump(cache_data, f)
 
         # Should return None due to expiration
@@ -205,10 +204,7 @@ class TestDocumentationGeneratorServiceUnit:
     def test_module_name_extraction(self, doc_service, tmp_path):
         """Test module name extraction from file paths."""
         # Test normal module
-        module_name = doc_service._get_module_name(
-            tmp_path / "test_module.py",
-            tmp_path
-        )
+        module_name = doc_service._get_module_name(tmp_path / "test_module.py", tmp_path)
         assert module_name == "test_module"
 
         # Test nested module
@@ -339,11 +335,11 @@ async def async_function(data: dict) -> Optional[str]:
         """Test import information extraction."""
         import ast
 
-        import_code = '''
+        import_code = """
 import os, sys
 from typing import List, Optional as Opt
 from pathlib import Path
-'''
+"""
 
         tree = ast.parse(import_code)
 
@@ -414,7 +410,7 @@ from pathlib import Path
         # Set up some mock data
         doc_service._module_docs = {
             "module1": {"name": "module1", "classes": [{"name": "Class1"}]},
-            "module2": {"name": "module2", "classes": [{"name": "Class2"}]}
+            "module2": {"name": "module2", "classes": [{"name": "Class2"}]},
         }
         doc_service._stats = {
             "total_modules": 2,
@@ -422,7 +418,7 @@ from pathlib import Path
             "total_functions": 0,
             "total_files": 2,
             "total_methods": 0,
-            "total_llm_summaries": 0
+            "total_llm_summaries": 0,
         }
 
         context = doc_service._prepare_package_context()
@@ -460,7 +456,7 @@ from pathlib import Path
         doc_service._cache_response(cache_key, cached_response)
 
         # Mock the actual LLM call to ensure it's not called
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 200
             mock_post.return_value.json.return_value = {"response": "Should not be used"}
 
@@ -482,9 +478,9 @@ from pathlib import Path
             cache_file.unlink()
 
         # Mock successful LLM response
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 200
-            mock_post.return_value.text = "Fresh LLM response"
+            mock_post.return_value.json.return_value = {"response": "Fresh LLM response"}
 
             result = doc_service._call_ollama_llm(prompt, model)
 
@@ -501,7 +497,7 @@ from pathlib import Path
         model = "test_model"
 
         # Mock timeout
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.side_effect = Exception("Timeout")
 
             result = doc_service._call_ollama_llm(prompt, model)
@@ -515,7 +511,7 @@ from pathlib import Path
         model = "test_model"
 
         # Mock invalid response
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 500
 
             result = doc_service._call_ollama_llm(prompt, model)
@@ -529,7 +525,7 @@ from pathlib import Path
             "summary_type": "module",
             "module_name": "test.module",
             "llm_analysis": "This is a test module analysis.",
-            "generated_at": "2025-10-01T10:00:00"
+            "generated_at": "2025-10-01T10:00:00",
         }
 
         markdown = doc_service._convert_llm_json_to_markdown("test_key", analysis_data)
@@ -543,13 +539,9 @@ from pathlib import Path
         """Test Markdown conversion with statistics."""
         analysis_data = {
             "summary_type": "package_overview",
-            "statistics": {
-                "total_modules": 5,
-                "total_classes": 10,
-                "total_functions": 15
-            },
+            "statistics": {"total_modules": 5, "total_classes": 10, "total_functions": 15},
             "llm_analysis": "Package analysis with stats.",
-            "generated_at": "2025-10-01T10:00:00"
+            "generated_at": "2025-10-01T10:00:00",
         }
 
         markdown = doc_service._convert_llm_json_to_markdown("package_key", analysis_data)
@@ -567,26 +559,26 @@ from pathlib import Path
             "package_overview": {
                 "summary_type": "package_overview",
                 "llm_analysis": "Package overview",
-                "generated_at": "2025-10-01T10:00:00"
+                "generated_at": "2025-10-01T10:00:00",
             },
             "module_test1": {
                 "summary_type": "module",
                 "module_name": "test.module1",
                 "llm_analysis": "Module 1 analysis",
-                "generated_at": "2025-10-01T10:01:00"
+                "generated_at": "2025-10-01T10:01:00",
             },
             "module_test2": {
                 "summary_type": "module",
                 "module_name": "test.module2",
                 "llm_analysis": "Module 2 analysis",
-                "generated_at": "2025-10-01T10:02:00"
+                "generated_at": "2025-10-01T10:02:00",
             },
             "file_test1": {
                 "summary_type": "file",
                 "file_path": "/path/to/test1.py",
                 "llm_analysis": "File 1 analysis",
-                "generated_at": "2025-10-01T10:03:00"
-            }
+                "generated_at": "2025-10-01T10:03:00",
+            },
         }
 
         combined = doc_service._create_combined_llm_markdown()
@@ -630,7 +622,7 @@ from pathlib import Path
         assert doc_service._enable_caching is True
 
         # Check model configuration exists
-        assert hasattr(doc_service, '_model_config')
+        assert hasattr(doc_service, "_model_config")
         assert "package_overview" in doc_service._model_config
         assert "module_analysis" in doc_service._model_config
         assert "file_deep_analysis" in doc_service._model_config
@@ -655,7 +647,7 @@ from pathlib import Path
             "docstring": "",
             "classes": [],
             "functions": [],
-            "imports": []
+            "imports": [],
         }
 
         context = doc_service._prepare_module_context(empty_data)
@@ -671,7 +663,7 @@ from pathlib import Path
             "docstring": "Large module with many components.",
             "classes": [{"name": f"Class{i}"} for i in range(20)],
             "functions": [{"name": f"func{i}"} for i in range(30)],
-            "imports": [{"type": "import", "modules": [f"module{i}"]} for i in range(15)]
+            "imports": [{"type": "import", "modules": [f"module{i}"]} for i in range(15)],
         }
 
         context = doc_service._prepare_module_context(large_data)
@@ -702,6 +694,7 @@ from pathlib import Path
         if cache_file.exists():
             # Change modification time to simulate "change"
             import time
+
             new_time = time.time() - (31 * 24 * 3600)  # 31 days ago
             os.utime(cache_file, (new_time, new_time))
 
@@ -717,7 +710,10 @@ from pathlib import Path
         responses = []
 
         def cache_operation():
-            response_data = {"response": f"Response {threading.current_thread().name}", "model": "test"}
+            response_data = {
+                "response": f"Response {threading.current_thread().name}",
+                "model": "test",
+            }
             doc_service._cache_response(cache_key, response_data)
             cached = doc_service._get_cached_response(cache_key)
             if cached:
@@ -739,8 +735,9 @@ from pathlib import Path
 
     def test_memory_efficiency_large_data(self, doc_service):
         """Test memory efficiency with large datasets."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -748,9 +745,12 @@ from pathlib import Path
         # Create large test data
         large_module_data = {
             "name": "large_test_module",
-            "classes": [{"name": f"Class{i}", "methods": [{"name": f"method{j}"} for j in range(10)]} for i in range(100)],
+            "classes": [
+                {"name": f"Class{i}", "methods": [{"name": f"method{j}"} for j in range(10)]}
+                for i in range(100)
+            ],
             "functions": [{"name": f"func{i}"} for i in range(200)],
-            "imports": [{"type": "import", "modules": [f"module{i}"]} for i in range(50)]
+            "imports": [{"type": "import", "modules": [f"module{i}"]} for i in range(50)],
         }
 
         # Process large data
@@ -765,4 +765,3 @@ from pathlib import Path
         # Context should still be reasonable
         assert len(context) > 0
         assert "large_test_module" in context or "large_test_module" in context
-

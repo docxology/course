@@ -1,10 +1,10 @@
 """Tests for tools module."""
 
-import pytest
 import os
 import tempfile
 from pathlib import Path
-from uuid import uuid4
+
+import pytest
 
 
 @pytest.mark.unit
@@ -106,8 +106,9 @@ class TestFormatters:
 
     def test_format_datetime(self):
         """Test datetime formatting."""
-        from curriculum.tools.formatters import format_datetime
         from datetime import datetime
+
+        from curriculum.tools.formatters import format_datetime
 
         dt = datetime(2024, 1, 15, 14, 30, 45)
         result = format_datetime(dt, "%Y-%m-%d %H:%M:%S")
@@ -315,7 +316,7 @@ class TestFileHandling:
         """Test file size retrieval."""
         from curriculum.tools.file_handling import get_file_size
 
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("Test content")
             temp_file = f.name
 
@@ -330,7 +331,7 @@ class TestFileHandling:
         """Test file size validation."""
         from curriculum.tools.file_handling import is_file_too_large
 
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("Test content")
             temp_file = f.name
 
@@ -368,7 +369,7 @@ class TestFileHandling:
 
         content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
 
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write(content)
             temp_file = f.name
 
@@ -379,7 +380,7 @@ class TestFileHandling:
             assert isinstance(chunks[0], bytes)
 
             # Reconstruct content
-            reconstructed = b''.join(chunks).decode()
+            reconstructed = b"".join(chunks).decode()
             assert reconstructed == content
         finally:
             os.unlink(temp_file)

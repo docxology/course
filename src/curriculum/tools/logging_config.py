@@ -95,7 +95,7 @@ def create_json_formatter() -> logging.Formatter:
     try:
         import json_log_formatter
 
-        formatter = json_log_formatter.JSONFormatter()
+        formatter: logging.Formatter = json_log_formatter.JSONFormatter()
         return formatter
     except ImportError:
         # Fallback to standard formatter if json-log-formatter not installed

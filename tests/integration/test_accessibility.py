@@ -1,10 +1,11 @@
 """Tests for accessibility module."""
 
-import pytest
 from uuid import uuid4
 
-from curriculum.core.content import Content, ContentType
+import pytest
+
 from curriculum.accessibility.accessibility import AccessibilityService
+from curriculum.core.content import Content, ContentType
 
 
 @pytest.mark.integration
@@ -19,8 +20,8 @@ class TestAccessibilityService:
     def test_accessibility_service_initialization(self, accessibility_service):
         """Test accessibility service initialization."""
         assert accessibility_service is not None
-        assert hasattr(accessibility_service, '_accessibility_profiles')
-        assert hasattr(accessibility_service, '_content_accessibility')
+        assert hasattr(accessibility_service, "_accessibility_profiles")
+        assert hasattr(accessibility_service, "_content_accessibility")
 
     def test_create_accessibility_profile(self, accessibility_service):
         """Test creating accessibility profile."""
@@ -227,7 +228,10 @@ class TestAccessibilityService:
             content_type=ContentType.LESSON,
             format="html",
             author_id=uuid4(),
-            content_body='<img src="test.jpg"><div style="color: white; background: black;">Hidden text</div>',
+            content_body=(
+                '<img src="test.jpg">'
+                + '<div style="color: white; background: black;">Hidden text</div>'
+            ),
         )
 
         analysis = accessibility_service.analyze_content_accessibility(content)
@@ -235,5 +239,3 @@ class TestAccessibilityService:
         # Should have multiple issues
         assert len(analysis["issues"]) > 0
         assert analysis["score"] < 80  # Should be lower score
-
-

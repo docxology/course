@@ -38,7 +38,7 @@ class MobileService:
         self,
         content_id: UUID,
         platform: str = "responsive",
-        features: List[str] = None,
+        features: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Create mobile configuration for content."""
         config_id = content_id  # Use the content_id directly
@@ -87,16 +87,16 @@ class MobileService:
         optimizations = []
 
         # Content optimizations
-        if len(content.content_body) > 10000:  # Long content
+        if len((content.content_body or "")) > 10000:  # Long content
             optimizations.append("content_chunking")
             optimizations.append("progressive_loading")
 
         # Media optimizations
-        if "video" in content.content_body.lower():
+        if "video" in (content.content_body or "").lower():
             optimizations.append("video_compression")
             optimizations.append("adaptive_bitrate")
 
-        if "img" in content.content_body:
+        if "img" in (content.content_body or ""):
             optimizations.append("image_optimization")
             optimizations.append("responsive_images")
 
@@ -371,17 +371,17 @@ class MobileService:
         recommendations = []
 
         # Check content length
-        if len(content.content_body) > 50000:
+        if len((content.content_body or "")) > 50000:
             issues.append("Content too long for mobile optimization")
             recommendations.append("Break into smaller chunks")
 
         # Check for unsupported media
-        if "flash" in content.content_body.lower():
+        if "flash" in (content.content_body or "").lower():
             issues.append("Flash content not supported on mobile")
             recommendations.append("Convert to HTML5 video")
 
         # Check for mobile-unfriendly elements
-        if "hover" in content.content_body:
+        if "hover" in (content.content_body or ""):
             issues.append("Hover effects may not work on touch devices")
             recommendations.append("Add touch event handlers")
 

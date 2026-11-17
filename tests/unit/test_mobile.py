@@ -1,9 +1,10 @@
 """Tests for mobile module services."""
 
-import pytest
 from uuid import uuid4
 
-from curriculum.core.content import Content, ContentType, ContentFormat
+import pytest
+
+from curriculum.core.content import Content, ContentFormat, ContentType
 from curriculum.mobile.mobile import MobileService
 
 
@@ -56,8 +57,7 @@ class TestMobileService:
     def test_optimize_content_for_mobile(self, mobile_service, sample_content):
         """Test content optimization for mobile."""
         result = mobile_service.optimize_content_for_mobile(
-            content=sample_content,
-            target_device="mobile"
+            content=sample_content, target_device="mobile"
         )
 
         assert result is not None
@@ -117,10 +117,7 @@ class TestMobileService:
 
     def test_mobile_config_storage(self, mobile_service, sample_content):
         """Test mobile configuration storage and retrieval."""
-        config = mobile_service.create_mobile_config(
-            content_id=sample_content.id,
-            platform="mobile_first"
-        )
+        mobile_service.create_mobile_config(content_id=sample_content.id, platform="mobile_first")
 
         # Config should be stored
         assert sample_content.id in mobile_service._mobile_configs
@@ -188,8 +185,7 @@ class TestMobileService:
         """Test mobile configuration validation."""
         # Test with invalid platform
         result = mobile_service.create_mobile_config(
-            content_id=sample_content.id,
-            platform="invalid_platform"
+            content_id=sample_content.id, platform="invalid_platform"
         )
 
         assert result is not None
@@ -207,4 +203,6 @@ class TestMobileService:
 
         for method_name in required_methods:
             assert hasattr(mobile_service, method_name), f"Method {method_name} not found"
-            assert callable(getattr(mobile_service, method_name)), f"Method {method_name} not callable"
+            assert callable(
+                getattr(mobile_service, method_name)
+            ), f"Method {method_name} not callable"

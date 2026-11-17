@@ -1,10 +1,11 @@
 """Comprehensive unit tests for Search module services."""
 
-import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
-from curriculum.core.content import Content, ContentType, ContentFormat
+import pytest
+
+from curriculum.core.content import Content, ContentFormat, ContentType
 from curriculum.search.search import SearchService
 
 
@@ -53,7 +54,9 @@ class TestSearchService:
 
         for method_name in required_methods:
             assert hasattr(search_service, method_name), f"Method {method_name} not found"
-            assert callable(getattr(search_service, method_name)), f"Method {method_name} not callable"
+            assert callable(
+                getattr(search_service, method_name)
+            ), f"Method {method_name} not callable"
 
     def test_is_connected_initially_false(self, search_service):
         """Test is_connected returns False initially."""
@@ -98,7 +101,7 @@ class TestSearchService:
     @pytest.mark.asyncio
     async def test_connect_success(self, search_service):
         """Test successful connection to Elasticsearch."""
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_es.return_value = mock_client
@@ -112,7 +115,7 @@ class TestSearchService:
     @pytest.mark.asyncio
     async def test_connect_failure(self, search_service):
         """Test connection failure to Elasticsearch."""
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_es.side_effect = Exception("Connection failed")
 
             await search_service.connect()
@@ -146,7 +149,7 @@ class TestSearchService:
     async def test_index_content_success(self, search_service, sample_content):
         """Test successful content indexing."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_es.return_value = mock_client
@@ -176,7 +179,7 @@ class TestSearchService:
     async def test_delete_from_index_success(self, search_service, sample_content):
         """Test successful content deletion from index."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_es.return_value = mock_client
@@ -195,22 +198,26 @@ class TestSearchService:
     async def test_search_basic_query(self, search_service):
         """Test basic search functionality."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
                 "hits": {
+                    "max_score": 0.95,
                     "total": {"value": 1},
                     "hits": [
                         {
+                            "_score": 0.95,
                             "_source": {
                                 "id": str(uuid4()),
                                 "title": "Python Programming",
                                 "content_type": "lesson",
-                                "score": 0.95
-                            }
+                                "description": "A lesson",
+                                "author_id": str(uuid4()),
+                                "tags": [],
+                            },
                         }
-                    ]
+                    ],
                 }
             }
             mock_es.return_value = mock_client
@@ -231,11 +238,11 @@ class TestSearchService:
     async def test_search_with_filters(self, search_service):
         """Test search with content type filter."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
-                "hits": {"total": {"value": 0}, "hits": []}
+                "hits": {"max_score": 0.95, "total": {"value": 0}, "hits": []}
             }
             mock_es.return_value = mock_client
 
@@ -254,16 +261,26 @@ class TestSearchService:
     async def test_suggest_functionality(self, search_service):
         """Test search suggestions."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
                 "hits": {
+                    "max_score": 0.95,
                     "total": {"value": 2},
                     "hits": [
-                        {"_source": {"title": "Python Basics", "tags": ["python", "programming"]}},
-                        {"_source": {"title": "Advanced Python", "tags": ["python", "advanced"]}}
-                    ]
+                        {
+                            "_score": 0.95,
+                            "_source": {
+                                "title": "Python Basics",
+                                "tags": ["python", "programming"],
+                            },
+                        },
+                        {
+                            "_score": 0.95,
+                            "_source": {"title": "Advanced Python", "tags": ["python", "advanced"]},
+                        },
+                    ],
                 }
             }
             mock_es.return_value = mock_client
@@ -279,28 +296,37 @@ class TestSearchService:
     async def test_get_similar_content(self, search_service, sample_content):
         """Test getting similar content."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
                 "hits": {
+                    "max_score": 0.95,
                     "total": {"value": 2},
                     "hits": [
                         {
+                            "_score": 0.95,
                             "_source": {
                                 "id": str(uuid4()),
                                 "title": "Similar Content 1",
-                                "content_type": "lesson"
-                            }
+                                "content_type": "lesson",
+                                "description": "A lesson",
+                                "author_id": str(uuid4()),
+                                "tags": [],
+                            },
                         },
                         {
+                            "_score": 0.95,
                             "_source": {
                                 "id": str(uuid4()),
                                 "title": "Similar Content 2",
-                                "content_type": "lesson"
-                            }
-                        }
-                    ]
+                                "content_type": "lesson",
+                                "description": "A lesson",
+                                "author_id": str(uuid4()),
+                                "tags": [],
+                            },
+                        },
+                    ],
                 }
             }
             mock_es.return_value = mock_client
@@ -310,22 +336,20 @@ class TestSearchService:
             result = await search_service.get_similar_content(sample_content.id)
 
             assert result is not None
-            assert "results" in result
-            assert "total" in result
-            assert len(result["results"]) == 2
+            assert isinstance(result, list)
+            assert len(result) == 2
 
     @pytest.mark.asyncio
     async def test_get_index_stats(self, search_service):
         """Test getting index statistics."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.indices.stats.return_value = {
                 "indices": {
                     "curriculum": {
-                        "total": {"docs": {"count": 100}},
-                        "store": {"size_in_bytes": 1024000}
+                        "total": {"docs": {"count": 100}, "store": {"size_in_bytes": 1024000}},
                     }
                 }
             }
@@ -336,10 +360,10 @@ class TestSearchService:
             result = await search_service.get_index_stats()
 
             assert result is not None
-            assert "total_documents" in result
-            assert "index_size" in result
-            assert result["total_documents"] == 100
-            assert result["index_size"] == 1024000
+            assert "total_docs" in result
+            assert "size_in_bytes" in result
+            assert result["total_docs"] == 100
+            assert result["size_in_bytes"] == 1024000
 
     def test_search_service_state_management(self, search_service):
         """Test search service state management."""
@@ -353,6 +377,7 @@ class TestSearchService:
     def test_search_service_index_name(self, search_service):
         """Test that index name is set correctly."""
         from curriculum.config import settings
+
         assert search_service._index_name == settings.elasticsearch_index
         assert search_service._index_name == "curriculum"
 
@@ -360,17 +385,17 @@ class TestSearchService:
     async def test_search_with_pagination(self, search_service):
         """Test search with pagination parameters."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
-                "hits": {"total": {"value": 50}, "hits": []}
+                "hits": {"max_score": 0.95, "total": {"value": 50}, "hits": []}
             }
             mock_es.return_value = mock_client
 
             await search_service.connect()
 
-            result = await search_service.search("python", page=2, page_size=10)
+            result = await search_service.search("python", offset=10, limit=10)
 
             assert result is not None
             mock_client.search.assert_called_once()
@@ -386,7 +411,7 @@ class TestSearchService:
     async def test_index_content_document_structure(self, search_service, sample_content):
         """Test that indexed document has correct structure."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.index.return_value = {"result": "created"}
@@ -408,20 +433,28 @@ class TestSearchService:
             assert document["author_id"] == str(sample_content.author_id)
             assert document["tags"] == sample_content.tags
 
-    def test_search_service_error_handling(self, search_service):
+    async def test_search_service_error_handling(self, search_service):
         """Test search service error handling."""
         # Test that service handles missing Elasticsearch gracefully
         assert search_service.is_connected() is False
 
         # Operations should return None or False when not connected
-        assert search_service.search("test") is None
-        assert search_service.suggest("test") is None
-        assert search_service.get_similar_content(uuid4()) is None
-        assert search_service.get_index_stats() is None
-        assert search_service.index_content(Content(
-            title="test", content_type=ContentType.LESSON, format=ContentFormat.MARKDOWN, author_id=uuid4()
-        )) is False
-        assert search_service.delete_from_index(uuid4()) is False
+        assert "error" in await search_service.search("test")
+        assert await search_service.suggest("test") == []
+        assert await search_service.get_similar_content(uuid4()) == []
+        assert "error" in await search_service.get_index_stats()
+        assert (
+            await search_service.index_content(
+                Content(
+                    title="test",
+                    content_type=ContentType.LESSON,
+                    format=ContentFormat.MARKDOWN,
+                    author_id=uuid4(),
+                )
+            )
+            is False
+        )
+        assert await search_service.delete_from_index(uuid4()) is False
 
     def test_search_service_configuration(self, search_service):
         """Test search service configuration."""
@@ -439,11 +472,11 @@ class TestSearchService:
     async def test_search_with_complex_query(self, search_service):
         """Test search with complex query structure."""
         # Setup connected service
-        with patch('curriculum.search.search.AsyncElasticsearch') as mock_es:
+        with patch("curriculum.search.search.AsyncElasticsearch") as mock_es:
             mock_client = AsyncMock()
             mock_client.info.return_value = {"version": {"number": "7.10.0"}}
             mock_client.search.return_value = {
-                "hits": {"total": {"value": 0}, "hits": []}
+                "hits": {"max_score": 0.95, "total": {"value": 0}, "hits": []}
             }
             mock_es.return_value = mock_client
 
@@ -454,8 +487,8 @@ class TestSearchService:
                 query="python programming",
                 content_type="lesson",
                 tags=["beginner", "python"],
-                page=1,
-                page_size=20
+                offset=0,
+                limit=20,
             )
 
             assert result is not None

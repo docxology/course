@@ -1,10 +1,7 @@
 """Progress tracking and learning paths service."""
 
 from typing import Any, Dict, List, Optional
-from uuid import UUID
-
-from curriculum.core.content import Content
-from curriculum.core.user import User
+from uuid import UUID, uuid4
 
 
 class ProgressService:
@@ -12,7 +9,7 @@ class ProgressService:
 
     def __init__(self) -> None:
         """Initialize progress service."""
-        self._user_progress: dict[UUID, dict] = {}
+        self._user_progress: dict[str, Dict[str, Any]] = {}
         self._learning_paths: dict[UUID, dict] = {}
         self._milestones: dict[UUID, dict] = {}
 
@@ -26,13 +23,18 @@ class ProgressService:
     ) -> Dict[str, Any]:
         """Track progress on specific content."""
         progress_key = f"{user_id}_{content_id}"
+        resolved_status = (
+            "completed"
+            if progress_percentage >= 100.0 and completion_status == "in_progress"
+            else completion_status
+        )
 
         progress_data = {
             "user_id": str(user_id),
             "content_id": str(content_id),
             "progress_percentage": progress_percentage,
             "time_spent": time_spent,
-            "completion_status": completion_status,
+            "completion_status": resolved_status,
             "last_updated": "2024-01-01T00:00:00Z",
             "attempts": 1,
             "first_accessed": "2024-01-01T00:00:00Z",
@@ -41,9 +43,91 @@ class ProgressService:
         self._user_progress[progress_key] = progress_data
         return progress_data
 
+    def get_content_progress(
+        self,
+        user_id: UUID,
+        content_id: UUID,
+    ) -> Optional[Dict[str, Any]]:
+        """Get tracked progress for a specific user and content item."""
+        progress_key = f"{user_id}_{content_id}"
+        return self._user_progress.get(progress_key)
+
+    def calculate_learning_path(
+        self,
+        user_id: UUID,
+        completed_content: List[UUID],
+        available_content: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """Calculate a recommended content sequence from prerequisites and difficulty."""
+        completed_set = {str(cid) for cid in completed_content}
+        difficulty_rank = {"beginner": 0, "intermediate": 1, "advanced": 2}
+
+        remaining = [item for item in available_content if str(item.get("id")) not in completed_set]
+        remaining.sort(
+            key=lambda item: (
+                sum(
+                    1
+                    for prereq in item.get("prerequisites", [])
+                    if str(prereq) not in completed_set
+                ),
+                difficulty_rank.get(str(item.get("difficulty", "intermediate")).lower(), 1),
+            )
+        )
+
+        recommended_order = [str(item["id"]) for item in remaining if "id" in item]
+        return {
+            "user_id": str(user_id),
+            "recommended_order": recommended_order,
+            "estimated_completion_time": len(recommended_order) * 30,
+        }
+
+    def get_user_progress_summary(self, user_id: UUID) -> Dict[str, Any]:
+        """Aggregate tracked content progress for a user."""
+        entries = [
+            entry for entry in self._user_progress.values() if entry["user_id"] == str(user_id)
+        ]
+        completed = sum(
+            1
+            for entry in entries
+            if float(entry["progress_percentage"]) >= 100.0
+            or entry.get("completion_status") == "completed"
+        )
+        total_time_spent = sum(int(entry["time_spent"]) for entry in entries)
+        average_progress = (
+            sum(float(entry["progress_percentage"]) for entry in entries) / len(entries)
+            if entries
+            else 0.0
+        )
+
+        return {
+            "user_id": str(user_id),
+            "total_content_tracked": len(entries),
+            "total_content_completed": completed,
+            "total_time_spent": total_time_spent,
+            "average_progress": average_progress,
+        }
+
+    def identify_learning_gaps(
+        self,
+        user_id: UUID,
+        progress_data: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Identify learning gaps and actionable study recommendations."""
+        weak_areas = [str(area) for area in progress_data.get("weak_areas", [])]
+        completed_topics = [str(topic) for topic in progress_data.get("completed_topics", [])]
+        strong_areas = [str(area) for area in progress_data.get("strong_areas", [])]
+        recommendations = [f"Review and practice {area}" for area in weak_areas]
+
+        return {
+            "user_id": str(user_id),
+            "gaps": weak_areas,
+            "completed_topics": completed_topics,
+            "strong_areas": strong_areas,
+            "recommendations": recommendations,
+        }
+
     def get_user_course_progress(self, user_id: UUID, course_id: UUID) -> Dict[str, Any]:
         """Get overall progress for a course."""
-        # Mock progress calculation
         return {
             "user_id": str(user_id),
             "course_id": str(course_id),
@@ -72,7 +156,7 @@ class ProgressService:
         estimated_duration: int,  # hours
     ) -> Dict[str, Any]:
         """Create a structured learning path."""
-        path_id = UUID(f"path_{course_id}")
+        path_id = uuid4()
 
         learning_path = {
             "id": str(path_id),
@@ -107,8 +191,7 @@ class ProgressService:
         current_level: str = "beginner",
     ) -> Dict[str, Any]:
         """Get personalized adaptive learning path."""
-        # Mock adaptive path generation
-        path_id = UUID(f"adaptive_{user_id}_{course_id}")
+        path_id = uuid4()
 
         adaptive_path = {
             "id": str(path_id),
@@ -150,7 +233,7 @@ class ProgressService:
         reward: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create a progress milestone."""
-        milestone_id = UUID(f"milestone_{course_id}")
+        milestone_id = uuid4()
 
         milestone = {
             "id": str(milestone_id),
@@ -248,7 +331,6 @@ class ProgressService:
         current_pace: float,  # hours per week
     ) -> Dict[str, Any]:
         """Predict course completion date."""
-        # Mock prediction based on current progress and pace
         return {
             "user_id": str(user_id),
             "course_id": str(course_id),
@@ -283,7 +365,7 @@ class ProgressService:
         target_completion_date: str,
     ) -> Dict[str, Any]:
         """Create personalized study schedule."""
-        schedule_id = UUID(f"schedule_{user_id}_{course_id}")
+        schedule_id = uuid4()
 
         schedule = {
             "id": str(schedule_id),
@@ -352,7 +434,7 @@ class ProgressService:
         milestones: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
         """Create a learning goal with milestones."""
-        goal_id = UUID(f"goal_{user_id}")
+        goal_id = uuid4()
 
         goal = {
             "id": str(goal_id),
@@ -370,7 +452,6 @@ class ProgressService:
 
     def track_goal_progress(self, goal_id: UUID, milestone_id: str) -> Dict[str, Any]:
         """Track progress on a learning goal milestone."""
-        # Mock milestone tracking
         return {
             "goal_id": str(goal_id),
             "milestone_id": milestone_id,
@@ -399,7 +480,7 @@ class ProgressService:
         visualization_type: str = "timeline",
     ) -> Dict[str, Any]:
         """Create progress visualization."""
-        viz_id = UUID(f"progress_viz_{user_id}_{course_id}")
+        viz_id = uuid4()
 
         visualization = {
             "id": str(viz_id),
@@ -454,7 +535,7 @@ class ProgressService:
         weak_areas: List[str],
     ) -> Dict[str, Any]:
         """Create a remediation plan for weak areas."""
-        plan_id = UUID(f"remediation_{user_id}_{course_id}")
+        plan_id = uuid4()
 
         remediation_plan = {
             "id": str(plan_id),
@@ -486,7 +567,7 @@ class ProgressService:
         session_data: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Track detailed study session data."""
-        session_id = UUID(f"session_{len(self._user_progress)}")
+        session_id = uuid4()
 
         session = {
             "id": str(session_id),
@@ -525,7 +606,7 @@ class ProgressService:
         current_performance: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create adaptive assessment path based on performance."""
-        path_id = UUID(f"adaptive_assess_{user_id}_{course_id}")
+        path_id = uuid4()
 
         adaptive_path = {
             "id": str(path_id),

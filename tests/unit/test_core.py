@@ -1,15 +1,35 @@
 """Tests for core module models and functionality."""
 
-import pytest
-from datetime import datetime, timedelta
-from uuid import uuid4, UUID
+from datetime import datetime
+from uuid import UUID, uuid4
 
-from curriculum.core.base import BaseEntity, UUIDMixin, TimestampMixin, SoftDeleteMixin
-from curriculum.core.content import Content, ContentStatus, ContentType, ContentFormat, ContentVersion
-from curriculum.core.user import User, UserRole, UserPermission
-from curriculum.core.metadata import Metadata, DublinCore, LRMIMetadata, ResourceType, InteractivityType, EducationalUse
-from curriculum.core.analytics import LearningEvent, ActivityVerb, EventType, DeviceType
-from curriculum.core.assessment import Assessment, Question, Submission, SubmissionResult, QuestionType, DifficultyLevel, GradingStatus
+import pytest
+
+from curriculum.core.analytics import ActivityVerb, DeviceType, EventType, LearningEvent
+from curriculum.core.assessment import (
+    Assessment,
+    GradingStatus,
+    Question,
+    QuestionType,
+    Submission,
+    SubmissionResult,
+)
+from curriculum.core.base import BaseEntity, SoftDeleteMixin, TimestampMixin
+from curriculum.core.content import (
+    Content,
+    ContentFormat,
+    ContentStatus,
+    ContentType,
+    ContentVersion,
+)
+from curriculum.core.metadata import (
+    DublinCore,
+    EducationalUse,
+    LRMIMetadata,
+    Metadata,
+    ResourceType,
+)
+from curriculum.core.user import User, UserPermission, UserRole
 
 
 @pytest.mark.unit
@@ -18,6 +38,7 @@ class TestBaseEntity:
 
     def test_base_entity_creation(self):
         """Test BaseEntity creation with mixins."""
+
         class TestEntity(BaseEntity):
             name: str
             description: str = None
@@ -33,6 +54,7 @@ class TestBaseEntity:
 
     def test_soft_delete_mixin(self):
         """Test soft delete functionality."""
+
         class TestEntity(BaseEntity, SoftDeleteMixin):
             name: str
 
@@ -54,6 +76,7 @@ class TestBaseEntity:
 
     def test_timestamp_mixin(self):
         """Test timestamp updates."""
+
         class TestEntity(BaseEntity, TimestampMixin):
             name: str
 
@@ -70,7 +93,6 @@ class TestBaseEntity:
 @pytest.mark.unit
 class TestContentModel:
     """Tests for Content model."""
-
 
     def test_content_creation(self, sample_user):
         """Test content creation."""
@@ -282,7 +304,6 @@ class TestUserModel:
 class TestMetadataModel:
     """Tests for Metadata models."""
 
-
     def test_dublin_core_creation(self):
         """Test Dublin Core metadata creation."""
         dublin_core = DublinCore(
@@ -351,8 +372,6 @@ class TestMetadataModel:
 class TestAnalyticsModel:
     """Tests for Analytics model."""
 
-
-
     def test_learning_event_creation(self, sample_user, sample_content):
         """Test learning event creation."""
         event = LearningEvent(
@@ -395,7 +414,6 @@ class TestAnalyticsModel:
 @pytest.mark.unit
 class TestAssessmentModel:
     """Tests for Assessment model."""
-
 
     def test_question_creation(self):
         """Test question creation."""
@@ -647,10 +665,10 @@ class TestModelInheritance:
             format=ContentFormat.MARKDOWN,
             author_id=uuid4(),
         )
-        assert hasattr(content, 'id')
-        assert hasattr(content, 'created_at')
-        assert hasattr(content, 'updated_at')
-        assert hasattr(content, 'is_deleted')
+        assert hasattr(content, "id")
+        assert hasattr(content, "created_at")
+        assert hasattr(content, "updated_at")
+        assert hasattr(content, "is_deleted")
 
         # User inherits from BaseEntity
         user = User(
@@ -659,8 +677,8 @@ class TestModelInheritance:
             full_name="Test User",
             hashed_password="hashed",
         )
-        assert hasattr(user, 'id')
-        assert hasattr(user, 'created_at')
+        assert hasattr(user, "id")
+        assert hasattr(user, "created_at")
 
     def test_mixin_inheritance(self):
         """Test mixin inheritance."""
@@ -671,8 +689,8 @@ class TestModelInheritance:
             format=ContentFormat.MARKDOWN,
             author_id=uuid4(),
         )
-        assert hasattr(content, 'soft_delete')
-        assert hasattr(content, 'restore')
+        assert hasattr(content, "soft_delete")
+        assert hasattr(content, "restore")
 
         # User should have timestamp updates
         user = User(
@@ -681,7 +699,7 @@ class TestModelInheritance:
             full_name="Test User",
             hashed_password="hashed",
         )
-        assert hasattr(user, 'update_timestamp')
+        assert hasattr(user, "update_timestamp")
 
 
 @pytest.mark.unit
@@ -757,5 +775,3 @@ class TestModelBusinessLogic:
         submission.grade_submission()
         assert submission.grading_status == GradingStatus.COMPLETED
         assert submission.graded_at is not None
-
-

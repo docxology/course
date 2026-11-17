@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from typing import Iterator, List, Optional
+from typing import Iterator, List
 
 
 def get_file_extension(filename: str) -> str:

@@ -1,11 +1,8 @@
 """Tests for the main curriculum module."""
 
 import pytest
-from uuid import uuid4
 
-from curriculum.core.content import Content, ContentType, ContentFormat, ContentStatus
-from curriculum.core.user import User, UserRole
-from curriculum.core.assessment import Assessment, Question, QuestionType
+from curriculum.core.content import ContentFormat, ContentType
 
 
 @pytest.mark.integration
@@ -15,13 +12,13 @@ class TestCurriculumMain:
     def test_import_all_services(self):
         """Test that all services can be imported from main module."""
         from curriculum import (
-            ContentService,
-            UserService,
-            AuthenticationService,
-            AssessmentService,
             AnalyticsService,
-            TeacherService,
+            AssessmentService,
+            AuthenticationService,
             ContentGeneratorService,
+            ContentService,
+            TeacherService,
+            UserService,
         )
 
         # Verify services are available
@@ -36,12 +33,12 @@ class TestCurriculumMain:
     def test_import_all_models(self):
         """Test that all models can be imported from main module."""
         from curriculum import (
-            Content,
-            User,
             Assessment,
-            Question,
-            LearningEvent,
             BaseEntity,
+            Content,
+            LearningEvent,
+            Question,
+            User,
         )
 
         # Verify models are available
@@ -55,11 +52,11 @@ class TestCurriculumMain:
     def test_import_all_enums(self):
         """Test that all enums can be imported from main module."""
         from curriculum import (
-            ContentType,
             ContentFormat,
             ContentStatus,
-            UserRole,
+            ContentType,
             QuestionType,
+            UserRole,
         )
 
         # Verify enums are available
@@ -74,12 +71,12 @@ class TestCurriculumMain:
         from curriculum import settings
 
         assert settings is not None
-        assert hasattr(settings, 'app_name')
-        assert hasattr(settings, 'database_url')
+        assert hasattr(settings, "app_name")
+        assert hasattr(settings, "database_url")
 
     def test_version_info(self):
         """Test that version information is available."""
-        from curriculum import __version__, __author__
+        from curriculum import __author__, __version__
 
         assert __version__ is not None
         assert __author__ is not None
@@ -88,18 +85,18 @@ class TestCurriculumMain:
 
     def test_basic_workflow(self):
         """Test a basic workflow using imported services."""
-        from curriculum import ContentService, UserService, AssessmentService
+        from curriculum import ContentService, UserService
 
         # Create services
         content_service = ContentService()
         user_service = UserService()
 
         # Create user
-        user = user_service.create_user(
+        user, error = user_service.create_user(
             email="workflow@example.com",
             username="workflowuser",
             full_name="Workflow User",
-            password="password123",
+            password="SecurePass123!",
         )
 
         assert user is not None
@@ -123,10 +120,10 @@ class TestCurriculumMain:
         orchestrator = CurriculumOrchestrator()
 
         # Verify orchestrator has all services
-        assert hasattr(orchestrator, 'content')
-        assert hasattr(orchestrator, 'users')
-        assert hasattr(orchestrator, 'assessments')
-        assert hasattr(orchestrator, 'analytics')
+        assert hasattr(orchestrator, "content")
+        assert hasattr(orchestrator, "users")
+        assert hasattr(orchestrator, "assessments")
+        assert hasattr(orchestrator, "analytics")
 
     def test_module_structure(self):
         """Test that all expected modules are available."""
@@ -134,9 +131,19 @@ class TestCurriculumMain:
 
         # Check that all main modules are importable
         expected_modules = [
-            'core', 'content', 'learning', 'users', 'ai', 'communication',
-            'accessibility', 'mobile', 'integration', 'search', 'teachers',
-            'content_generation', 'tools'
+            "core",
+            "content",
+            "learning",
+            "users",
+            "ai",
+            "communication",
+            "accessibility",
+            "mobile",
+            "integration",
+            "search",
+            "teachers",
+            "content_generation",
+            "tools",
         ]
 
         for module_name in expected_modules:
@@ -144,8 +151,8 @@ class TestCurriculumMain:
 
     def test_cross_module_dependencies(self):
         """Test that cross-module dependencies work correctly."""
-        from curriculum.core.content import Content, ContentType
         from curriculum.content.content import ContentService
+        from curriculum.core.content import ContentType
         from curriculum.users.user import UserService
 
         # Test that services can be instantiated and work together
@@ -153,11 +160,11 @@ class TestCurriculumMain:
         user_service = UserService()
 
         # Create user through user service
-        user = user_service.create_user(
+        user, error = user_service.create_user(
             email="cross@example.com",
             username="crossuser",
             full_name="Cross Module User",
-            password="password123",
+            password="SecurePass123!",
         )
 
         # Create content through content service

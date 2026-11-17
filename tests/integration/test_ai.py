@@ -1,11 +1,6 @@
 """Tests for AI module services."""
 
 import pytest
-from unittest.mock import Mock, patch
-from uuid import uuid4
-
-from curriculum.core.content import Content, ContentType, ContentFormat
-from curriculum.core.user import User, UserRole
 
 
 @pytest.mark.integration
@@ -16,8 +11,8 @@ class TestAIFeaturesService:
     def ai_features_service(self):
         """Create AIFeaturesService instance."""
         from curriculum.ai.ai_features import AIFeaturesService
-        return AIFeaturesService()
 
+        return AIFeaturesService()
 
     def test_analyze_content_difficulty(self, ai_features_service, sample_content):
         """Test content difficulty analysis."""
@@ -31,13 +26,17 @@ class TestAIFeaturesService:
 
     def test_recommend_next_content(self, ai_features_service, sample_user, sample_content):
         """Test content recommendation."""
-        result = ai_features_service.generate_content_recommendations(sample_user.id, sample_content.id)
+        result = ai_features_service.generate_content_recommendations(
+            sample_user.id, sample_content.id
+        )
 
         assert result is not None
         assert isinstance(result, list)
         assert len(result) > 0
 
-    def test_create_intelligent_tutor_session(self, ai_features_service, sample_user, sample_content):
+    def test_create_intelligent_tutor_session(
+        self, ai_features_service, sample_user, sample_content
+    ):
         """Test intelligent tutor session creation."""
         result = ai_features_service.create_intelligent_tutor_session(
             sample_user.id, sample_content.id, "visual"
@@ -86,6 +85,7 @@ class TestContentCreationService:
     def content_creation_service(self):
         """Create ContentCreationService instance."""
         from curriculum.ai.content_creation import ContentCreationService
+
         return ContentCreationService()
 
     def test_create_content_from_template(self, content_creation_service, sample_user):
@@ -94,7 +94,7 @@ class TestContentCreationService:
         template_id = "lesson_template"
         customizations = {
             "learning_objectives": ["Understand ML concepts", "Apply ML algorithms"],
-            "main_content": "Detailed ML content"
+            "main_content": "Detailed ML content",
         }
 
         result = content_creation_service.create_content_from_template(
@@ -105,11 +105,14 @@ class TestContentCreationService:
         assert hasattr(result, "title")
         assert hasattr(result, "content_body")
         assert result.title == "Machine Learning Basics"
+
     def test_generate_quiz_from_content(self, content_creation_service, sample_content):
         """Test quiz generation from content."""
         question_count = 3
 
-        result = content_creation_service.generate_quiz_from_content(sample_content.id, question_count)
+        result = content_creation_service.generate_quiz_from_content(
+            sample_content.id, question_count
+        )
 
         assert result is not None
         assert "quiz_id" in result
@@ -133,7 +136,7 @@ class TestContentCreationService:
         content_data = {
             "title": "Test Content",
             "content_body": "Valid content body",
-            "learning_objectives": ["Objective 1", "Objective 2"]
+            "learning_objectives": ["Objective 1", "Objective 2"],
         }
 
         result = content_creation_service.validate_content_structure(content_data)
@@ -158,6 +161,7 @@ class TestResearchToolsService:
     def research_service(self):
         """Create ResearchToolsService instance."""
         from curriculum.ai.research import ResearchToolsService
+
         return ResearchToolsService()
 
     def test_create_citation(self, research_service, sample_user):
@@ -168,7 +172,7 @@ class TestResearchToolsService:
             authors=["Guido van Rossum"],
             publication_year=1991,
             source_type="website",
-            source_details={"url": "https://python.org"}
+            source_details={"url": "https://python.org"},
         )
 
         assert result is not None
@@ -186,7 +190,7 @@ class TestResearchToolsService:
                 authors=[f"Author {i}"],
                 publication_year=2020 + i,
                 source_type="article",
-                source_details={}
+                source_details={},
             )
 
         results = research_service.search_citations("Research")
@@ -201,7 +205,7 @@ class TestResearchToolsService:
             authors=["John Doe", "Jane Smith"],
             publication_year=2022,
             source_type="journal",
-            source_details={"journal": "AI Journal"}
+            source_details={"journal": "AI Journal"},
         )
 
         formatted = research_service.format_citation(citation["id"], "apa")
@@ -218,7 +222,7 @@ class TestResearchToolsService:
             authors=["Alice Johnson"],
             publication_year=2021,
             source_type="book",
-            source_details={}
+            source_details={},
         )
 
         formatted = research_service.format_citation(citation["id"], "mla")
@@ -246,7 +250,7 @@ class TestResearchToolsService:
             authors=["Test Author"],
             publication_year=2023,
             source_type="article",
-            source_details={}
+            source_details={},
         )
 
         result = research_service.validate_citation(citation)
@@ -267,15 +271,12 @@ class TestResearchToolsService:
                 authors=[f"Author {i}"],
                 publication_year=2020 + i,
                 source_type="article",
-                source_details={}
+                source_details={},
             )
             citations.append(citation["id"])
 
         bibliography = research_service.create_bibliography(
-            user_id=sample_user.id,
-            title="Test Bibliography",
-            citation_ids=citations,
-            style="apa"
+            user_id=sample_user.id, title="Test Bibliography", citation_ids=citations, style="apa"
         )
 
         assert bibliography is not None
@@ -291,16 +292,13 @@ class TestResearchToolsService:
                 authors=[f"Researcher {i}"],
                 publication_year=2021 + i,
                 source_type="article",
-                source_details={}
+                source_details={},
             )
             citations.append(citation["id"])
 
         # Create bibliography
         bib = research_service.create_bibliography(
-            user_id=sample_user.id,
-            title="Test Bibliography",
-            citation_ids=citations,
-            style="apa"
+            user_id=sample_user.id, title="Test Bibliography", citation_ids=citations, style="apa"
         )
 
         ris_export = research_service.export_bibliography(bib["id"], "ris")
@@ -321,12 +319,10 @@ class TestAIIntegration:
         )
 
         assert lesson is not None
-        assert lesson["content"] is not None
+        assert lesson.content_body is not None
 
         # Generate quiz from content
-        quiz = content_creation_service.generate_quiz_from_content(
-            lesson["content_id"], 3
-        )
+        quiz = content_creation_service.generate_quiz_from_content(lesson.id, 3)
 
         assert quiz is not None
         assert len(quiz["questions"]) == 3
@@ -383,7 +379,7 @@ class TestAIIntegration:
         assert "sections" in outline
         assert len(outline["sections"]) == 5
 
-    def test_research_tools_workflow(self, research_service):
+    def test_research_tools_workflow(self, research_service, sample_user):
         """Test complete research tools workflow."""
         # Extract citations from text
         text = "According to Smith (2020) and Johnson (2019), machine learning is important."
@@ -400,7 +396,7 @@ class TestAIIntegration:
                 authors=citation["authors"],
                 publication_year=citation["publication_year"],
                 source_type="article",
-                source_details={}
+                source_details={},
             )
             citation_ids.append(formal_citation["id"])
 
@@ -409,7 +405,7 @@ class TestAIIntegration:
             user_id=sample_user.id,
             title="Test Bibliography",
             citation_ids=citation_ids,
-            style="apa"
+            style="apa",
         )
 
         assert bibliography is not None

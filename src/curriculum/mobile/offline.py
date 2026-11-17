@@ -3,8 +3,6 @@
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from curriculum.core.content import Content
-
 
 class OfflineService:
     """Service for offline content and sync capabilities."""

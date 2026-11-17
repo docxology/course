@@ -1,10 +1,17 @@
 """Communication service for forums, messaging, and announcements."""
 
-from datetime import datetime
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
-from curriculum.core.user import User
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class CommunicationService:
@@ -16,6 +23,7 @@ class CommunicationService:
         self._posts: dict[UUID, dict] = {}
         self._messages: dict[UUID, dict] = {}
         self._announcements: dict[UUID, dict] = {}
+        self._notifications: dict[UUID, dict] = {}
 
     def create_forum(
         self,
@@ -26,7 +34,7 @@ class CommunicationService:
         is_public: bool = False,
     ) -> Dict[str, Any]:
         """Create a discussion forum."""
-        forum_id = UUID(f"forum_{course_id}")
+        forum_id = uuid4()
 
         forum = {
             "id": str(forum_id),
@@ -56,15 +64,15 @@ class CommunicationService:
 
     def create_post(
         self,
-        forum_id: UUID,
+        forum_id: Union[UUID, str],
         author_id: UUID,
         title: str,
         content: str,
         category: str = "General Discussion",
-        tags: List[str] = None,
+        tags: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Create a forum post."""
-        post_id = UUID(f"post_{len(self._posts)}")
+        post_id = uuid4()
 
         post = {
             "id": str(post_id),
@@ -86,7 +94,8 @@ class CommunicationService:
         self._posts[post_id] = post
 
         # Update forum statistics
-        forum = self._forums.get(forum_id)
+        resolved_forum_id = _coerce_uuid(forum_id)
+        forum = self._forums.get(resolved_forum_id) if resolved_forum_id else None
         if forum:
             forum["total_posts"] += 1
 
@@ -94,12 +103,12 @@ class CommunicationService:
 
     def create_reply(
         self,
-        post_id: UUID,
+        post_id: Union[UUID, str],
         author_id: UUID,
         content: str,
     ) -> Dict[str, Any]:
         """Create a reply to a forum post."""
-        reply_id = UUID(f"reply_{len(self._posts)}")
+        reply_id = uuid4()
 
         reply = {
             "id": str(reply_id),
@@ -112,7 +121,8 @@ class CommunicationService:
         }
 
         # Update post reply count
-        post = self._posts.get(post_id)
+        resolved_post_id = _coerce_uuid(post_id)
+        post = self._posts.get(resolved_post_id) if resolved_post_id else None
         if post:
             post["reply_count"] += 1
 
@@ -126,7 +136,7 @@ class CommunicationService:
         content: str,
     ) -> Dict[str, Any]:
         """Send a private message."""
-        message_id = UUID(f"msg_{len(self._messages)}")
+        message_id = uuid4()
 
         message = {
             "id": str(message_id),
@@ -152,7 +162,7 @@ class CommunicationService:
         expires_at: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Create a course announcement."""
-        announcement_id = UUID(f"ann_{len(self._announcements)}")
+        announcement_id = uuid4()
 
         announcement = {
             "id": str(announcement_id),
@@ -171,7 +181,7 @@ class CommunicationService:
 
     def get_forum_posts(
         self,
-        forum_id: UUID,
+        forum_id: Union[UUID, str],
         category: Optional[str] = None,
         limit: int = 20,
     ) -> List[Dict[str, Any]]:
@@ -215,25 +225,28 @@ class CommunicationService:
 
         return sorted(announcements, key=lambda a: (a["is_pinned"], a["created_at"]), reverse=True)
 
-    def mark_message_read(self, message_id: UUID, user_id: UUID) -> bool:
+    def mark_message_read(self, message_id: Union[UUID, str], user_id: UUID) -> bool:
         """Mark message as read."""
-        message = self._messages.get(message_id)
+        resolved_id = _coerce_uuid(message_id)
+        message = self._messages.get(resolved_id) if resolved_id else None
         if message and message["recipient_id"] == str(user_id):
             message["is_read"] = True
             return True
         return False
 
-    def pin_post(self, post_id: UUID, moderator_id: UUID) -> bool:
+    def pin_post(self, post_id: Union[UUID, str], moderator_id: UUID) -> bool:
         """Pin a forum post."""
-        post = self._posts.get(post_id)
+        resolved_id = _coerce_uuid(post_id)
+        post = self._posts.get(resolved_id) if resolved_id else None
         if post:
             post["is_pinned"] = True
             return True
         return False
 
-    def lock_post(self, post_id: UUID, moderator_id: UUID) -> bool:
+    def lock_post(self, post_id: Union[UUID, str], moderator_id: UUID) -> bool:
         """Lock a forum post."""
-        post = self._posts.get(post_id)
+        resolved_id = _coerce_uuid(post_id)
+        post = self._posts.get(resolved_id) if resolved_id else None
         if post:
             post["is_locked"] = True
             return True
@@ -269,14 +282,14 @@ class CommunicationService:
 
     def moderate_content(
         self,
-        content_id: UUID,
+        content_id: Union[UUID, str],
         moderator_id: UUID,
         action: str,  # approve, reject, edit, delete
         reason: str = "",
     ) -> Dict[str, Any]:
         """Moderate forum content."""
-        # Find content (could be post or reply)
-        post = self._posts.get(content_id)
+        resolved_id = _coerce_uuid(content_id)
+        post = self._posts.get(resolved_id) if resolved_id else None
 
         if not post:
             return {"error": "Content not found"}
@@ -310,7 +323,7 @@ class CommunicationService:
         max_members: int = 10,
     ) -> Dict[str, Any]:
         """Create a study group."""
-        group_id = UUID(f"group_{course_id}")
+        group_id = uuid4()
 
         study_group = {
             "id": str(group_id),
@@ -338,7 +351,7 @@ class CommunicationService:
         ]
 
         # Group by conversation partner
-        conversations = {}
+        conversations: Dict[str, Dict[str, Any]] = {}
         for message in user_messages:
             other_user = (
                 message["recipient_id"]
@@ -369,7 +382,7 @@ class CommunicationService:
         action_url: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Create a notification for a user."""
-        notification_id = UUID(f"notif_{len(self._messages)}")
+        notification_id = uuid4()
 
         notification = {
             "id": str(notification_id),
@@ -382,6 +395,7 @@ class CommunicationService:
             "created_at": "2024-01-01T00:00:00Z",
         }
 
+        self._notifications[notification_id] = notification
         return notification
 
     def get_user_notifications(
@@ -390,17 +404,8 @@ class CommunicationService:
         unread_only: bool = False,
     ) -> List[Dict[str, Any]]:
         """Get notifications for a user."""
-        # In production, this would query a notifications table
         notifications = [
-            {
-                "id": f"notif_{i}",
-                "title": f"Notification {i+1}",
-                "message": f"This is notification message {i+1}",
-                "type": "info",
-                "is_read": False,
-                "created_at": "2024-01-01T00:00:00Z",
-            }
-            for i in range(5)  # Mock data
+            notif for notif in self._notifications.values() if notif["user_id"] == str(user_id)
         ]
 
         if unread_only:

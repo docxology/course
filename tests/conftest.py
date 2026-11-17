@@ -1,13 +1,11 @@
 """Pytest configuration and fixtures."""
 
 import pytest
-from uuid import uuid4
-from datetime import datetime
 
-from curriculum.core.user import User, UserRole
-from curriculum.core.content import Content, ContentFormat, ContentType
-from curriculum.core.assessment import Assessment, Question, QuestionType
 from curriculum.content.content import ContentService
+from curriculum.core.assessment import QuestionType
+from curriculum.core.content import Content, ContentFormat, ContentType
+from curriculum.core.user import User, UserRole
 from curriculum.learning.analytics import AnalyticsService
 from curriculum.learning.assessment import AssessmentService
 from curriculum.users.user import UserService
@@ -51,9 +49,9 @@ def sample_content(sample_instructor):
 
 
 @pytest.fixture
-def sample_assessment():
+def sample_assessment(assessment_service):
     """Create sample assessment."""
-    return Assessment(
+    return assessment_service.create_assessment(
         title="Python Quiz",
         description="Test your Python knowledge",
         time_limit=30,
@@ -61,9 +59,9 @@ def sample_assessment():
 
 
 @pytest.fixture
-def sample_question():
+def sample_question(assessment_service):
     """Create sample question."""
-    return Question(
+    return assessment_service.create_question(
         title="What is Python?",
         question_text="Select the correct description of Python.",
         question_type=QuestionType.MULTIPLE_CHOICE,
@@ -106,4 +104,31 @@ def user_service():
 def auth_service(user_service):
     """Create an AuthenticationService instance."""
     from curriculum.users.user import AuthenticationService
+
     return AuthenticationService(user_service)
+
+
+@pytest.fixture(autouse=True)
+def offline_documentation_provider(request, monkeypatch):
+    """Exercise the offline fallback without depending on a developer's Ollama."""
+    if "documentation" not in request.path.name:
+        return
+    import subprocess
+
+    import requests
+
+    original_post = requests.post
+    original_run = subprocess.run
+
+    def post(url, *args, **kwargs):
+        if url == "http://localhost:11434/api/generate":
+            raise requests.ConnectionError("Ollama is offline in the test environment")
+        return original_post(url, *args, **kwargs)
+
+    def run(args, *positional, **kwargs):
+        if args and args[0] == "ollama":
+            raise FileNotFoundError("Ollama is offline in the test environment")
+        return original_run(args, *positional, **kwargs)
+
+    monkeypatch.setattr(requests, "post", post)
+    monkeypatch.setattr(subprocess, "run", run)

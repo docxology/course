@@ -1,11 +1,7 @@
 """Visualization and interactive content service."""
 
-import json
 from typing import Any, Dict, List, Optional
-from uuid import UUID
-
-from curriculum.config import settings
-from curriculum.core.content import Content
+from uuid import UUID, uuid4
 
 
 class VisualizationService:
@@ -54,7 +50,7 @@ class VisualizationService:
         config: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Create a new visualization."""
-        visualization_id = UUID(f"viz_{content_id}_{len(self._visualizations)}")
+        visualization_id = uuid4()
 
         visualization = {
             "id": str(visualization_id),
@@ -78,7 +74,7 @@ class VisualizationService:
 
     def get_visualization(self, visualization_id: UUID) -> Optional[Dict[str, Any]]:
         """Get visualization by ID."""
-        return self._visualizations.get(visualization_id)
+        return self._visualizations.get(UUID(str(visualization_id)))
 
     def get_content_visualizations(self, content_id: UUID) -> List[Dict[str, Any]]:
         """Get all visualizations for content."""
@@ -253,7 +249,7 @@ class VisualizationService:
             return {"error": "Visualization not found"}
 
         if format == "json":
-            return visualization
+            return {**visualization, "format": "json"}
         elif format == "png":
             # In production, this would generate actual image
             return {

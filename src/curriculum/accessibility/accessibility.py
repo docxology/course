@@ -1,6 +1,6 @@
 """Accessibility service for inclusive learning experiences."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from uuid import UUID, uuid4
 
 from curriculum.core.content import Content
@@ -65,24 +65,28 @@ class AccessibilityService:
         recommendations = []
 
         # Check for alt text in images
-        if "<img" in content.content_body and "alt=" not in content.content_body:
+        if "<img" in (content.content_body or "") and "alt=" not in (content.content_body or ""):
             issues.append("Missing alt text for images")
             recommendations.append("Add descriptive alt text to all images")
 
         # Check for proper heading structure
         headings = ["<h1", "<h2", "<h3", "<h4", "<h5", "<h6"]
-        if not any(h in content.content_body for h in headings):
+        if not any(h in (content.content_body or "") for h in headings):
             issues.append("Missing heading structure")
             recommendations.append("Use proper heading hierarchy (h1, h2, h3, etc.)")
 
         # Check for color contrast
-        if "color:" in content.content_body or "background-color:" in content.content_body:
+        if "color:" in (content.content_body or "") or "background-color:" in (
+            content.content_body or ""
+        ):
             # Mock color contrast check
             issues.append("Potential color contrast issues")
             recommendations.append("Ensure sufficient color contrast ratios")
 
         # Check for keyboard navigation
-        if "onclick" in content.content_body and "onkeydown" not in content.content_body:
+        if "onclick" in (content.content_body or "") and "onkeydown" not in (
+            content.content_body or ""
+        ):
             issues.append("Missing keyboard event handlers")
             recommendations.append("Add keyboard event handlers for interactive elements")
 
@@ -175,7 +179,7 @@ class AccessibilityService:
     ) -> str:
         """Generate content optimized for screen readers."""
         # Extract main content and structure it for screen reading
-        content_text = content.content_body
+        content_text = content.content_body or ""
 
         # Add structural information
         screen_reader_content = f"""

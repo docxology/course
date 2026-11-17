@@ -1,14 +1,15 @@
 """Tests for learning module services."""
 
-import pytest
-from unittest.mock import Mock, patch
-from uuid import uuid4
 from datetime import datetime, timedelta
+from unittest.mock import patch
+from uuid import uuid4
 
-from curriculum.core.content import Content, ContentType, ContentFormat, ContentStatus
+import pytest
+
+from curriculum.core.analytics import ActivityVerb, EventType
+from curriculum.core.assessment import Assessment, GradingStatus, QuestionType
+from curriculum.core.content import Content, ContentFormat, ContentType
 from curriculum.core.user import User, UserRole
-from curriculum.core.assessment import Assessment, Question, Submission, QuestionType, GradingStatus
-from curriculum.core.analytics import LearningEvent, ActivityVerb, EventType
 
 
 @pytest.mark.integration
@@ -19,8 +20,8 @@ class TestAnalyticsService:
     def analytics_service(self):
         """Create AnalyticsService instance."""
         from curriculum.learning.analytics import AnalyticsService
-        return AnalyticsService()
 
+        return AnalyticsService()
 
     def test_track_content_view(self, analytics_service, sample_user, sample_content):
         """Test tracking content view event."""
@@ -31,7 +32,7 @@ class TestAnalyticsService:
         )
 
         assert result is not None
-        assert hasattr(result, 'id')
+        assert hasattr(result, "id")
         assert str(result.id) is not None
 
     def test_track_assessment_completion(self, analytics_service, sample_user):
@@ -51,7 +52,7 @@ class TestAnalyticsService:
         )
 
         assert result is not None
-        assert hasattr(result, 'id')
+        assert hasattr(result, "id")
         assert str(result.id) is not None
 
     def test_track_user_activity(self, analytics_service, sample_user):
@@ -66,13 +67,15 @@ class TestAnalyticsService:
         )
 
         assert result is not None
-        assert hasattr(result, 'id')
+        assert hasattr(result, "id")
 
     def test_get_user_events(self, analytics_service, sample_user, sample_content):
         """Test retrieving user events."""
         # Track some events first
         analytics_service.track_content_view(sample_user.id, sample_content.id)
-        analytics_service.track_event(sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user")
+        analytics_service.track_event(
+            sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user"
+        )
 
         events = analytics_service.get_events_by_user(sample_user.id, limit=10)
 
@@ -93,7 +96,9 @@ class TestAnalyticsService:
         """Test user analytics report generation."""
         # Track some activities
         analytics_service.track_content_view(sample_user.id, sample_content.id, duration=300)
-        analytics_service.track_event(sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user")
+        analytics_service.track_event(
+            sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user"
+        )
 
         report = analytics_service.generate_user_report(sample_user.id)
 
@@ -114,18 +119,20 @@ class TestAnalyticsService:
         assert "content_views" in report
         assert "average_score" in report
 
-    def test_analyze_learning_patterns(self, analytics_service, sample_user):
+    def test_analyze_learning_patterns(self, analytics_service, sample_user, sample_content):
         """Test learning pattern analysis."""
         # Mock user events
         analytics_service.track_content_view(sample_user.id, sample_content.id, duration=300)
-        analytics_service.track_event(sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user")
+        analytics_service.track_event(
+            sample_user.id, ActivityVerb.VIEWED, EventType.USER, sample_user.id, "user"
+        )
 
         # Get user analytics
         user_analytics = analytics_service.get_user_analytics(sample_user.id)
 
         assert user_analytics is not None
-        assert hasattr(user_analytics, 'total_time_spent')
-        assert hasattr(user_analytics, 'average_score')
+        assert hasattr(user_analytics, "total_time_spent")
+        assert hasattr(user_analytics, "average_score")
 
     def test_get_content_analytics(self, analytics_service, sample_user, sample_content):
         """Test content analytics retrieval."""
@@ -135,8 +142,8 @@ class TestAnalyticsService:
         content_analytics = analytics_service.get_content_analytics(sample_content.id)
 
         assert content_analytics is not None
-        assert hasattr(content_analytics, 'total_views')
-        assert hasattr(content_analytics, 'average_time_spent')
+        assert hasattr(content_analytics, "total_views")
+        assert hasattr(content_analytics, "average_time_spent")
 
 
 @pytest.mark.integration
@@ -147,8 +154,8 @@ class TestAssessmentService:
     def assessment_service(self):
         """Create AssessmentService instance."""
         from curriculum.learning.assessment import AssessmentService
-        return AssessmentService()
 
+        return AssessmentService()
 
     def test_create_assessment(self, assessment_service, sample_user):
         """Test assessment creation."""
@@ -200,7 +207,8 @@ class TestAssessmentService:
         # Add question to assessment
         result = assessment_service.add_question_to_assessment(assessment.id, question.id)
 
-        assert result is True
+        assert result is assessment
+        assert question.id in result.question_ids
 
         # Verify question was added
         questions = assessment_service.get_assessment_questions(assessment.id)
@@ -229,7 +237,8 @@ class TestAssessmentService:
         assessment_service.add_question_to_assessment(assessment.id, question.id)
         result = assessment_service.remove_question_from_assessment(assessment.id, question.id)
 
-        assert result is True
+        assert result is assessment
+        assert question.id not in result.question_ids
 
         # Verify question was removed
         questions = assessment_service.get_assessment_questions(assessment.id)
@@ -276,7 +285,8 @@ class TestAssessmentService:
         # Submit answer
         result = assessment_service.submit_answer(submission.id, question.id, "4")
 
-        assert result is True
+        assert result is submission
+        assert result.answers[str(question.id)] == "4"
 
     def test_submit_assessment(self, assessment_service, sample_user):
         """Test submitting complete assessment."""
@@ -364,7 +374,7 @@ class TestAssessmentService:
         )
 
         # Create submission
-        submission = assessment_service.start_submission(assessment.id, sample_user.id)
+        assessment_service.start_submission(assessment.id, sample_user.id)
 
         # Get user submissions
         submissions = assessment_service.get_user_submissions(sample_user.id)
@@ -418,6 +428,7 @@ class TestProgressService:
     def progress_service(self):
         """Create ProgressService instance."""
         from curriculum.learning.progress import ProgressService
+
         return ProgressService()
 
     def test_track_content_progress(self, progress_service, sample_user):
@@ -452,9 +463,7 @@ class TestProgressService:
         ]
 
         path = progress_service.calculate_learning_path(
-            sample_user.id,
-            completed_content,
-            available_content
+            sample_user.id, completed_content, available_content
         )
 
         assert path is not None
@@ -499,6 +508,7 @@ class TestStudyToolsService:
     def study_tools_service(self):
         """Create StudyToolsService instance."""
         from curriculum.learning.study_tools import StudyToolsService
+
         return StudyToolsService()
 
     def test_generate_flashcards(self, study_tools_service, sample_user):
@@ -508,7 +518,9 @@ class TestStudyToolsService:
             content_type=ContentType.LESSON,
             format=ContentFormat.MARKDOWN,
             author_id=sample_user.id,
-            content_body="# Python Basics\n\nVariables store data.\nFunctions are reusable code blocks.",
+            content_body=(
+                "# Python Basics\n\nVariables store data.\nFunctions are " "reusable code blocks."
+            ),
         )
 
         flashcards = study_tools_service.generate_flashcards(content.id, count=3)
@@ -523,11 +535,7 @@ class TestStudyToolsService:
         goals = ["Learn Python", "Build a web app", "Understand databases"]
         available_time = 10  # hours per week
 
-        plan = study_tools_service.create_study_plan(
-            sample_user.id,
-            goals,
-            available_time
-        )
+        plan = study_tools_service.create_study_plan(sample_user.id, goals, available_time)
 
         assert plan is not None
         assert "daily_schedule" in plan
@@ -550,7 +558,12 @@ class TestStudyToolsService:
         # Mock study session data
         sessions = [
             {"date": datetime.utcnow(), "duration": 60, "content_completed": 2, "score": 85},
-            {"date": datetime.utcnow() - timedelta(days=1), "duration": 45, "content_completed": 1, "score": 90},
+            {
+                "date": datetime.utcnow() - timedelta(days=1),
+                "duration": 45,
+                "content_completed": 1,
+                "score": 90,
+            },
         ]
 
         analysis = study_tools_service.analyze_study_effectiveness(sample_user.id, sessions)
@@ -565,7 +578,9 @@ class TestStudyToolsService:
 class TestLearningIntegration:
     """Integration tests for learning module."""
 
-    def test_complete_learning_workflow(self, analytics_service, assessment_service, progress_service, sample_user, sample_content):
+    def test_complete_learning_workflow(
+        self, analytics_service, assessment_service, progress_service, sample_user, sample_content
+    ):
         """Test complete learning workflow."""
         # 1. User views content
         analytics_service.track_content_view(sample_user.id, sample_content.id, duration=300)
@@ -601,15 +616,13 @@ class TestLearningIntegration:
 
         # Generate adaptive path
         path = progress_service.calculate_learning_path(
-            sample_user.id,
-            [],  # No completed content yet
-            []   # No available content yet
+            sample_user.id, [], []  # No completed content yet  # No available content yet
         )
 
         assert patterns is not None
         assert path is not None
 
-    @patch('curriculum.learning.analytics.requests')
+    @patch("curriculum.learning.analytics.requests")
     def test_external_analytics_integration(self, mock_requests, analytics_service, sample_user):
         """Test external analytics service integration."""
         # Mock external API response
@@ -617,8 +630,7 @@ class TestLearningIntegration:
 
         # Send analytics data to external service
         result = analytics_service.send_to_external_analytics(
-            sample_user.id,
-            {"event": "content_viewed", "timestamp": datetime.utcnow()}
+            sample_user.id, {"event": "content_viewed", "timestamp": datetime.utcnow()}
         )
 
         assert result is not None
@@ -632,10 +644,12 @@ class TestLearningIntegration:
         user_analytics = analytics_service.get_user_analytics(sample_user.id)
 
         assert user_analytics is not None
-        assert hasattr(user_analytics, 'total_time_spent')
-        assert hasattr(user_analytics, 'average_score')
+        assert hasattr(user_analytics, "total_time_spent")
+        assert hasattr(user_analytics, "average_score")
 
-    def test_assessment_analytics_integration(self, analytics_service, assessment_service, sample_user):
+    def test_assessment_analytics_integration(
+        self, analytics_service, assessment_service, sample_user
+    ):
         """Test assessment and analytics integration."""
         # Create assessment
         assessment = assessment_service.create_assessment(
@@ -647,10 +661,7 @@ class TestLearningIntegration:
 
         # Track assessment completion
         analytics_service.track_assessment_completion(
-            user_id=sample_user.id,
-            assessment_id=assessment.id,
-            score=85.0,
-            passed=True
+            user_id=sample_user.id, assessment_id=assessment.id, score=85.0, passed=True
         )
 
         # Get analytics
@@ -659,4 +670,3 @@ class TestLearningIntegration:
         assert len(events) > 0
         assessment_events = [e for e in events if e.object_id == assessment.id]
         assert len(assessment_events) > 0
-

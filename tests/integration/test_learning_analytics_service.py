@@ -2,7 +2,7 @@
 
 import pytest
 
-from curriculum.core.analytics import ActivityVerb, EventType, DeviceType
+from curriculum.core.analytics import ActivityVerb, DeviceType, EventType
 
 
 @pytest.mark.integration
@@ -38,9 +38,7 @@ class TestAnalyticsService:
         assert event.duration == 120
         assert event.device_type == DeviceType.DESKTOP
 
-    def test_track_assessment_completion(
-        self, analytics_service, sample_user, sample_assessment
-    ):
+    def test_track_assessment_completion(self, analytics_service, sample_user, sample_assessment):
         """Test tracking assessment completion."""
         event = analytics_service.track_assessment_completion(
             user_id=sample_user.id,
@@ -70,7 +68,7 @@ class TestAnalyticsService:
 
     def test_end_session(self, analytics_service, sample_user):
         """Test ending a user session."""
-        session = analytics_service.start_session(
+        analytics_service.start_session(
             sample_user.id,
             "session456",
         )
@@ -148,9 +146,7 @@ class TestAnalyticsService:
         assert "content_views" in report
         assert "assessments_taken" in report
 
-    def test_generate_content_report(
-        self, analytics_service, sample_user, sample_content
-    ):
+    def test_generate_content_report(self, analytics_service, sample_user, sample_content):
         """Test generating content report."""
         analytics_service.track_content_view(sample_user.id, sample_content.id)
 

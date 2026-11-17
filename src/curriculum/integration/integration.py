@@ -1,9 +1,17 @@
 """Integration service for LMS and external tools."""
 
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
-from curriculum.core.content import Content
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class IntegrationService:
@@ -81,7 +89,7 @@ class IntegrationService:
         api_credentials: Optional[Dict[str, str]] = None,
     ) -> Dict[str, Any]:
         """Register an external tool for integration."""
-        tool_id = UUID(f"tool_{tool_name.lower().replace(' ', '_')}")
+        tool_id = uuid4()
 
         tool = {
             "id": str(tool_id),
@@ -102,27 +110,28 @@ class IntegrationService:
 
     def create_lti_launch(
         self,
-        tool_id: UUID,
+        tool_id: Union[UUID, str],
         user_id: UUID,
         content_id: UUID,
         context: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create LTI launch parameters."""
-        tool = self._external_tools.get(tool_id)
+        resolved_tool_id = _coerce_uuid(tool_id)
+        tool = self._external_tools.get(resolved_tool_id) if resolved_tool_id else None
         if not tool:
             return {"error": "Tool not found"}
 
-        launch_id = UUID(f"lti_{tool_id}_{user_id}")
+        launch_id = uuid4()
 
         lti_params = {
             "lti_version": "LTI-1.3",
             "lti_message_type": "LtiResourceLinkRequest",
             "lti_deployment_id": "deployment_1",
-            "iss": "https://curriculum.edu",  # Our platform
+            "iss": "https://curriculum.edu",
             "aud": tool["configuration"].get("client_id"),
             "sub": str(user_id),
-            "exp": 1640995200,  # Mock expiration
-            "iat": 1640991600,  # Mock issued at
+            "exp": 1640995200,
+            "iat": 1640991600,
             "nonce": "nonce_12345",
             "https://purl.imsglobal.org/spec/lti/claim/context": {
                 "id": str(content_id),
@@ -164,7 +173,7 @@ class IntegrationService:
             "authentication": {
                 "type": "oauth2",
                 "client_id": configuration.get("client_id"),
-                "client_secret": configuration.get("client_secret"),  # Encrypted
+                "client_secret": configuration.get("client_secret"),
             },
             "webhooks": configuration.get("webhooks", []),
             "created_at": "2024-01-01T00:00:00Z",
@@ -184,7 +193,6 @@ class IntegrationService:
         if not connection:
             return {"error": "LMS connection not found"}
 
-        # Mock import process
         import_result = {
             "connection_id": lms_connection_id,
             "lms_course_id": course_id,
@@ -196,7 +204,7 @@ class IntegrationService:
                     "local_id": f"content_{i}",
                     "status": "imported",
                 }
-                for i in range(5)  # Mock 5 imported items
+                for i in range(5)
             ],
             "import_summary": {
                 "lessons": 5,
@@ -247,19 +255,19 @@ class IntegrationService:
         secret: str,
     ) -> Dict[str, Any]:
         """Create webhook integration."""
-        webhook_id = UUID(f"webhook_{service_name}")
+        webhook_id = uuid4()
 
         webhook = {
             "id": str(webhook_id),
             "service_name": service_name,
             "webhook_url": webhook_url,
             "events": events,
-            "secret": secret,  # For signature verification
+            "secret": secret,
             "is_active": True,
             "retry_policy": {
                 "max_retries": 3,
                 "backoff_multiplier": 2,
-                "initial_delay": 1,  # seconds
+                "initial_delay": 1,
             },
             "last_triggered": None,
             "created_at": "2024-01-01T00:00:00Z",
@@ -296,7 +304,7 @@ class IntegrationService:
         """Validate LTI launch request."""
         required_fields = ["iss", "aud", "sub", "exp", "iat", "lti_message_type", "lti_version"]
 
-        validation_result = {
+        validation_result: Dict[str, Any] = {
             "valid": True,
             "errors": [],
             "warnings": [],
@@ -307,8 +315,7 @@ class IntegrationService:
                 validation_result["errors"].append(f"Missing required field: {field}")
                 validation_result["valid"] = False
 
-        # Validate timestamps
-        current_time = 1640991600  # Mock current time
+        current_time = 1640991600
         if launch_data.get("exp", 0) < current_time:
             validation_result["errors"].append("Launch request expired")
             validation_result["valid"] = False
@@ -325,7 +332,7 @@ class IntegrationService:
         configuration: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Create SSO integration."""
-        sso_id = UUID(f"sso_{provider_name}")
+        sso_id = uuid4()
 
         sso_integration = {
             "id": str(sso_id),
@@ -349,13 +356,12 @@ class IntegrationService:
         if not integration:
             return {"error": "Integration not found"}
 
-        # Mock health check
         return {
             "integration_id": integration_id,
             "status": "healthy",
             "last_check": "2024-01-01T00:00:00Z",
-            "response_time": 150,  # ms
-            "uptime": 99.9,  # percentage
+            "response_time": 150,
+            "uptime": 99.9,
             "errors_last_24h": 0,
         }
 
@@ -364,17 +370,17 @@ class IntegrationService:
         content_id: UUID,
         embed_type: str,  # iframe, oembed, lti
         dimensions: Dict[str, int],
-        options: Dict[str, Any] = None,
+        options: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Create embeddable content for external platforms."""
-        embed_id = UUID(f"embed_{content_id}")
+        embed_id = uuid4()
 
         embed = {
             "id": str(embed_id),
             "content_id": str(content_id),
             "embed_type": embed_type,
             "dimensions": dimensions,
-            "html": self._generate_embed_html(embed_id, embed_type, dimensions, options),
+            "html": self._generate_embed_html(embed_id, embed_type, dimensions, options or {}),
             "responsive": True,
             "options": options or {},
             "created_at": "2024-01-01T00:00:00Z",
@@ -421,15 +427,14 @@ class IntegrationService:
         hours: int = 24,
     ) -> Dict[str, Any]:
         """Monitor integration activity."""
-        # Mock monitoring data
         return {
             "integration_id": integration_id,
             "period_hours": hours,
             "total_requests": 1250,
             "successful_requests": 1225,
             "failed_requests": 25,
-            "average_response_time": 245,  # ms
-            "error_rate": 2.0,  # percentage
+            "average_response_time": 245,
+            "error_rate": 2.0,
             "top_endpoints": [
                 "/api/content",
                 "/api/grades",

@@ -1,9 +1,17 @@
 """Collaboration service for group projects and peer review."""
 
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
-from curriculum.core.user import User
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class CollaborationService:
@@ -26,7 +34,7 @@ class CollaborationService:
         due_date: str = "2024-02-01T23:59:59Z",
     ) -> Dict[str, Any]:
         """Create a group project."""
-        project_id = UUID(f"project_{course_id}")
+        project_id = uuid4()
 
         project = {
             "id": str(project_id),
@@ -68,7 +76,7 @@ class CollaborationService:
         max_members: int = 8,
     ) -> Dict[str, Any]:
         """Create a study group."""
-        group_id = UUID(f"group_{course_id}")
+        group_id = uuid4()
 
         study_group = {
             "id": str(group_id),
@@ -88,9 +96,8 @@ class CollaborationService:
 
         return study_group
 
-    def join_group(self, group_id: UUID, user_id: UUID) -> Dict[str, Any]:
+    def join_group(self, group_id: Union[UUID, str], user_id: UUID) -> Dict[str, Any]:
         """Join a group."""
-        # Find the group (could be project group or study group)
         group = None
         for project in self._projects.values():
             for g in project["groups"]:
@@ -114,13 +121,13 @@ class CollaborationService:
 
     def create_workspace(
         self,
-        group_id: UUID,
+        group_id: Union[UUID, str],
         name: str,
         description: str,
-        tools: List[str] = None,
+        tools: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Create a collaborative workspace."""
-        workspace_id = UUID(f"workspace_{group_id}")
+        workspace_id = uuid4()
 
         workspace = {
             "id": str(workspace_id),
@@ -147,7 +154,7 @@ class CollaborationService:
         review_deadline: str,
     ) -> Dict[str, Any]:
         """Create a peer review assignment."""
-        assignment_id = UUID(f"peer_review_{course_id}")
+        assignment_id = uuid4()
 
         assignment = {
             "id": str(assignment_id),
@@ -171,22 +178,24 @@ class CollaborationService:
             "created_at": "2024-01-01T00:00:00Z",
         }
 
+        self._peer_reviews[assignment_id] = assignment
         return assignment
 
     def submit_for_review(
         self,
-        assignment_id: UUID,
+        assignment_id: Union[UUID, str],
         user_id: UUID,
         submission_title: str,
         submission_content: str,
-        files: List[Dict[str, Any]] = None,
+        files: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """Submit work for peer review."""
-        assignment = self._peer_reviews.get(assignment_id)
+        resolved_id = _coerce_uuid(assignment_id)
+        assignment = self._peer_reviews.get(resolved_id) if resolved_id else None
         if not assignment:
             return {"error": "Assignment not found"}
 
-        submission_id = UUID(f"submission_{len(assignment['submissions'])}")
+        submission_id = uuid4()
 
         submission = {
             "id": str(submission_id),
@@ -206,47 +215,56 @@ class CollaborationService:
 
     def submit_review(
         self,
-        submission_id: UUID,
+        submission_id: Union[UUID, str],
         reviewer_id: UUID,
-        scores: Dict[str, float],
-        feedback: str,
+        scores: Optional[Dict[str, float]] = None,
+        feedback: str = "",
         is_anonymous: bool = True,
+        decision: Optional[str] = None,
+        score: Optional[float] = None,
     ) -> Dict[str, Any]:
         """Submit a peer review."""
-        # Find the submission
         submission = None
         assignment = None
 
         for assignment_data in self._peer_reviews.values():
-            for sub in assignment_data["submissions"]:
+            for sub in assignment_data.get("submissions", []):
                 if sub["id"] == str(submission_id):
                     submission = sub
                     assignment = assignment_data
                     break
 
-        if not submission:
+        if not submission or assignment is None:
             return {"error": "Submission not found"}
 
-        review_id = UUID(f"review_{len(assignment['reviews'])}")
+        review_id = uuid4()
+        resolved_scores: Dict[str, float] = (
+            dict(scores)
+            if scores is not None
+            else ({"overall": float(score)} if score is not None else {})
+        )
 
-        review = {
+        review: Dict[str, Any] = {
             "id": str(review_id),
             "submission_id": str(submission_id),
             "reviewer_id": str(reviewer_id),
-            "scores": scores,
+            "scores": resolved_scores,
+            "score": score,
+            "decision": decision,
             "feedback": feedback,
             "is_anonymous": is_anonymous,
             "submitted_at": "2024-01-01T00:00:00Z",
         }
 
-        submission["reviews"].append(review)
-        assignment["reviews"].append(review)
+        submission.setdefault("reviews", []).append(review)
+        assignment.setdefault("reviews", []).append(review)
 
-        # Calculate average score if all reviews are in
-        if len(submission["reviews"]) >= assignment["reviewer_count"]:
-            total_score = sum(sum(r["scores"].values()) for r in submission["reviews"])
-            max_score = len(submission["reviews"]) * len(scores) * 5  # Assuming 5-point scale
-            submission["average_score"] = total_score / max_score * 100
+        reviewer_count = int(assignment.get("reviewer_count", 3))
+        if len(submission["reviews"]) >= reviewer_count and resolved_scores:
+            total_score = sum(sum(r.get("scores", {}).values()) for r in submission["reviews"])
+            max_score = len(submission["reviews"]) * len(resolved_scores) * 5
+            if max_score > 0:
+                submission["average_score"] = total_score / max_score * 100
 
         return review
 
@@ -277,11 +295,10 @@ class CollaborationService:
 
     def assign_group_roles(
         self,
-        group_id: UUID,
+        group_id: Union[UUID, str],
         role_assignments: Dict[str, str],
     ) -> Dict[str, Any]:
         """Assign roles within a group."""
-        # Find the group
         group = None
         for project in self._projects.values():
             for g in project["groups"]:
@@ -298,14 +315,14 @@ class CollaborationService:
 
     def create_collaboration_task(
         self,
-        workspace_id: UUID,
+        workspace_id: Union[UUID, str],
         title: str,
         description: str,
         assignee_id: UUID,
         due_date: str,
     ) -> Dict[str, Any]:
         """Create a task in a collaborative workspace."""
-        task_id = UUID(f"task_{workspace_id}")
+        task_id = uuid4()
 
         task = {
             "id": str(task_id),
@@ -338,21 +355,21 @@ class CollaborationService:
                 [
                     r
                     for a in self._peer_reviews.values()
-                    for r in a["reviews"]
-                    if a["course_id"] == str(course_id)
+                    for r in a.get("reviews", [])
+                    if a.get("course_id") == str(course_id)
                 ]
             ),
         }
 
     def create_shared_document(
         self,
-        workspace_id: UUID,
+        workspace_id: Union[UUID, str],
         title: str,
         content: str,
         author_id: UUID,
     ) -> Dict[str, Any]:
         """Create a shared document in a workspace."""
-        doc_id = UUID(f"doc_{workspace_id}")
+        doc_id = uuid4()
 
         document = {
             "id": str(doc_id),
@@ -372,12 +389,11 @@ class CollaborationService:
 
     def add_collaborator(
         self,
-        document_id: UUID,
+        document_id: Union[UUID, str],
         user_id: UUID,
         permission: str = "edit",  # view, edit, admin
     ) -> Dict[str, Any]:
         """Add a collaborator to a document."""
-        # Find document
         document = None
         for workspace in self._workspaces.values():
             for file in workspace["files"]:

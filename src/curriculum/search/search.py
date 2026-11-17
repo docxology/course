@@ -3,6 +3,8 @@
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
+from elasticsearch import AsyncElasticsearch
+
 from curriculum.config import settings
 from curriculum.core.content import Content
 
@@ -13,14 +15,12 @@ class SearchService:
     def __init__(self) -> None:
         """Initialize search service."""
         self._index_name = settings.elasticsearch_index
-        self._client = None
+        self._client: Optional[AsyncElasticsearch] = None
         self._connected = False
 
     async def connect(self) -> None:
         """Connect to Elasticsearch."""
         try:
-            from elasticsearch import AsyncElasticsearch
-
             self._client = AsyncElasticsearch([settings.elasticsearch_url])
             # Test connection
             await self._client.info()
@@ -37,6 +37,8 @@ class SearchService:
         """Disconnect from Elasticsearch."""
         if self._client:
             await self._client.close()
+        self._client = None
+        self._connected = False
 
     def is_connected(self) -> bool:
         """Check if connected to Elasticsearch."""
@@ -105,7 +107,7 @@ class SearchService:
             return {"total": 0, "results": [], "error": "Search service not available"}
 
         # Build Elasticsearch query
-        es_query = {
+        es_query: Dict[str, Any] = {
             "bool": {
                 "must": [
                     {
@@ -196,7 +198,7 @@ class SearchService:
                     }
                 },
                 size=limit,
-                _source=["title", "tags"],
+                source_includes=["title", "tags"],
             )
 
             suggestions = []
@@ -242,7 +244,7 @@ class SearchService:
                     }
                 },
                 size=limit,
-                _source=["id", "title", "description", "content_type", "tags"],
+                source_includes=["id", "title", "description", "content_type", "tags"],
             )
 
             results = []

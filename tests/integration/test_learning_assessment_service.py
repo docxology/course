@@ -1,9 +1,10 @@
 """Tests for Assessment Service."""
 
-import pytest
 from uuid import uuid4
 
-from curriculum.core.assessment import QuestionType, GradingStatus
+import pytest
+
+from curriculum.core.assessment import GradingStatus, QuestionType
 
 
 @pytest.mark.integration
@@ -93,7 +94,9 @@ class TestAssessmentService:
         assert submission.user_id == sample_user.id
         assert submission.attempt_number == 1
 
-    def test_submit_answer(self, assessment_service, sample_assessment, sample_user, sample_question):
+    def test_submit_answer(
+        self, assessment_service, sample_assessment, sample_user, sample_question
+    ):
         """Test submitting an answer."""
         submission = assessment_service.start_submission(
             sample_assessment.id,
@@ -109,9 +112,7 @@ class TestAssessmentService:
         assert updated is not None
         assert str(sample_question.id) in updated.answers
 
-    def test_submit_assessment(
-        self, assessment_service, sample_assessment, sample_user
-    ):
+    def test_submit_assessment(self, assessment_service, sample_assessment, sample_user):
         """Test submitting complete assessment."""
         submission = assessment_service.start_submission(
             sample_assessment.id,
@@ -155,9 +156,7 @@ class TestAssessmentService:
         assert graded.grading_status == GradingStatus.COMPLETED
         assert graded.graded_by == grader_id
 
-    def test_get_user_submissions(
-        self, assessment_service, sample_assessment, sample_user
-    ):
+    def test_get_user_submissions(self, assessment_service, sample_assessment, sample_user):
         """Test getting user submissions."""
         # Create multiple submissions
         for i in range(3):

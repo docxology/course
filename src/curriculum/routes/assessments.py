@@ -3,17 +3,15 @@
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 
 from curriculum.core.assessment import (
     Assessment,
     DifficultyLevel,
-    GradingStatus,
     Question,
     QuestionType,
     Submission,
-    SubmissionResult,
 )
 from curriculum.core.user import User, UserPermission
 from curriculum.learning.assessment import AssessmentService
@@ -107,7 +105,7 @@ class SubmissionResponse(BaseModel):
 async def create_assessment(
     request: CreateAssessmentRequest,
     current_user: User = Depends(get_current_user),
-):
+) -> AssessmentResponse:
     """Create a new assessment."""
     if not current_user.has_permission(UserPermission.ASSESSMENT_CREATE):
         raise HTTPException(
@@ -129,7 +127,7 @@ async def create_assessment(
 
 
 @router.get("/{assessment_id}", response_model=AssessmentResponse)
-async def get_assessment(assessment_id: UUID):
+async def get_assessment(assessment_id: UUID) -> AssessmentResponse:
     """Get assessment by ID."""
     assessment = assessment_service.get_assessment(assessment_id)
     if not assessment:
@@ -142,7 +140,7 @@ async def get_assessment(assessment_id: UUID):
 async def list_assessments(
     content_id: Optional[UUID] = Query(None, description="Filter by content"),
     current_user: User = Depends(get_current_user),
-):
+) -> List[AssessmentResponse]:
     """List assessments."""
     # In a real implementation, this would query from database
     # For now, return empty list as we don't have persistent storage
@@ -155,7 +153,7 @@ async def create_question(
     assessment_id: UUID,
     request: CreateQuestionRequest,
     current_user: User = Depends(get_current_user),
-):
+) -> QuestionResponse:
     """Create a new question for assessment."""
     if not current_user.has_permission(UserPermission.ASSESSMENT_CREATE):
         raise HTTPException(
@@ -179,7 +177,7 @@ async def create_question(
 
 
 @router.get("/{assessment_id}/questions", response_model=List[QuestionResponse])
-async def get_assessment_questions(assessment_id: UUID):
+async def get_assessment_questions(assessment_id: UUID) -> List[QuestionResponse]:
     """Get questions for assessment."""
     assessment = assessment_service.get_assessment(assessment_id)
     if not assessment:
@@ -200,8 +198,10 @@ async def start_submission(
     assessment_id: UUID,
     attempt_number: int = 1,
     current_user: User = Depends(get_current_user),
-):
+) -> SubmissionResponse:
     """Start a new submission."""
+    if assessment_service.get_assessment(assessment_id) is None:
+        raise HTTPException(status_code=404, detail="Assessment not found")
     submission = assessment_service.start_submission(
         assessment_id,
         current_user.id,
@@ -222,7 +222,7 @@ async def submit_answer(
     submission_id: UUID,
     request: SubmitAnswerRequest,
     current_user: User = Depends(get_current_user),
-):
+) -> Dict[str, Any]:
     """Submit answer for a question."""
     submission = assessment_service.get_submission(submission_id)
     if not submission:
@@ -253,7 +253,7 @@ async def submit_answer(
 async def submit_assessment(
     submission_id: UUID,
     current_user: User = Depends(get_current_user),
-):
+) -> Dict[str, Any]:
     """Submit the complete assessment."""
     submission = assessment_service.get_submission(submission_id)
     if not submission:
@@ -282,7 +282,7 @@ async def submit_assessment(
 async def get_submission(
     submission_id: UUID,
     current_user: User = Depends(get_current_user),
-):
+) -> SubmissionResponse:
     """Get submission details."""
     submission = assessment_service.get_submission(submission_id)
     if not submission:
@@ -302,7 +302,7 @@ async def get_user_submissions(
     user_id: UUID,
     assessment_id: Optional[UUID] = Query(None, description="Filter by assessment"),
     current_user: User = Depends(get_current_user),
-):
+) -> List[SubmissionResponse]:
     """Get submissions for a user."""
     if user_id != current_user.id and not current_user.has_permission(
         UserPermission.ASSESSMENT_GRADE
@@ -318,7 +318,7 @@ async def get_user_submissions(
 
 
 @router.get("/{assessment_id}/statistics", response_model=Dict[str, Any])
-async def get_assessment_statistics(assessment_id: UUID):
+async def get_assessment_statistics(assessment_id: UUID) -> Dict[str, Any]:
     """Get assessment statistics."""
     stats = assessment_service.get_assessment_statistics(assessment_id)
 

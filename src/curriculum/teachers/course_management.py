@@ -1,11 +1,8 @@
 """Course management service for teachers."""
 
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
-
-from curriculum.core.assessment import Assessment, Question, QuestionType
-from curriculum.core.content import Content, ContentStatus, ContentType
 
 
 class CourseManagementService:
@@ -13,8 +10,10 @@ class CourseManagementService:
 
     def __init__(self) -> None:
         """Initialize course management service."""
-        self._course_content: dict[UUID, List[UUID]] = {}  # course_id -> content_ids
-        self._course_assessments: dict[UUID, List[UUID]] = {}  # course_id -> assessment_ids
+        self._course_content: dict[Union[UUID, str], List[str]] = {}  # course_id -> content_ids
+        self._course_assessments: dict[Union[UUID, str], List[str]] = (
+            {}
+        )  # course_id -> assessment_ids
         self._course_settings: dict[UUID, Dict[str, Any]] = {}
 
     def create_course_structure(

@@ -1,11 +1,7 @@
 """Website and portal service for course delivery."""
 
-import json
 from typing import Any, Dict, List, Optional
-from uuid import UUID
-
-from curriculum.core.content import Content
-from curriculum.core.user import User
+from uuid import UUID, uuid4
 
 
 class WebsiteService:
@@ -72,7 +68,7 @@ class WebsiteService:
         theme: str = "default",
     ) -> Dict[str, Any]:
         """Create a course website."""
-        site_id = UUID(f"site_{course_id}")
+        site_id = uuid4()
 
         site = {
             "id": str(site_id),
@@ -130,7 +126,7 @@ class WebsiteService:
         parent_id: Optional[UUID] = None,
     ) -> Dict[str, Any]:
         """Create a page for the course website."""
-        page_id = UUID(f"page_{site_id}_{len(self._pages)}")
+        page_id = uuid4()
 
         page = {
             "id": str(page_id),
@@ -257,7 +253,7 @@ class WebsiteService:
         priority: str = "normal",
     ) -> Dict[str, Any]:
         """Create an announcement for the course."""
-        announcement_id = UUID(f"ann_{site_id}_{len(self._pages)}")
+        announcement_id = uuid4()
 
         announcement = {
             "id": str(announcement_id),
@@ -265,6 +261,8 @@ class WebsiteService:
             "title": title,
             "content": content,
             "author_id": str(author_id),
+            "page_type": "announcement",
+            "is_visible": True,
             "priority": priority,  # normal, important, urgent
             "is_pinned": priority == "urgent",
             "expires_at": None,  # Optional expiration date
@@ -321,7 +319,7 @@ class WebsiteService:
 
     def customize_theme(self, site_id: UUID, customizations: Dict[str, Any]) -> Dict[str, Any]:
         """Customize website theme."""
-        site = self._sites.get(site_id)
+        site = self._sites.get(UUID(str(site_id)))
         if not site:
             return {"error": "Site not found"}
 
@@ -330,7 +328,7 @@ class WebsiteService:
 
     def generate_seo_metadata(self, site_id: UUID) -> Dict[str, Any]:
         """Generate SEO metadata for the course website."""
-        site = self._sites.get(site_id)
+        site = self._sites.get(UUID(str(site_id)))
         if not site:
             return {"error": "Site not found"}
 

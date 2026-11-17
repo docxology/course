@@ -1,7 +1,8 @@
 """Tests for Content Generation Service."""
 
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from curriculum.content_generation.generator import ContentGeneratorService
 
@@ -21,7 +22,7 @@ class TestContentGeneratorService:
             content_type="lesson",
             topic="Python Programming",
             target_audience="college_students",
-            difficulty="intermediate"
+            difficulty="intermediate",
         )
 
         assert result["content_type"] == "lesson"
@@ -37,7 +38,7 @@ class TestContentGeneratorService:
             content_type="quiz",
             topic="Data Structures",
             target_audience="university_students",
-            difficulty="advanced"
+            difficulty="advanced",
         )
 
         assert result["content_type"] == "quiz"
@@ -50,7 +51,7 @@ class TestContentGeneratorService:
             content_type="tutorial",
             topic="Machine Learning",
             target_audience="graduate_students",
-            difficulty="advanced"
+            difficulty="advanced",
         )
 
         assert result["content_type"] == "tutorial"
@@ -73,15 +74,12 @@ class TestContentGeneratorService:
         """Test creating content from generation result."""
         # Generate content first
         generation_result = generator_service.generate_content(
-            content_type="lesson",
-            topic="Test Topic",
-            target_audience="students"
+            content_type="lesson", topic="Test Topic", target_audience="students"
         )
 
         # Create content object
         content = generator_service.create_content_from_generation(
-            generation_result=generation_result,
-            author_id=uuid4()
+            generation_result=generation_result, author_id=uuid4()
         )
 
         assert content.title == generation_result["content_structure"]["title"]
@@ -93,7 +91,7 @@ class TestContentGeneratorService:
         content_samples = [
             "This is a sample lesson about programming.",
             "Another lesson with different content structure.",
-            "Third lesson focusing on algorithms."
+            "Third lesson focusing on algorithms.",
         ]
 
         patterns = generator_service.analyze_content_patterns(content_samples)
@@ -120,9 +118,7 @@ class TestContentGeneratorService:
         base_content = "This is the base content for variations."
         variations = ["beginner", "intermediate", "advanced"]
 
-        variation_results = generator_service.generate_content_variations(
-            base_content, variations
-        )
+        variation_results = generator_service.generate_content_variations(base_content, variations)
 
         assert len(variation_results) == len(variations)
 
@@ -137,9 +133,7 @@ class TestContentGeneratorService:
         topics = ["Variables", "Functions", "Classes", "Modules"]
 
         series = generator_service.create_content_series(
-            series_title=series_title,
-            topics=topics,
-            content_type="lesson"
+            series_title=series_title, topics=topics, content_type="lesson"
         )
 
         assert series["title"] == series_title
@@ -152,12 +146,11 @@ class TestContentGeneratorService:
         series_id = "test_series"
         previous_content = [
             {"title": "Part 1", "content": "First part content"},
-            {"title": "Part 2", "content": "Second part content"}
+            {"title": "Part 2", "content": "Second part content"},
         ]
 
         next_part = generator_service.generate_next_in_series(
-            series_id=series_id,
-            previous_content=previous_content
+            series_id=series_id, previous_content=previous_content
         )
 
         assert next_part["series_id"] == series_id
@@ -171,7 +164,7 @@ class TestContentGeneratorService:
         rules = {
             "min_words": 5,
             "max_words": 100,
-            "required_sections": ["introduction", "main_content"]
+            "required_sections": ["introduction", "main_content"],
         }
 
         validation = generator_service.validate_generated_content(content, rules)
@@ -209,5 +202,3 @@ class TestContentGeneratorService:
         assert "template" in exported
         assert "format" in exported
         assert exported["format"] == "yaml"
-
-

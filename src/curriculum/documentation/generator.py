@@ -1,5 +1,3 @@
-"""Documentation generator service with LLM-powered multi-level summarization."""
-
 """
 Documentation generator service with LLM-powered multi-level summarization.
 
@@ -12,28 +10,25 @@ This module provides comprehensive documentation generation capabilities includi
 """
 
 import ast
-import asyncio
 import hashlib
-import importlib
-import inspect
 import json
 import logging
 import os
 import subprocess
-import sys
 import time
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from uuid import UUID, uuid4
-
-from curriculum.config import settings
+from tempfile import NamedTemporaryFile
+from threading import RLock
+from typing import Any, Dict, List, Optional, Tuple, Union
+from uuid import uuid4
 
 
 # Configure logging
 def _configure_logging(output_dir: Path) -> logging.Logger:
     """Configure logging for the documentation system."""
+    output_dir.mkdir(parents=True, exist_ok=True)
     log_file = output_dir / "documentation.log"
 
     # Create formatters
@@ -54,13 +49,16 @@ def _configure_logging(output_dir: Path) -> logging.Logger:
     # Configure root logger
     logger = logging.getLogger("curriculum.documentation")
     logger.setLevel(logging.DEBUG)
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+        handler.close()
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
     return logger
 
 
-logger = _configure_logging(Path("./docs/generated"))
+logger = logging.getLogger("curriculum.documentation")
 
 
 class DocumentationGeneratorService:
@@ -68,6 +66,8 @@ class DocumentationGeneratorService:
 
     def __init__(self, output_dir: str = "./docs/generated") -> None:
         """Initialize documentation generator service."""
+        self._generation_lock = RLock()
+        self._cache_lock = RLock()
         self.output_dir = Path(output_dir)
         self._module_docs: Dict[str, Dict[str, Any]] = {}
         self._file_docs: Dict[str, Dict[str, Any]] = {}
@@ -89,11 +89,11 @@ class DocumentationGeneratorService:
         self._enable_caching = True
 
         # File change detection for cache invalidation
-        self._file_hashes = {}  # Store file hashes for change detection
+        self._file_hashes: Dict[str, str] = {}  # Store file hashes for change detection
         self._cache_invalidation_enabled = True
 
         # Performance monitoring
-        self._performance_metrics = {
+        self._performance_metrics: Dict[str, float] = {
             "total_llm_calls": 0,
             "cache_hits": 0,
             "cache_misses": 0,
@@ -289,6 +289,11 @@ class DocumentationGeneratorService:
         return hashlib.sha256(content).hexdigest()
 
     def _get_cached_response(self, cache_key: str) -> Optional[Dict[str, Any]]:
+        """Read one complete cache entry under the instance cache lock."""
+        with self._cache_lock:
+            return self._read_cached_response(cache_key)
+
+    def _read_cached_response(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """Retrieve cached LLM response if available and not expired."""
         self._performance_metrics["total_llm_calls"] += 1
 
@@ -311,7 +316,10 @@ class DocumentationGeneratorService:
             cached_time = datetime.fromisoformat(cached_data["cached_at"])
             age_days = (datetime.now(timezone.utc) - cached_time).days
 
-            if age_days > self._cache_ttl_days:
+            if (
+                age_days > self._cache_ttl_days
+                or (time.time() - cache_file.stat().st_mtime) > self._cache_ttl_days * 86400
+            ):
                 # Cache expired, remove it
                 logger.debug(f"Cache expired for key: {cache_key} (age: {age_days} days)")
                 cache_file.unlink()
@@ -320,7 +328,7 @@ class DocumentationGeneratorService:
 
             logger.debug(f"Cache hit for key: {cache_key}")
             self._performance_metrics["cache_hits"] += 1
-            return cached_data["response"]
+            return dict(cached_data["response"])
 
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             # Invalid cache file, remove it
@@ -350,6 +358,10 @@ class DocumentationGeneratorService:
             return True  # File doesn't exist or can't be read
 
         previous_hash = self._file_hashes.get(file_path)
+
+        if previous_hash is None:
+            self._file_hashes[file_path] = current_hash
+            return False
 
         if previous_hash != current_hash:
             self._file_hashes[file_path] = current_hash
@@ -395,6 +407,13 @@ class DocumentationGeneratorService:
     def _cache_response(
         self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None
     ) -> None:
+        """Publish one complete cache entry under the instance cache lock."""
+        with self._cache_lock:
+            self._write_cached_response(cache_key, response, file_path)
+
+    def _write_cached_response(
+        self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None
+    ) -> None:
         """Store LLM response in cache with file path for invalidation."""
         if not self._enable_caching:
             return
@@ -407,8 +426,15 @@ class DocumentationGeneratorService:
             }
 
             cache_file = self._cache_dir / f"{cache_key}.json"
-            with open(cache_file, "w") as f:
-                json.dump(cache_data, f, indent=2)
+            temporary_path: Optional[Path] = None
+            try:
+                with NamedTemporaryFile(mode="w", dir=self._cache_dir, delete=False) as f:
+                    temporary_path = Path(f.name)
+                    json.dump(cache_data, f, indent=2)
+                os.replace(temporary_path, cache_file)
+            finally:
+                if temporary_path is not None:
+                    temporary_path.unlink(missing_ok=True)
 
             logger.debug(f"Cached response for key: {cache_key} (file: {file_path})")
 
@@ -419,8 +445,10 @@ class DocumentationGeneratorService:
 
     def _select_model_for_analysis(self, analysis_type: str) -> Dict[str, Any]:
         """Select the best model and parameters for a given analysis type."""
-        return self._model_config.get(
-            analysis_type, {"model": "llama3.1:latest", "temperature": 0.3, "max_tokens": 1500}
+        return dict(
+            self._model_config.get(
+                analysis_type, {"model": "llama3.1:latest", "temperature": 0.3, "max_tokens": 1500}
+            )
         )
 
     def _prepare_package_context(self) -> str:
@@ -430,55 +458,25 @@ class DocumentationGeneratorService:
         # Add module summary
         context_parts.append(f"Package contains {len(self._module_docs)} modules:")
         for module_name in sorted(self._module_docs.keys())[:10]:  # Limit to first 10
-            module_data = self._module_docs[module_name]
+            self._module_docs[module_name]
             context_parts.append(f"  - {module_name}")
 
         # Add statistics
-        context_parts.append(f"\nStatistics:")
+        context_parts.append("\nStatistics:")
         context_parts.append(f"- Total Classes: {self._stats['total_classes']}")
         context_parts.append(f"- Total Functions: {self._stats['total_functions']}")
         context_parts.append(f"- Total Methods: {self._stats['total_methods']}")
 
         return "\n".join(context_parts)
 
-    def _generate_package_overview(self) -> Optional[Dict[str, Any]]:
-        """Generate high-level package overview using optimized model."""
-        model_config = self._select_model_for_analysis("package_overview")
-
-        context = self._prepare_package_context()
-        prompt = f"""Provide a comprehensive architectural overview of this Python package:
-
-Package Statistics:
-- Total Modules: {len(self._module_docs)}
-- Total Classes: {self._stats['total_classes']}
-- Total Functions: {self._stats['total_functions']}
-
-Code Structure:
-{context}
-
-Please provide:
-1. Overall architecture and design patterns used
-2. Key functional domains and their organization
-3. System capabilities and main features
-4. Suggested improvements for structure and organization
-
-Format your response as JSON with keys: architecture, domains, capabilities, improvements"""
-
-        llm_response = self._call_ollama_llm(
-            prompt, model=model_config["model"], temperature=model_config["temperature"]
-        )
-
-        if llm_response:
-            try:
-                return json.loads(llm_response)
-            except json.JSONDecodeError:
-                return {
-                    "llm_analysis": llm_response,
-                    "generated_at": datetime.now(timezone.utc).isoformat(),
-                }
-        return None
-
     def generate_documentation(
+        self, package_path: str = "src/curriculum", use_llm: bool = True
+    ) -> Dict[str, Any]:
+        """Generate a complete snapshot, serializing concurrent calls on this instance."""
+        with self._generation_lock:
+            return self._generate_documentation(package_path, use_llm)
+
+    def _generate_documentation(
         self,
         package_path: str = "src/curriculum",
         use_llm: bool = True,
@@ -488,10 +486,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         logger.info(f"Starting documentation generation for package: {package_path}")
 
         try:
+            self._module_docs.clear()
+            self._file_docs.clear()
+            self._method_docs.clear()
+            self._llm_summaries.clear()
+            self._stats = dict.fromkeys(self._stats, 0)
             package_root = Path(package_path)
 
             # Validate package path
-            if not package_root.exists():
+            if not package_path or not package_root.exists():
                 raise ValueError(f"Package path does not exist: {package_path}")
 
             if not package_root.is_dir():
@@ -515,7 +518,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 search_index = self.generate_search_index()
             else:
                 llm_md_export = None
-                search_index = None
+                search_index = {}
 
             # Generate final documentation files
             logger.info("Generating output files...")
@@ -524,7 +527,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             # Calculate duration
             duration = time.time() - start_time
 
-            result = {
+            result: Dict[str, Any] = {
                 "status": "success",
                 "output_directory": str(self.output_dir),
                 "modules_documented": len(self._module_docs),
@@ -625,7 +628,10 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 self._performance_metrics["errors_encountered"] += 1
 
         logger.info(
-            f"Package documentation extraction complete: {files_processed} files processed, {files_with_errors} errors"
+            (
+                f"Package documentation extraction complete: {files_processed} "
+                f"files processed, {files_with_errors} errors"
+            )
         )
 
     def _extract_file_documentation(self, file_path: Path) -> Dict[str, Any]:
@@ -699,7 +705,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         }
 
     def _extract_function_info(
-        self, node: ast.FunctionDef, is_method: bool = False
+        self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef], is_method: bool = False
     ) -> Dict[str, Any]:
         """Extract information from a function or method definition."""
         docstring = ast.get_docstring(node)
@@ -744,7 +750,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             "line_number": node.lineno,
         }
 
-    def _extract_import_info(self, node) -> Dict[str, Any]:
+    def _extract_import_info(self, node: ast.AST) -> Dict[str, Any]:
         """Extract import information."""
         if isinstance(node, ast.Import):
             return {
@@ -759,7 +765,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             }
         return {}
 
-    def _get_name(self, node) -> str:
+    def _get_name(self, node: ast.AST) -> str:
         """Get name from AST node."""
         if isinstance(node, ast.Name):
             return node.id
@@ -768,7 +774,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         elif isinstance(node, ast.Subscript):
             # Handle subscripted types like Optional[str], List[int], etc.
             base = self._get_name(node.value)
-            if hasattr(node.slice, "elts"):  # Tuple of types
+            if isinstance(node.slice, (ast.Tuple, ast.List)):  # Tuple of types
                 args = ", ".join(self._get_name(elt) for elt in node.slice.elts)
             else:  # Single type
                 args = self._get_name(node.slice)
@@ -777,13 +783,13 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             return str(node.value)
         return str(node)
 
-    def _get_annotation(self, node) -> str:
+    def _get_annotation(self, node: Optional[ast.AST]) -> Optional[str]:
         """Get type annotation as string."""
         if node is None:
             return None
         return self._get_name(node)
 
-    def _get_module_name(self, file_path: Path, package_root: Path) -> str:
+    def _get_module_name(self, file_path: Path, package_root: Path) -> Optional[str]:
         """Get module name from file path."""
         try:
             relative_path = file_path.relative_to(package_root)
@@ -795,140 +801,53 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             return None
 
     def _generate_llm_summaries(self) -> None:
-        """Generate LLM-powered summaries at multiple levels with caching and parallel processing."""
+        """Generate cached summaries at package, module, and file levels."""
         logger.info("Generating LLM summaries with caching and parallel processing...")
 
-        # Prepare all summary tasks
-        summary_tasks = []
-
-        # Package overview
-        package_overview = self._generate_package_overview()
-        if package_overview:
-            summary_tasks.append(("package_overview", {"data": package_overview}))
-
-        # Module summaries
-        for module_name in sorted(self._module_docs.keys()):
-            module_data = self._module_docs[module_name]
+        summary_tasks: List[Tuple[str, Dict[str, Any]]] = [
+            ("package_overview", {"type": "package", "source": self._file_docs})
+        ]
+        for name, data in sorted(self._module_docs.items()):
             summary_tasks.append(
-                (
-                    f"module_{module_name}",
-                    {"type": "module", "module_name": module_name, "module_data": module_data},
-                )
+                (f"module_{name}", {"type": "module", "module_name": name, "module_data": data})
             )
-
-        # File summaries
-        for file_path in sorted(self._file_docs.keys()):
-            file_data = self._file_docs[file_path]
+        for path, data in sorted(self._file_docs.items()):
             summary_tasks.append(
-                (
-                    f"file_{file_path}",
-                    {"type": "file", "file_path": file_path, "file_data": file_data},
-                )
+                (f"file_{path}", {"type": "file", "file_path": path, "file_data": data})
             )
-
-        # Process in parallel
-        if summary_tasks:
-            results = self._process_summaries_parallel(summary_tasks)
-            self._llm_summaries.update(results)
-
-        logger.info(
-            f"Generated {len(self._llm_summaries)} LLM summaries (parallel processing with caching)"
-        )
+        self._llm_summaries.update(self._process_summaries_parallel(summary_tasks))
 
     def _process_summaries_parallel(
         self, summary_tasks: List[Tuple[str, Dict[str, Any]]]
     ) -> Dict[str, Dict[str, Any]]:
-        """Process LLM summary tasks in parallel with rate limiting."""
-        logger.info(f"Processing {len(summary_tasks)} summary tasks in parallel")
+        """Run independent, synchronous provider calls with a bounded thread pool."""
+        from concurrent.futures import ThreadPoolExecutor
 
-        async def process_with_limit(
-            task_key: str, task_data: Dict[str, Any]
-        ) -> Tuple[str, Dict[str, Any]]:
-            """Process a single summary task with semaphore limiting."""
-            semaphore = asyncio.Semaphore(self._max_concurrent_llm_calls)
-
-            async with semaphore:
-                task_type = task_data.get("type")
-
-                try:
-                    if task_type == "module":
-                        # For module summaries
-                        module_name = task_data.get("module_name")
-                        module_data = task_data.get("module_data")
-                        result = self._generate_module_summary(module_name, module_data)
-                        logger.debug(f"Processed module summary: {module_name}")
-                        return task_key, result
-
-                    elif task_type == "file":
-                        # For file summaries
-                        file_path = task_data.get("file_path")
-                        file_data = task_data.get("file_data")
-                        result = self._generate_file_summary(file_path, file_data)
-                        logger.debug(f"Processed file summary: {file_path}")
-                        return task_key, result
-
-                    else:
-                        # For package overview or other types
-                        data = task_data.get("data", {})
-                        logger.debug(f"Processed package overview")
-                        return task_key, data
-
-                except Exception as e:
-                    logger.error(f"Error processing task {task_key}: {e}")
-                    # Return empty result on error
-                    return task_key, {}
-
-        async def main_async():
-            tasks = [process_with_limit(key, data) for key, data in summary_tasks]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            # Handle any exceptions that occurred
-            processed_results = {}
-            for i, result in enumerate(results):
-                if isinstance(result, Exception):
-                    task_key = summary_tasks[i][0]
-                    logger.error(f"Task {task_key} failed with exception: {result}")
-                    processed_results[task_key] = {}
+        def process(task: Tuple[str, Dict[str, Any]]) -> Tuple[str, Optional[Dict[str, Any]]]:
+            key, data = task
+            cache_key = self._get_cache_key(
+                json.dumps(data, sort_keys=True), json.dumps(self._model_config, sort_keys=True)
+            )
+            cached = self._get_cached_response(cache_key)
+            if cached is not None:
+                return key, cached
+            try:
+                if data["type"] == "module":
+                    result = self._generate_module_summary(data["module_name"], data["module_data"])
+                elif data["type"] == "file":
+                    result = self._generate_file_summary(data["file_path"], data["file_data"])
                 else:
-                    task_key, task_result = result
-                    processed_results[task_key] = task_result
+                    result = self._generate_package_overview()
+                if result:
+                    self._cache_response(cache_key, result, data.get("file_path"))
+                return key, result
+            except Exception as exc:
+                logger.warning("Analysis failed for %s: %s", key, exc)
+                self._performance_metrics["errors_encountered"] += 1
+                return key, None
 
-            return processed_results
-
-        # Run the async function
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # If we're already in an async context, run differently
-                import nest_asyncio
-
-                nest_asyncio.apply()
-                return loop.run_until_complete(main_async())
-            else:
-                return loop.run_until_complete(main_async())
-
-        except RuntimeError as e:
-            # Fallback to sequential processing if asyncio fails
-            logger.warning(f"Asyncio failed, falling back to sequential processing: {e}")
-            results = {}
-            for key, data in summary_tasks:
-                try:
-                    task_type = data.get("type")
-                    if task_type == "module":
-                        module_name = data.get("module_name")
-                        module_data = data.get("module_data")
-                        results[key] = self._generate_module_summary(module_name, module_data)
-                    elif task_type == "file":
-                        file_path = data.get("file_path")
-                        file_data = data.get("file_data")
-                        results[key] = self._generate_file_summary(file_path, file_data)
-                    else:
-                        results[key] = data.get("data", {})
-                except Exception as e:
-                    logger.error(f"Error in sequential processing for {key}: {e}")
-                    results[key] = {}
-
-            return results
+        with ThreadPoolExecutor(max_workers=self._max_concurrent_llm_calls) as pool:
+            return {key: result for key, result in pool.map(process, summary_tasks) if result}
 
     def _generate_module_summary(
         self, module_name: str, module_data: Dict[str, Any]
@@ -953,7 +872,8 @@ Please provide:
 4. Dependencies and integrations
 5. Usage examples if apparent from the code
 
-Format your response as JSON with keys: overview, key_classes, functionality, dependencies, usage_hints"""
+Format your response as JSON with keys:
+overview, key_classes, functionality, dependencies, usage_hints"""
 
         # Call Ollama LLM with optimized model
         llm_response = self._call_ollama_llm(
@@ -1059,6 +979,13 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         doc = module_data.get("documentation", module_data)
 
         context_parts = []
+        symbols = [item["name"] for item in doc.get("classes", []) + doc.get("functions", [])]
+        if symbols:
+            context_parts.append("Symbols: " + ", ".join(symbols))
+        if symbols and (module_data.get("module_name") or module_data.get("name")):
+            context_parts.append(
+                "Module: " + str(module_data.get("module_name", module_data.get("name")))
+            )
 
         if doc.get("module_docstring"):
             context_parts.append(f"Module Docstring: {doc['module_docstring']}")
@@ -1107,7 +1034,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
 
             if cached_response:
                 logger.debug(f"Cache hit for model {model}, prompt length: {len(prompt)}")
-                return cached_response.get("response", "")
+                return str(cached_response.get("response", ""))
 
             logger.info(f"Calling Ollama LLM with model {model}, prompt length: {len(prompt)}")
 
@@ -1116,7 +1043,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 import requests
 
                 url = "http://localhost:11434/api/generate"
-                payload = {
+                payload: Dict[str, Any] = {
                     "model": model,
                     "prompt": prompt,
                     "temperature": temperature,
@@ -1129,7 +1056,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                 if response.status_code == 200:
                     try:
                         result = response.json()
-                        llm_response = result.get("response", "").strip()
+                        llm_response = str(result.get("response", "")).strip()
 
                         if not llm_response:
                             logger.warning("Empty response from Ollama API")
@@ -1206,9 +1133,19 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             # Return mock response as final fallback
             return self._generate_mock_llm_response(prompt)
 
+        return self._generate_mock_llm_response(prompt)
+
     def _generate_mock_llm_response(self, prompt: str) -> str:
         """Generate mock LLM response when Ollama is unavailable."""
-        return "This is a placeholder response. Install and run Ollama for AI-powered analysis."
+        return json.dumps(
+            {
+                "overview": "AI analysis unavailable.",
+                "note": (
+                    "This is a placeholder response. Install and run Ollama for "
+                    + "AI-powered analysis."
+                ),
+            }
+        )
 
     def _generate_output_files(self) -> None:
         """Generate final documentation output files."""
@@ -1260,7 +1197,8 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
                     content.append("\n**Method List:**\n")
                     for method in cls["methods"]:
                         content.append(
-                            f"- `{method['name']}`: {method.get('docstring', 'No description')[:50]}\n"
+                            f"- `{method['name']}`: "
+                            + f"{method.get('docstring', 'No description')[:50]}\n"
                         )
 
         # Functions
@@ -1309,7 +1247,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
 
     def _write_main_index(self) -> None:
         """Write main index file."""
-        index_data = {
+        index_data: Dict[str, Any] = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "statistics": {
                 "total_modules": len(self._module_docs),
@@ -1375,7 +1313,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         """Generate a searchable index for all documentation."""
         print("Generating search index...")
 
-        search_index = {
+        search_index: Dict[str, Any] = {
             "modules": {},
             "files": {},
             "classes": {},
@@ -1389,13 +1327,21 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         for module_name, module_data in self._module_docs.items():
             search_index["modules"][module_name] = {
                 "file_path": module_data.get("file_path", ""),
-                "summary": self._extract_text_from_llm(module_name, "module"),
-                "classes": [cls["name"] for cls in module_data.get("classes", [])],
-                "functions": [func["name"] for func in module_data.get("functions", [])],
+                "summary": self._prepare_module_context(module_data)
+                + "\n"
+                + self._extract_text_from_llm(module_name, "module"),
+                "classes": [
+                    cls["name"]
+                    for cls in module_data.get("documentation", module_data).get("classes", [])
+                ],
+                "functions": [
+                    func["name"]
+                    for func in module_data.get("documentation", module_data).get("functions", [])
+                ],
             }
 
             # Index classes
-            for cls in module_data.get("classes", []):
+            for cls in module_data.get("documentation", module_data).get("classes", []):
                 class_key = f"{module_name}.{cls['name']}"
                 search_index["classes"][class_key] = {
                     "module": module_name,
@@ -1419,7 +1365,9 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
         for file_path, file_data in self._file_docs.items():
             search_index["files"][file_path] = {
                 "module": self._get_module_name_from_path(file_path),
-                "summary": self._extract_text_from_llm(file_path, "file"),
+                "summary": self._prepare_module_context(file_data)
+                + "\n"
+                + self._extract_text_from_llm(file_path, "file"),
                 "classes": [cls["name"] for cls in file_data.get("classes", [])],
                 "functions": [func["name"] for func in file_data.get("functions", [])],
             }
@@ -1447,12 +1395,16 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             json.dump(search_index, f, indent=2)
 
         print(
-            f"  Generated search index with {len(search_index['modules'])} modules, {len(search_index['files'])} files"
+            (
+                f"  Generated search index with {len(search_index['modules'])} modules, "
+                f"{len(search_index['files'])} files"
+            )
         )
         return search_index
 
     def _extract_text_from_llm(self, key: str, summary_type: str) -> str:
         """Extract searchable text from LLM analysis."""
+        key = f"{summary_type}_{key}"
         if key not in self._llm_summaries:
             return ""
 
@@ -1485,7 +1437,7 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
             # Remove .py extension and convert to module notation
             module_parts = path_obj.stem.replace(".", "_").split("_")
             return ".".join(module_parts)
-        except:
+        except Exception:
             return "unknown"
 
     def search_documentation(self, query: str, max_results: int = 10) -> List[Dict[str, Any]]:
@@ -1564,14 +1516,15 @@ Format your response as JSON with keys: architecture, domains, capabilities, imp
 
         # Create enhanced prompt
         model_config = self._select_model_for_analysis("code_review")
-        prompt = f"""Based on the following documentation context, answer this question about the codebase:
+        prompt = f"""Use the documentation below to answer this question about the codebase:
 
 Question: {question}
 
 Relevant Documentation:
 {context}
 
-Provide a clear, accurate answer based on the documentation. If the documentation doesn't contain enough information, say so clearly."""
+Provide a clear, accurate answer based on the documentation.
+If it lacks enough information, say so clearly."""
 
         # Get answer from LLM
         answer = self._call_ollama_llm(
@@ -1695,7 +1648,7 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
 
         return "\n".join(content)
 
-    def export_llm_analyses_to_markdown(self) -> Dict[str, int]:
+    def export_llm_analyses_to_markdown(self) -> Dict[str, Any]:
         """Export all LLM analyses as standalone Markdown files and a combined file.
 
         Returns:
@@ -1728,7 +1681,17 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
                 safe_name = (
                     Path(file_path).stem.replace(".", "_") if file_path != "unknown" else "unknown"
                 )
+                suffix = hashlib.sha256(file_path.encode()).hexdigest()[:12]
                 filename = f"file_{safe_name}.md"
+                if (
+                    sum(
+                        Path(item.get("file_path", "")).stem == Path(file_path).stem
+                        for item in self._llm_summaries.values()
+                        if item.get("summary_type") == "file"
+                    )
+                    > 1
+                ):
+                    filename = f"file_{safe_name}_{suffix}.md"
             else:
                 filename = f"{summary_type}_{analysis_key}.md"
 
@@ -1783,7 +1746,7 @@ Provide a clear, accurate answer based on the documentation. If the documentatio
             content.append("\n### Package Overview")
             for key, data in package_analyses:
                 content.append(
-                    f"- [Package Architectural Overview](#package-architectural-overview)"
+                    "- [Package Architectural Overview](#package-architectural-overview)"
                 )
 
         if module_analyses:

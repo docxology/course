@@ -2,7 +2,7 @@
 
 import re
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from uuid import UUID
 
 from curriculum.core.content import Content
@@ -202,7 +202,10 @@ class ContentQualityService:
         if long_paragraphs:
             score -= min(len(long_paragraphs) * 3, 20)
             issues.append(
-                f"{len(long_paragraphs)} paragraphs too long (> {rules['max_paragraph_length']} words)"
+                (
+                    f"{len(long_paragraphs)} paragraphs too long "
+                    f"(> {rules['max_paragraph_length']} words)"
+                )
             )
 
         # Simple Flesch score approximation
