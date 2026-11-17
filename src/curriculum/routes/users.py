@@ -1,22 +1,21 @@
 """User API routes."""
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
 from pydantic import BaseModel
 
 from curriculum.config import settings
 from curriculum.core.user import User, UserPermission, UserRole
 from curriculum.routes.dependencies import get_current_user as get_user_dependency
-from curriculum.users.user import AuthenticationService, UserService
+from curriculum.routes.dependencies import user_service
+from curriculum.users.user import AuthenticationService
 
 router = APIRouter()
 
 # Service instances
-user_service = UserService()
 auth_service = AuthenticationService(user_service)
 
 # OAuth2 scheme
@@ -75,7 +74,7 @@ class UserResponse(BaseModel):
 
 # Authentication routes
 @router.post("/login", response_model=TokenResponse)
-async def login(request: LoginRequest):
+async def login(request: LoginRequest) -> TokenResponse:
     """Authenticate user and return tokens."""
     user = auth_service.authenticate_user(
         request.username_or_email,
@@ -104,7 +103,7 @@ async def login(request: LoginRequest):
 
 
 @router.post("/refresh", response_model=TokenResponse)
-async def refresh_token(refresh_token: str):
+async def refresh_token(refresh_token: str) -> TokenResponse:
     """Refresh access token using refresh token."""
     user_id = auth_service.verify_token(refresh_token)
     if not user_id:
@@ -126,7 +125,7 @@ async def refresh_token(refresh_token: str):
 
 # User management routes
 @router.post("/", response_model=UserResponse)
-async def create_user(request: CreateUserRequest):
+async def create_user(request: CreateUserRequest) -> UserResponse:
     """Create a new user."""
     # Check if user already exists
     existing_user = user_service.get_user_by_email(request.email)
@@ -162,13 +161,13 @@ async def create_user(request: CreateUserRequest):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user(current_user: User = Depends(get_user_dependency)):
+async def get_current_user(current_user: User = Depends(get_user_dependency)) -> UserResponse:
     """Get current user profile."""
     return _user_to_response(current_user)
 
 
 @router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: UUID = Path(..., description="User ID")):
+async def get_user(user_id: UUID = Path(..., description="User ID")) -> UserResponse:
     """Get user by ID."""
     user = user_service.get_user(user_id)
     if not user:
@@ -182,7 +181,7 @@ async def update_user(
     user_id: UUID,
     request: UpdateUserRequest,
     current_user: User = Depends(get_user_dependency),
-):
+) -> UserResponse:
     """Update user profile."""
     # Check permissions
     if current_user.id != user_id and not current_user.has_permission(UserPermission.USER_UPDATE):
@@ -214,7 +213,7 @@ async def change_password(
     current_password: str,
     new_password: str,
     current_user: User = Depends(get_user_dependency),
-):
+) -> Dict[str, str]:
     """Change user password."""
     # Check permissions
     if current_user.id != user_id and not current_user.has_permission(UserPermission.USER_UPDATE):
@@ -246,7 +245,9 @@ async def change_password(
 
 
 @router.post("/{user_id}/activate")
-async def activate_user(user_id: UUID, current_user: User = Depends(get_user_dependency)):
+async def activate_user(
+    user_id: UUID, current_user: User = Depends(get_user_dependency)
+) -> Dict[str, str]:
     """Activate user account."""
     if not current_user.has_permission(UserPermission.USER_UPDATE):
         raise HTTPException(
@@ -262,7 +263,9 @@ async def activate_user(user_id: UUID, current_user: User = Depends(get_user_dep
 
 
 @router.post("/{user_id}/deactivate")
-async def deactivate_user(user_id: UUID, current_user: User = Depends(get_user_dependency)):
+async def deactivate_user(
+    user_id: UUID, current_user: User = Depends(get_user_dependency)
+) -> Dict[str, str]:
     """Deactivate user account."""
     if not current_user.has_permission(UserPermission.USER_UPDATE):
         raise HTTPException(
@@ -282,7 +285,7 @@ async def list_users(
     role: Optional[UserRole] = Query(None, description="Filter by role"),
     active_only: bool = Query(True, description="Show only active users"),
     current_user: User = Depends(get_user_dependency),
-):
+) -> List[UserResponse]:
     """List users with optional filtering."""
     if not current_user.has_permission(UserPermission.USER_READ):
         raise HTTPException(
@@ -300,7 +303,7 @@ async def add_user_role(
     user_id: UUID,
     role: UserRole,
     current_user: User = Depends(get_user_dependency),
-):
+) -> Dict[str, str]:
     """Add role to user."""
     if not current_user.has_permission(UserPermission.USER_UPDATE):
         raise HTTPException(
@@ -324,7 +327,7 @@ async def remove_user_role(
     user_id: UUID,
     role: UserRole,
     current_user: User = Depends(get_user_dependency),
-):
+) -> Dict[str, str]:
     """Remove role from user."""
     if not current_user.has_permission(UserPermission.USER_UPDATE):
         raise HTTPException(

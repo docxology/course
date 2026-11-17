@@ -1,10 +1,10 @@
 """Integration tests for documentation generation service."""
 
 import json
-import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-from datetime import datetime, timezone
+from unittest.mock import patch
+
+import pytest
 
 from curriculum.documentation import DocumentationGeneratorService
 
@@ -93,7 +93,9 @@ def validate_data(data: Dict) -> bool:
         submodule_dir = package_dir / "submodule"
         submodule_dir.mkdir()
 
-        (submodule_dir / "__init__.py").write_text('''"""Submodule for additional functionality."""''')
+        (submodule_dir / "__init__.py").write_text(
+            '''"""Submodule for additional functionality."""'''
+        )
 
         (submodule_dir / "helpers.py").write_text('''"""Helper functions for the submodule."""
 
@@ -124,23 +126,27 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
             "package_overview": {
                 "architecture": {
                     "design_patterns": ["Layered Architecture", "Dependency Injection"],
-                    "overall_structure": "Modular"
+                    "overall_structure": "Modular",
                 },
                 "domains": [
                     {"name": "Core", "modules": ["main_module"]},
-                    {"name": "Utilities", "modules": ["submodule"]}
+                    {"name": "Utilities", "modules": ["submodule"]},
                 ],
                 "capabilities": ["Data processing", "Validation", "Async operations"],
-                "improvements": ["Add error handling", "Improve type hints"]
+                "improvements": ["Add error handling", "Improve type hints"],
             },
             "module_sample_package.main_module": {
-                "overview": ["Main module for data processing", "Contains DataProcessor class", "Utility functions"],
+                "overview": [
+                    "Main module for data processing",
+                    "Contains DataProcessor class",
+                    "Utility functions",
+                ],
                 "key_classes": [
                     {"name": "DataProcessor", "purpose": "Process data with transformation methods"}
                 ],
                 "functionality": ["Data transformation", "Async processing", "Validation"],
                 "dependencies": ["typing", "json"],
-                "usage_hints": ["Use DataProcessor for batch data operations"]
+                "usage_hints": ["Use DataProcessor for batch data operations"],
             },
             "module_sample_package.submodule": {
                 "overview": ["Helper utilities", "Support classes", "Additional functions"],
@@ -149,32 +155,34 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
                 ],
                 "functionality": ["Helper functions", "Utility classes"],
                 "dependencies": ["typing"],
-                "usage_hints": ["Use helper_function for string operations"]
+                "usage_hints": ["Use helper_function for string operations"],
             },
             "file_sample_package/main_module.py": {
                 "purpose": ["Main module implementation", "Contains DataProcessor class"],
                 "components": [
                     {"name": "DataProcessor", "type": "class"},
                     {"name": "utility_function", "type": "function"},
-                    {"name": "validate_data", "type": "function"}
+                    {"name": "validate_data", "type": "function"},
                 ],
                 "complexity": ["Medium complexity", "Good separation of concerns"],
-                "improvements": ["Add more comprehensive error handling"]
+                "improvements": ["Add more comprehensive error handling"],
             },
             "file_sample_package/submodule/helpers.py": {
                 "purpose": ["Helper utilities", "Support functionality"],
                 "components": [
                     {"name": "HelperClass", "type": "class"},
-                    {"name": "helper_function", "type": "function"}
+                    {"name": "helper_function", "type": "function"},
                 ],
                 "complexity": ["Low complexity", "Simple utilities"],
-                "improvements": ["Add input validation"]
-            }
+                "improvements": ["Add input validation"],
+            },
         }
 
-    def test_end_to_end_documentation_generation(self, doc_service, sample_package, mock_llm_responses):
+    def test_end_to_end_documentation_generation(
+        self, doc_service, sample_package, mock_llm_responses
+    ):
         """Test complete documentation generation workflow."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             # Mock all LLM calls
             def mock_llm_call(prompt, model="llama3.1", temperature=0.3):
                 # Extract key from prompt to determine response
@@ -189,26 +197,27 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
                     if "main_module.py" in prompt:
                         return json.dumps(mock_llm_responses["file_sample_package/main_module.py"])
                     elif "helpers.py" in prompt:
-                        return json.dumps(mock_llm_responses["file_sample_package/submodule/helpers.py"])
+                        return json.dumps(
+                            mock_llm_responses["file_sample_package/submodule/helpers.py"]
+                        )
                 return json.dumps({"overview": "Mock response", "note": "Test response"})
 
             mock_llm.side_effect = mock_llm_call
 
             # Generate documentation
             result = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             # Verify result structure
             assert result["status"] == "success"
-            assert result["modules_documented"] == 2  # main_module and submodule
+            assert result["modules_documented"] == 3  # main_module, submodule, submodule.helpers
             assert result["files_documented"] == 4  # 2 modules + 2 __init__ files
-            assert result["llm_summaries_generated"] == 4  # package + 2 modules + 1 file
+            assert result["llm_summaries_generated"] == 8  # package + 3 modules + all 4 files
 
             # Verify LLM markdown export
             assert "llm_markdown_exports" in result
-            assert result["llm_markdown_exports"]["standalone_files"] == 4
+            assert result["llm_markdown_exports"]["standalone_files"] == 8
             assert result["llm_markdown_exports"]["combined_file"] == 1
 
             # Verify search index
@@ -217,7 +226,7 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_caching_integration(self, doc_service, sample_package):
         """Test caching integration across multiple calls."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_response = json.dumps({"overview": "Test response", "cached": True})
 
             def mock_llm_call(prompt, model="llama3.1", temperature=0.3):
@@ -230,8 +239,7 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
             # First generation
             result1 = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             # Check cache was created
@@ -239,8 +247,7 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
             # Second generation (should use cache)
             result2 = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             cache_files_after = len(list(doc_service._cache_dir.glob("*.json")))
@@ -251,20 +258,19 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_multi_model_strategy_integration(self, doc_service, sample_package):
         """Test multi-model strategy integration."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             responses = []
 
             def mock_llm_call(prompt, model="llama3.1", temperature=0.3):
-                responses.append({"prompt": prompt[:50], "model": model, "temperature": temperature})
+                responses.append(
+                    {"prompt": prompt[:50], "model": model, "temperature": temperature}
+                )
                 return json.dumps({"overview": f"Response from {model}", "model_used": model})
 
             mock_llm.side_effect = mock_llm_call
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Verify different models were used for different analysis types
             models_used = [call["model"] for call in responses]
@@ -277,14 +283,11 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_search_integration(self, doc_service, sample_package):
         """Test search functionality integration."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test analysis"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Test search
             results = doc_service.search_documentation("DataProcessor", max_results=5)
@@ -299,14 +302,11 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_qa_integration(self, doc_service, sample_package):
         """Test Q&A functionality integration."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test analysis"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Test Q&A
             answer = doc_service.answer_question_about_codebase("What is DataProcessor?")
@@ -317,13 +317,12 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_markdown_export_integration(self, doc_service, sample_package):
         """Test Markdown export integration."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test analysis"})
 
             # Generate documentation
             result = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             # Verify Markdown export happened
@@ -346,22 +345,17 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
     def test_error_handling_integration(self, doc_service, tmp_path):
         """Test error handling across the entire system."""
         # Test with invalid package path
-        result = doc_service.generate_documentation(
-            package_path="/nonexistent/path",
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path="/nonexistent/path", use_llm=False)
 
         # Should handle gracefully
-        assert result["status"] == "success"  # May still succeed with empty results
+        assert result["status"] == "error"
+        assert "does not exist" in result["error"]
 
         # Test with LLM errors
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.side_effect = Exception("LLM Error")
 
-            result = doc_service.generate_documentation(
-                package_path=str(tmp_path),
-                use_llm=True
-            )
+            result = doc_service.generate_documentation(package_path=str(tmp_path), use_llm=True)
 
             # Should still complete with fallback responses
             assert result["status"] == "success"
@@ -371,15 +365,14 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
         """Test performance characteristics of the system."""
         import time
 
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test response"})
 
             # Measure generation time
             start_time = time.time()
 
             result = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             end_time = time.time()
@@ -391,14 +384,11 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_output_format_integration(self, doc_service, sample_package):
         """Test output format consistency across components."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test analysis"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Test JSON export
             json_file = doc_service.export_documentation(format="json")
@@ -421,14 +411,11 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_cross_component_data_flow(self, doc_service, sample_package):
         """Test data flow between different components."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test analysis"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Test that data flows correctly between components
             stats = doc_service.get_documentation_stats()
@@ -445,13 +432,14 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_concurrent_processing_integration(self, doc_service, sample_package):
         """Test concurrent processing capabilities."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             # Track call order and timing
             call_order = []
             call_times = []
 
             def mock_llm_call(prompt, model="llama3.1", temperature=0.3):
                 import time
+
                 call_times.append(time.time())
                 call_order.append(len(call_order))
                 return json.dumps({"overview": f"Response {len(call_order)}"})
@@ -459,30 +447,25 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
             mock_llm.side_effect = mock_llm_call
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
             # Check that calls happened (even if not truly concurrent in this test)
             assert len(call_order) > 0
 
     def test_memory_usage_integration(self, doc_service, sample_package):
         """Test memory usage during full documentation generation."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
 
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test response"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
         memory_increase = final_memory - initial_memory
@@ -497,28 +480,22 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
     def test_cache_persistence_integration(self, doc_service, sample_package):
         """Test cache persistence across service instances."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Cached response"})
 
             # First generation
-            doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(sample_package), use_llm=True)
 
-            cache_files_before = len(list(doc_service._cache_dir.glob("*.json")))
+            len(list(doc_service._cache_dir.glob("*.json")))
 
             # Create new service instance with same output directory
             doc_service2 = DocumentationGeneratorService(output_dir=str(doc_service.output_dir))
 
             # Second generation should use cache
-            with patch.object(doc_service2, '_call_ollama_llm') as mock_llm2:
+            with patch.object(doc_service2, "_call_ollama_llm") as mock_llm2:
                 mock_llm2.return_value = json.dumps({"overview": "Should not be called"})
 
-                doc_service2.generate_documentation(
-                    package_path=str(sample_package),
-                    use_llm=True
-                )
+                doc_service2.generate_documentation(package_path=str(sample_package), use_llm=True)
 
                 # Mock should not have been called due to cache
                 mock_llm2.assert_not_called()
@@ -526,7 +503,7 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
     def test_error_recovery_integration(self, doc_service, sample_package):
         """Test error recovery and graceful degradation."""
         # Test with partial failures
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             call_count = 0
 
             def mock_llm_call(prompt, model="llama3.1", temperature=0.3):
@@ -542,12 +519,10 @@ def helper_function(value: str, default: Optional[str] = None) -> str:
 
             # Generate documentation despite some failures
             result = doc_service.generate_documentation(
-                package_path=str(sample_package),
-                use_llm=True
+                package_path=str(sample_package), use_llm=True
             )
 
             # Should still complete successfully
             assert result["status"] == "success"
             # Should have processed what it could
             assert result["modules_documented"] >= 0
-

@@ -2,7 +2,7 @@
 
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -29,6 +29,8 @@ class ActivityVerb(str, Enum):
 class EventType(str, Enum):
     """Learning event types."""
 
+    CONTENT_VIEW = "content_view"
+    ASSESSMENT_SUBMIT = "assessment_submit"
     CONTENT = "content"
     ASSESSMENT = "assessment"
     USER = "user"
@@ -66,6 +68,11 @@ class LearningEvent(BaseEntity):
 
     # Additional metadata
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+    @property
+    def timestamp(self) -> datetime:
+        """Return the event creation time."""
+        return self.created_at
 
 
 class AnalyticsReport(BaseEntity):
@@ -105,6 +112,11 @@ class ContentAnalytics(BaseEntity):
     last_viewed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+    @property
+    def average_time_spent(self) -> Optional[int]:
+        """Return average time spent viewing content in seconds."""
+        return self.average_view_duration
+
 
 class UserAnalytics(BaseEntity):
     """Analytics data for users."""
@@ -112,6 +124,7 @@ class UserAnalytics(BaseEntity):
     user_id: UUID
 
     # Learning metrics
+    total_time_spent: int = 0
     total_study_time: int = 0  # minutes
     lessons_completed: int = 0
     assessments_attempted: int = 0
@@ -160,6 +173,11 @@ class SessionAnalytics(BaseEntity):
     # Session quality
     focus_score: Optional[float] = None  # 0-1
     productivity_rating: Optional[str] = None
+
+    @property
+    def ended_at(self) -> Optional[datetime]:
+        """Return the session end time."""
+        return self.end_time
 
     def end_session(self) -> None:
         """End the session and calculate duration."""

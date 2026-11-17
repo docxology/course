@@ -165,12 +165,26 @@ class ContentGeneratorService:
         """Generate section content."""
         # Mock content generation - in production, this would use AI
         content_templates = {
-            "introduction": f"This {section_name} covers the fundamental concepts of {topic} for {audience}.",
-            "learning_objectives": f"By the end of this section, you'll understand the core principles of {topic}.",
-            "main_content": f"Let's dive deep into {topic} and explore its key components and applications.",
+            "introduction": (
+                f"This {section_name} covers the fundamental concepts of {topic} "
+                + f"for {audience}."
+            ),
+            "learning_objectives": (
+                "By the end of this section, you'll understand the core "
+                + f"principles of {topic}."
+            ),
+            "main_content": (
+                f"Let's dive deep into {topic} and explore its key components and "
+                + "applications."
+            ),
             "examples": f"Here are some practical examples that illustrate {topic} in action.",
-            "practice_exercises": f"Practice these exercises to reinforce your understanding of {topic}.",
-            "summary": f"In summary, {topic} encompasses several important concepts that are essential for mastery.",
+            "practice_exercises": (
+                "Practice these exercises to reinforce your understanding of " + f"{topic}."
+            ),
+            "summary": (
+                f"In summary, {topic} encompasses several important concepts that "
+                + "are essential for mastery."
+            ),
             "assessment": f"Test your knowledge of {topic} with these assessment questions.",
         }
 
@@ -229,7 +243,9 @@ class ContentGeneratorService:
                 "title": f"{topic} Example {i+1}",
                 "description": f"A practical example demonstrating {topic} concept {i+1}.",
                 "code": f"# {topic} example code\nprint('Example {i+1}')",
-                "explanation": f"This example shows how to implement {topic} in a real-world scenario.",
+                "explanation": (
+                    f"This example shows how to implement {topic} in a real-world " + "scenario."
+                ),
             }
             examples.append(example)
 
@@ -402,7 +418,9 @@ class ContentGeneratorService:
             "series_id": series_id,
             "part_number": len(previous_content) + 1,
             "title": f"Series Part {len(previous_content) + 1}",
-            "content": f"Continuation of the series based on {len(previous_content)} previous parts.",
+            "content": (
+                f"Continuation of the series based on {len(previous_content)} " + "previous parts."
+            ),
             "builds_on": [prev["title"] for prev in previous_content],
             "generated_at": datetime.now(timezone.utc).isoformat(),
         }

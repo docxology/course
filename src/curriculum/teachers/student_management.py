@@ -4,8 +4,6 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from curriculum.core.user import User, UserRole
-
 
 class StudentManagementService:
     """Service for managing students from a teacher's perspective."""
@@ -13,7 +11,7 @@ class StudentManagementService:
     def __init__(self) -> None:
         """Initialize student management service."""
         self._enrollments: dict[UUID, List[UUID]] = {}  # course_id -> student_ids
-        self._student_grades: dict[UUID, dict[UUID, dict[UUID, Dict[str, Any]]]] = (
+        self._student_grades: dict[UUID, dict[UUID, dict[str, Dict[str, Any]]]] = (
             {}
         )  # student_id -> course_id -> assessment_id -> grades
         self._student_notes: dict[UUID, List[Dict[str, Any]]] = {}  # teacher_id -> notes
@@ -120,7 +118,7 @@ class StudentManagementService:
     ) -> Dict[str, Any]:
         """Get all grades for a student in a course."""
         student_grades = self._student_grades.get(student_id, {})
-        course_grades: dict[UUID, Dict[str, Any]] = student_grades.get(course_id, {})
+        course_grades: dict[str, Dict[str, Any]] = student_grades.get(course_id, {})
 
         # Mock grade data
         return {

@@ -1,12 +1,8 @@
 """Teacher service for instructor functionality."""
 
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from uuid import UUID
-
-from curriculum.core.assessment import Assessment, GradingStatus, Submission
-from curriculum.core.content import Content, ContentStatus
-from curriculum.core.user import User, UserRole
 
 
 class TeacherService:

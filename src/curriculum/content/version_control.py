@@ -1,6 +1,6 @@
 """Version control service for content."""
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.core.content import Content, ContentVersion
@@ -85,7 +85,8 @@ class VersionControlService:
             version_id: UUID of the version to restore to
 
         Returns:
-            Restored Content instance if successful, None if version not found or doesn't match content
+            Restored Content instance if successful; None if the version is missing
+            or belongs to different content
         """
         version = self.get_version(version_id)
         if not version or version.content_id != content.id:
@@ -118,7 +119,7 @@ class VersionControlService:
         if not v1 or not v2:
             return None
 
-        differences = []
+        differences: List[Dict[str, Any]] = []
 
         if v1.title != v2.title:
             differences.append({"field": "title", "v1": v1.title, "v2": v2.title})

@@ -1,10 +1,18 @@
 """Research tools service for citations and bibliography management."""
 
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence, Union
 from uuid import UUID, uuid4
 
-from curriculum.core.content import Content
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class ResearchToolsService:
@@ -55,9 +63,10 @@ class ResearchToolsService:
         self._citations[citation_id] = citation
         return citation
 
-    def format_citation(self, citation_id: UUID, style: str = "apa") -> str:
+    def format_citation(self, citation_id: Union[UUID, str], style: str = "apa") -> str:
         """Format citation in specified style."""
-        citation = self._citations.get(citation_id)
+        resolved_id = _coerce_uuid(citation_id)
+        citation = self._citations.get(resolved_id) if resolved_id else None
         if not citation:
             return "Citation not found"
 
@@ -85,9 +94,11 @@ class ResearchToolsService:
 
         if citation["source_type"] == "book":
             return f"{author_str}. ({year}). {title}."
-        elif citation["source_type"] == "article":
+        elif citation["source_type"] in ("article", "journal"):
             journal = citation["source_details"].get("journal", "")
-            return f"{author_str}. ({year}). {title}. {journal}."
+            if journal:
+                return f"{author_str}. ({year}). {title}. {journal}."
+            return f"{author_str}. ({year}). {title}."
         else:
             return f"{author_str}. ({year}). {title}."
 
@@ -121,7 +132,7 @@ class ResearchToolsService:
         self,
         user_id: UUID,
         title: str,
-        citation_ids: List[UUID],
+        citation_ids: Sequence[Union[UUID, str]],
         style: str = "apa",
     ) -> Dict[str, Any]:
         """Create a bibliography from citations."""
@@ -140,46 +151,78 @@ class ResearchToolsService:
         self._bibliographies[bib_id] = bibliography
         return bibliography
 
-    def generate_bibliography_text(self, bibliography_id: UUID) -> str:
+    def generate_bibliography_text(self, bibliography_id: Union[UUID, str]) -> str:
         """Generate formatted bibliography text."""
-        bibliography = self._bibliographies.get(bibliography_id)
+        resolved_id = _coerce_uuid(bibliography_id)
+        bibliography = self._bibliographies.get(resolved_id) if resolved_id else None
         if not bibliography:
             return "Bibliography not found"
 
         citations_text = []
         for citation_id in bibliography["citation_ids"]:
-            citation = self._citations.get(UUID(citation_id))
-            if citation:
-                formatted = self.format_citation(UUID(citation_id), bibliography["style"])
+            resolved_cid = _coerce_uuid(citation_id)
+            citation = self._citations.get(resolved_cid) if resolved_cid else None
+            if citation and resolved_cid is not None:
+                formatted = self.format_citation(resolved_cid, bibliography["style"])
                 citations_text.append(formatted)
 
         return f"# {bibliography['title']}\n\n" + "\n".join(citations_text)
 
     def extract_citations_from_text(self, text: str) -> List[Dict[str, Any]]:
         """Extract potential citations from text."""
-        # Simple regex patterns for citation extraction
-        patterns = [
-            # APA-style: Author (Year)
-            r"([A-Za-z\s]+)\s*\(\s*(\d{4})\s*\)",
-            # MLA-style: Author "Title"
-            r'([A-Za-z\s]+)\s*"([^"]+)"',
-            # Basic title extraction
-            r'"([^"]+)"\s*by\s*([A-Za-z\s]+)',
-        ]
+        extracted: List[Dict[str, Any]] = []
+        seen_author_years: set[tuple[str, int]] = set()
 
-        extracted = []
-        for pattern in patterns:
-            matches = re.findall(pattern, text)
-            for match in matches:
-                if len(match) == 2:
-                    author, detail = match
-                    extracted.append(
-                        {
-                            "authors": [author.strip()],
-                            "title": detail.strip() if '"' not in detail else detail.strip('"'),
-                            "confidence": 0.7,  # Mock confidence score
-                        }
-                    )
+        title_by_pattern = (
+            r'"([^"]+)"\s+by\s+'
+            r"([A-Z][A-Za-z]+(?:\s+(?:van|de|von|la|[A-Z][A-Za-z]+))*)"
+            r"(?:\s*\(\s*(\d{4})\s*\))?"
+        )
+        for title_match in re.finditer(title_by_pattern, text):
+            title = title_match.group(1).strip()
+            author = title_match.group(2).strip()
+            year = int(title_match.group(3)) if title_match.group(3) else 2020
+            seen_author_years.add((author, year))
+            extracted.append(
+                {
+                    "authors": [author],
+                    "title": title,
+                    "publication_year": year,
+                    "confidence": 0.85,
+                }
+            )
+
+        author_year_pattern = (
+            r"\b([A-Z][A-Za-z]+(?:\s+(?:van|de|von|[A-Z][A-Za-z]+))*"
+            r"(?:\s+et\s+al\.)?)\s*\(\s*(\d{4})\s*\)"
+        )
+        for ay_match in re.finditer(author_year_pattern, text):
+            author = ay_match.group(1).strip()
+            year = int(ay_match.group(2))
+            if (author, year) in seen_author_years:
+                continue
+            seen_author_years.add((author, year))
+            extracted.append(
+                {
+                    "authors": [author],
+                    "title": f"Work by {author} ({year})",
+                    "publication_year": year,
+                    "confidence": 0.8,
+                }
+            )
+
+        mla_pattern = r'\b([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*)\s+"([^"]+)"'
+        for mla_match in re.finditer(mla_pattern, text):
+            author = mla_match.group(1).strip()
+            title = mla_match.group(2).strip()
+            extracted.append(
+                {
+                    "authors": [author],
+                    "title": title,
+                    "publication_year": 2020,
+                    "confidence": 0.7,
+                }
+            )
 
         return extracted
 
@@ -189,10 +232,10 @@ class ResearchToolsService:
         content_id: UUID,
         title: str,
         content: str,
-        citation_ids: List[UUID] = None,
+        citation_ids: Optional[Sequence[Union[UUID, str]]] = None,
     ) -> Dict[str, Any]:
         """Create a research note with citations."""
-        note_id = UUID(f"research_{len(self._research_notes)}")
+        note_id = uuid4()
 
         research_note = {
             "id": str(note_id),
@@ -292,9 +335,10 @@ class ResearchToolsService:
 
         return citations
 
-    def export_bibliography(self, bibliography_id: UUID, format: str = "bibtex") -> str:
+    def export_bibliography(self, bibliography_id: Union[UUID, str], format: str = "bibtex") -> str:
         """Export bibliography in specified format."""
-        bibliography = self._bibliographies.get(bibliography_id)
+        resolved_id = _coerce_uuid(bibliography_id)
+        bibliography = self._bibliographies.get(resolved_id) if resolved_id else None
         if not bibliography:
             return "Bibliography not found"
 
@@ -310,7 +354,8 @@ class ResearchToolsService:
         bibtex_entries = []
 
         for citation_id in bibliography["citation_ids"]:
-            citation = self._citations.get(UUID(citation_id))
+            resolved_cid = _coerce_uuid(citation_id)
+            citation = self._citations.get(resolved_cid) if resolved_cid else None
             if citation:
                 # Simple BibTeX entry (would be more complete in production)
                 bibtex_entries.append(
@@ -328,7 +373,8 @@ class ResearchToolsService:
         ris_entries = []
 
         for citation_id in bibliography["citation_ids"]:
-            citation = self._citations.get(UUID(citation_id))
+            resolved_cid = _coerce_uuid(citation_id)
+            citation = self._citations.get(resolved_cid) if resolved_cid else None
             if citation:
                 authors_str = "\nAU  - ".join(citation["authors"])
                 ris_entry = (
@@ -356,7 +402,7 @@ class ResearchToolsService:
                 [n for n in self._research_notes.values() if n["user_id"] == str(user_id)]
             ),
             "citation_styles_used": list(
-                set([self.format_citation(UUID(c["id"])) for c in user_citations[:5]])  # Sample
+                set([self.format_citation(c["id"]) for c in user_citations[:5]])  # Sample
             ),
             "most_common_source_types": ["article", "book", "website"],
         }

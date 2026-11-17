@@ -1,8 +1,9 @@
 """Tests for search module."""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
+
+import pytest
 
 from curriculum.core.content import Content, ContentType
 from curriculum.search.search import SearchService
@@ -22,14 +23,14 @@ class TestSearchService:
     def test_search_service_initialization(self, search_service):
         """Test search service initialization."""
         assert search_service is not None
-        assert hasattr(search_service, '_index_name')
-        assert hasattr(search_service, '_client')
-        assert hasattr(search_service, '_connected')
+        assert hasattr(search_service, "_index_name")
+        assert hasattr(search_service, "_client")
+        assert hasattr(search_service, "_connected")
 
-    @patch('elasticsearch.AsyncElasticsearch')
+    @patch("curriculum.search.search.AsyncElasticsearch")
     async def test_search_connect(self, mock_es_class, search_service):
         """Test Elasticsearch connection."""
-        mock_client = MagicMock()
+        mock_client = AsyncMock()
         mock_client.info.return_value = {"version": {"number": "8.0.0"}}
         mock_es_class.return_value = mock_client
 
@@ -40,16 +41,17 @@ class TestSearchService:
 
     async def test_search_disconnect(self, search_service):
         """Test Elasticsearch disconnection."""
-        search_service._client = MagicMock()
+        client = AsyncMock()
+        search_service._client = client
 
         await search_service.disconnect()
 
-        search_service._client.close.assert_called_once()
+        client.close.assert_awaited_once()
 
     async def test_index_content(self, search_service):
         """Test content indexing."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.index.return_value = None
@@ -59,7 +61,7 @@ class TestSearchService:
             content_type=ContentType.LESSON,
             format="markdown",
             author_id=uuid4(),
-            content_body="This is test content for indexing."
+            content_body="This is test content for indexing.",
         )
 
         result = await search_service.index_content(content)
@@ -70,7 +72,7 @@ class TestSearchService:
     async def test_delete_from_index(self, search_service):
         """Test content deletion from index."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.delete.return_value = None
@@ -84,7 +86,7 @@ class TestSearchService:
     async def test_search_content(self, search_service):
         """Test content search."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.search.return_value = {
@@ -96,11 +98,14 @@ class TestSearchService:
                         "_source": {
                             "id": str(uuid4()),
                             "title": "Test Content",
-                            "content_type": "lesson"
+                            "content_type": "lesson",
+                            "description": "A lesson",
+                            "author_id": str(uuid4()),
+                            "tags": [],
                         },
-                        "_score": 1.0
+                        "_score": 1.0,
                     }
-                ]
+                ],
             }
         }
 
@@ -114,7 +119,7 @@ class TestSearchService:
     async def test_suggest_search(self, search_service):
         """Test search suggestions."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.search.return_value = {
@@ -123,8 +128,8 @@ class TestSearchService:
                     {
                         "_source": {
                             "title": "Python Programming",
-                            "tags": ["python", "programming"]
-                        }
+                            "tags": ["python", "programming"],
+                        },
                     }
                 ]
             }
@@ -138,7 +143,7 @@ class TestSearchService:
     async def test_similar_content(self, search_service):
         """Test finding similar content."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.search.return_value = {
@@ -148,9 +153,12 @@ class TestSearchService:
                         "_source": {
                             "id": str(uuid4()),
                             "title": "Similar Content",
-                            "content_type": "lesson"
+                            "content_type": "lesson",
+                            "description": "A lesson",
+                            "author_id": str(uuid4()),
+                            "tags": [],
                         },
-                        "_score": 0.8
+                        "_score": 0.8,
                     }
                 ]
             }
@@ -165,16 +173,13 @@ class TestSearchService:
     async def test_get_index_stats(self, search_service):
         """Test getting index statistics."""
         search_service._connected = True
-        search_service._client = MagicMock()
+        search_service._client = AsyncMock()
 
         mock_client = search_service._client
         mock_client.indices.stats.return_value = {
             "indices": {
                 "curriculum": {
-                    "total": {
-                        "docs": {"count": 100},
-                        "store": {"size_in_bytes": 1024000}
-                    }
+                    "total": {"docs": {"count": 100}, "store": {"size_in_bytes": 1024000}}
                 }
             }
         }
@@ -185,19 +190,19 @@ class TestSearchService:
         assert "total_docs" in stats
         assert "size_in_bytes" in stats
 
-    def test_search_service_not_connected(self):
+    async def test_search_service_not_connected(self):
         """Test search service when not connected."""
         search_service = SearchService()
         # Don't connect the service
 
         # Should return error responses
-        result = search_service.search("test")
+        result = await search_service.search("test")
         assert "error" in result
 
-        suggestions = search_service.suggest("test")
+        suggestions = await search_service.suggest("test")
         assert suggestions == []
 
-        similar = search_service.get_similar_content(uuid4())
+        similar = await search_service.get_similar_content(uuid4())
         assert similar == []
 
 
@@ -213,8 +218,8 @@ class TestVisualizationService:
     def test_visualization_service_initialization(self, visualization_service):
         """Test visualization service initialization."""
         assert visualization_service is not None
-        assert hasattr(visualization_service, '_visualizations')
-        assert hasattr(visualization_service, '_chart_templates')
+        assert hasattr(visualization_service, "_visualizations")
+        assert hasattr(visualization_service, "_chart_templates")
 
     def test_create_visualization(self, visualization_service):
         """Test creating a visualization."""
@@ -224,7 +229,7 @@ class TestVisualizationService:
             content_id=content_id,
             title="Test Chart",
             visualization_type="bar_chart",
-            data={"labels": ["A", "B"], "datasets": [{"data": [1, 2]}]}
+            data={"labels": ["A", "B"], "datasets": [{"data": [1, 2]}]},
         )
 
         assert visualization["content_id"] == str(content_id)
@@ -238,10 +243,7 @@ class TestVisualizationService:
 
         # Create a visualization first
         viz = visualization_service.create_visualization(
-            content_id=content_id,
-            title="Test Chart",
-            visualization_type="line_chart",
-            data={}
+            content_id=content_id, title="Test Chart", visualization_type="line_chart", data={}
         )
 
         # Retrieve it
@@ -257,10 +259,7 @@ class TestVisualizationService:
         # Create multiple visualizations
         for i in range(3):
             visualization_service.create_visualization(
-                content_id=content_id,
-                title=f"Chart {i}",
-                visualization_type="bar_chart",
-                data={}
+                content_id=content_id, title=f"Chart {i}", visualization_type="bar_chart", data={}
             )
 
         visualizations = visualization_service.get_content_visualizations(content_id)
@@ -276,7 +275,7 @@ class TestVisualizationService:
         chart = visualization_service.create_progress_chart(
             content_id=content_id,
             user_id=user_id,
-            progress_data={"dates": ["2024-01-01"], "scores": [85]}
+            progress_data={"dates": ["2024-01-01"], "scores": [85]},
         )
 
         assert chart["content_id"] == str(content_id)
@@ -289,16 +288,12 @@ class TestVisualizationService:
 
         concepts = [
             {"id": "concept1", "label": "Variables"},
-            {"id": "concept2", "label": "Functions"}
+            {"id": "concept2", "label": "Functions"},
         ]
-        connections = [
-            {"source": "concept1", "target": "concept2", "type": "prerequisite"}
-        ]
+        connections = [{"source": "concept1", "target": "concept2", "type": "prerequisite"}]
 
         knowledge_map = visualization_service.create_knowledge_map(
-            content_id=content_id,
-            concepts=concepts,
-            connections=connections
+            content_id=content_id, concepts=concepts, connections=connections
         )
 
         assert knowledge_map["content_id"] == str(content_id)
@@ -309,14 +304,10 @@ class TestVisualizationService:
         """Test creating quiz results chart."""
         content_id = uuid4()
 
-        quiz_results = {
-            "quiz_names": ["Quiz 1", "Quiz 2"],
-            "scores": [85, 92]
-        }
+        quiz_results = {"quiz_names": ["Quiz 1", "Quiz 2"], "scores": [85, 92]}
 
         chart = visualization_service.create_quiz_results_chart(
-            content_id=content_id,
-            quiz_results=quiz_results
+            content_id=content_id, quiz_results=quiz_results
         )
 
         assert chart["content_id"] == str(content_id)
@@ -338,16 +329,12 @@ class TestVisualizationService:
 
         # Create a visualization first
         viz = visualization_service.create_visualization(
-            content_id=content_id,
-            title="Test Chart",
-            visualization_type="line_chart",
-            data={}
+            content_id=content_id, title="Test Chart", visualization_type="line_chart", data={}
         )
 
         # Export it
         exported = visualization_service.export_visualization(
-            visualization_id=viz["id"],
-            format="json"
+            visualization_id=viz["id"], format="json"
         )
 
         assert exported["id"] == viz["id"]
@@ -355,14 +342,13 @@ class TestVisualizationService:
 
     def test_validate_visualization_data(self, visualization_service):
         """Test visualization data validation."""
-        valid_data = {
-            "labels": ["A", "B"],
-            "datasets": [{"data": [1, 2]}]
-        }
+        valid_data = {"labels": ["A", "B"], "datasets": [{"data": [1, 2]}]}
         invalid_data = {"invalid": "data"}
 
         valid_result = visualization_service.validate_visualization_data(valid_data, "bar_chart")
-        invalid_result = visualization_service.validate_visualization_data(invalid_data, "bar_chart")
+        invalid_result = visualization_service.validate_visualization_data(
+            invalid_data, "bar_chart"
+        )
 
         assert valid_result["valid"] is True
         assert invalid_result["valid"] is False
@@ -380,9 +366,9 @@ class TestWebsiteService:
     def test_website_service_initialization(self, website_service):
         """Test website service initialization."""
         assert website_service is not None
-        assert hasattr(website_service, '_sites')
-        assert hasattr(website_service, '_pages')
-        assert hasattr(website_service, '_themes')
+        assert hasattr(website_service, "_sites")
+        assert hasattr(website_service, "_pages")
+        assert hasattr(website_service, "_themes")
 
     def test_create_course_website(self, website_service):
         """Test creating course website."""
@@ -393,7 +379,7 @@ class TestWebsiteService:
             course_id=course_id,
             title="Test Course",
             description="A test course website",
-            instructor_id=instructor_id
+            instructor_id=instructor_id,
         )
 
         assert website["course_id"] == str(course_id)
@@ -407,10 +393,7 @@ class TestWebsiteService:
 
         # Create a website first
         website_service.create_course_website(
-            course_id=course_id,
-            title="Test Course",
-            description="Test",
-            instructor_id=uuid4()
+            course_id=course_id, title="Test Course", description="Test", instructor_id=uuid4()
         )
 
         # Retrieve it
@@ -427,7 +410,7 @@ class TestWebsiteService:
             site_id=site_id,
             title="Test Page",
             content="This is test page content",
-            page_type="lesson"
+            page_type="lesson",
         )
 
         assert page["site_id"] == str(site_id)
@@ -442,10 +425,7 @@ class TestWebsiteService:
         # Create some pages
         for i in range(3):
             website_service.create_page(
-                site_id=site_id,
-                title=f"Page {i}",
-                content=f"Content {i}",
-                page_type="lesson"
+                site_id=site_id, title=f"Page {i}", content=f"Content {i}", page_type="lesson"
             )
 
         pages = website_service.get_site_pages(site_id)
@@ -487,7 +467,7 @@ class TestWebsiteService:
             title="Important Announcement",
             content="This is an important announcement",
             author_id=author_id,
-            priority="urgent"
+            priority="urgent",
         )
 
         assert announcement["site_id"] == str(site_id)
@@ -502,10 +482,7 @@ class TestWebsiteService:
 
         # Create a website and some announcements
         site = website_service.create_course_website(
-            course_id=course_id,
-            title="Test Course",
-            description="Test",
-            instructor_id=uuid4()
+            course_id=course_id, title="Test Course", description="Test", instructor_id=uuid4()
         )
 
         for i in range(2):
@@ -513,7 +490,7 @@ class TestWebsiteService:
                 site_id=site["id"],
                 title=f"Announcement {i}",
                 content=f"Content {i}",
-                author_id=uuid4()
+                author_id=uuid4(),
             )
 
         announcements = website_service.get_course_announcements(course_id)
@@ -524,11 +501,6 @@ class TestWebsiteService:
     def test_generate_course_calendar(self, website_service):
         """Test generating course calendar."""
         course_id = uuid4()
-
-        events = [
-            {"title": "Week 1", "date": "2024-01-15T09:00:00Z", "type": "lesson"},
-            {"title": "Assignment 1", "date": "2024-01-22T23:59:59Z", "type": "deadline"}
-        ]
 
         calendar = website_service.generate_course_calendar(course_id)
 
@@ -546,31 +518,30 @@ class TestWebsiteService:
 
     def test_customize_theme(self, website_service):
         """Test customizing website theme."""
-        site_id = uuid4()
+        site = website_service.create_course_website(
+            course_id=uuid4(), title="Course", description="Test", instructor_id=uuid4()
+        )
+        site_id = site["id"]
 
-        customizations = {
-            "colors": {"primary": "#ff0000"},
-            "fonts": {"heading": "Arial"}
-        }
+        customizations = {"colors": {"primary": "#ff0000"}, "fonts": {"heading": "Arial"}}
 
         result = website_service.customize_theme(site_id, customizations)
 
-        assert "colors" in result
-        assert result["colors"]["primary"] == "#ff0000"
+        assert "colors" in result["custom_theme"]
+        assert result["custom_theme"]["colors"]["primary"] == "#ff0000"
 
     def test_generate_seo_metadata(self, website_service):
         """Test generating SEO metadata."""
-        site_id = uuid4()
 
         # Create site first
-        website_service.create_course_website(
+        site = website_service.create_course_website(
             course_id=uuid4(),
             title="Test Course",
             description="Test Description",
-            instructor_id=uuid4()
+            instructor_id=uuid4(),
         )
 
-        seo = website_service.generate_seo_metadata(site_id)
+        seo = website_service.generate_seo_metadata(site["id"])
 
         assert "title" in seo
         assert "description" in seo
@@ -585,5 +556,3 @@ class TestWebsiteService:
         assert isinstance(features, dict)
         assert "screen_reader_support" in features
         assert "keyboard_navigation" in features
-
-

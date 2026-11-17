@@ -1,7 +1,8 @@
 """Tests for teachers module services."""
 
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from curriculum.core.user import User, UserRole
 from curriculum.teachers.teacher import TeacherService
@@ -53,7 +54,9 @@ class TestTeacherService:
         assert isinstance(courses, list)
         assert len(courses) == 0  # No courses assigned yet
 
-    def test_get_course_students_unauthorized(self, teacher_service, sample_teacher, sample_student):
+    def test_get_course_students_unauthorized(
+        self, teacher_service, sample_teacher, sample_student
+    ):
         """Test getting students for course teacher doesn't teach."""
         course_id = uuid4()
         students = teacher_service.get_course_students(sample_teacher.id, course_id)
@@ -89,10 +92,7 @@ class TestTeacherService:
             teacher_service._teacher_courses[sample_teacher.id] = [course_id]
 
         result = teacher_service.create_course_announcement(
-            teacher_id=sample_teacher.id,
-            course_id=course_id,
-            title=title,
-            content=content
+            teacher_id=sample_teacher.id, course_id=course_id, title=title, content=content
         )
 
         assert result is not None
@@ -114,7 +114,9 @@ class TestTeacherService:
 
         for method_name in required_methods:
             assert hasattr(teacher_service, method_name), f"Method {method_name} not found"
-            assert callable(getattr(teacher_service, method_name)), f"Method {method_name} not callable"
+            assert callable(
+                getattr(teacher_service, method_name)
+            ), f"Method {method_name} not callable"
 
     def test_teacher_data_storage(self, teacher_service, sample_teacher):
         """Test teacher data storage functionality."""

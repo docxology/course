@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### CI and service contract repairs (#12)
+
+- Align Flake8 with Black, replace wildcard exports, and repair strict source typing.
+- Make documentation fallbacks structured, cache analyses across instances, serialize
+  concurrent snapshots, index AST symbols, and preserve distinct Markdown exports.
+- Restore AI, communication, learning, search, database, and API service contracts;
+  repair async and registered-entity fixtures without skipping tests.
+- Use signed, expiring PyJWT tokens and salted PBKDF2 password verification.
+  Legacy placeholder tokens and plaintext-style password records are rejected.
+- Build CI and Docker from the shared lock, validate each matrix interpreter,
+  enforce dependency auditing, build strict MkDocs, and execute all performance tests.
+
+
 ### Added
 
 - Comprehensive test suite with 663+ tests across 33 test files

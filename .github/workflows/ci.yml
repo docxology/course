@@ -12,34 +12,40 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Codecov OIDC upload
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.11', '3.12', '3.13', '3.15' ]
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # actions/setup-python@v7.1.0
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Cache pip dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # actions/cache@v6.1.0
+    - name: Set up uv
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # astral-sh/setup-uv@v10.3.3
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        version: "0.13.8"
+        python-version: ${{ matrix.python-version }}
+        enable-cache: true
+        cache-dependency-glob: uv.lock
 
-    - name: Install dependencies
+    - name: Install locked dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        uv sync --frozen --extra dev --extra docs
+        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
 
-    - name: Install development dependencies
+    - name: Verify matrix interpreter
       run: |
-        pip install -e ".[dev]"
+        python -c "import sys; v = '%d.%d' % sys.version_info[:2]; assert v == '${{ matrix.python-version }}', v; print(sys.executable, v)"
 
     - name: Run linting
       run: |
@@ -50,18 +56,20 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pytest tests/ -m unit --cov=src --cov-report=xml --cov-report=term-missing
+        pytest tests/ -m "not integration and not slow" --cov=src --cov-report=xml --cov-report=term-missing
 
     - name: Run integration tests
       run: |
         pytest tests/ -m integration --cov=src --cov-report=xml --cov-append --cov-report=term-missing
 
     - name: Upload coverage to Codecov
+      continue-on-error: true
       uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # codecov/codecov-action@v7.1.1
       with:
         files: ./coverage.xml
         flags: unittests
         fail_ci_if_error: true
+        use_oidc: true
 
     - name: Run slow tests
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -72,33 +80,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # actions/setup-python@v7.1.0
       with:
         python-version-file: ".python-version"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+    - name: Set up uv
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # astral-sh/setup-uv@v10.3.3
+      with:
+        version: "0.13.8"
+        enable-cache: true
+        cache-dependency-glob: uv.lock
 
-    - name: Install security tools
+    - name: Export locked requirements
       run: |
-        pip install safety bandit pip-audit
+        uv export --frozen --extra dev --extra docs --no-emit-project --format requirements-txt -o requirements-audit.txt
 
     - name: Run security scan
       run: |
-        safety check --json
-        bandit -r src/ -f json -o bandit-report.json || true
-        pip-audit --format=json
+        uvx --from 'bandit[toml]==1.9.4' bandit -r src/ -f json -o bandit-report.json || true
+        uvx pip-audit==2.10.1 -r requirements-audit.txt --require-hashes --disable-pip --format json --output pip-audit-report.json
 
     - name: Upload security reports
+      if: always()
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # actions/upload-artifact@v7.0.2
       with:
         name: security-reports
         path: |
           bandit-report.json
+          pip-audit-report.json
         retention-days: 30
 
   build:
@@ -108,6 +121,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # docker/setup-buildx-action@v4.4.1
@@ -117,13 +132,14 @@ jobs:
       with:
         context: .
         push: false
+        load: true
         tags: curriculum-repository:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     - name: Test Docker image
       run: |
-        docker run --rm curriculum-repository:${{ github.sha }} curriculum-server --help || true
+        docker run --rm curriculum-repository:${{ github.sha }} curriculum-server --help
 
   deploy:
     runs-on: ubuntu-latest

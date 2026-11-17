@@ -29,6 +29,7 @@ class ContentService:
         author_id: UUID,
         description: Optional[str] = None,
         content_body: Optional[str] = None,
+        parent_id: Optional[UUID] = None,
     ) -> Content:
         """Create new content.
 
@@ -51,6 +52,7 @@ class ContentService:
             author_id=author_id,
             content_body=content_body,
             status=ContentStatus.DRAFT,
+            parent_id=parent_id,
         )
         self._content_store[content.id] = content
         return content

@@ -1,14 +1,47 @@
 """Performance tests for documentation generation service."""
 
 import json
-import pytest
-import time
-import psutil
 import os
-from pathlib import Path
+import statistics
+import threading
+import time
+from typing import Any, Callable, List, Tuple
 from unittest.mock import patch
 
+import psutil
+import pytest
+
 from curriculum.documentation import DocumentationGeneratorService
+
+# ``large_package`` has 10 sub-packages, each holding ``__init__.py`` and one
+# module. Every non-root ``__init__`` is a module ("module_i") and every
+# submodule is a module ("module_i.module_i"), so both counts are 20.
+LARGE_PACKAGE_FILES = 20
+LARGE_PACKAGE_MODULES = 20
+# One package overview plus one summary per module and per file.
+LARGE_PACKAGE_SUMMARIES = 1 + LARGE_PACKAGE_MODULES + LARGE_PACKAGE_FILES
+
+
+def _benchmark_with_timings(
+    benchmark: Any, func: Callable[..., Any], *args: Any, **kwargs: Any
+) -> Tuple[Any, float]:
+    """Run ``func`` through the single permitted ``benchmark`` call and time every round.
+
+    ``benchmark.stats`` is ``None`` under ``--benchmark-disable``, so latency budgets
+    are checked against per-round timings recorded identically in both modes.
+    """
+    durations: List[float] = []
+
+    def timed() -> Any:
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            durations.append(time.perf_counter() - start)
+
+    result = benchmark(timed)
+    assert durations, "benchmark did not invoke the measured callable"
+    return result, statistics.fmean(durations)
 
 
 @pytest.mark.integration
@@ -102,64 +135,70 @@ class Helper{i}:
 
     def test_basic_generation_performance(self, benchmark, doc_service, large_package):
         """Benchmark basic documentation generation performance."""
-        result = benchmark(
+        result, mean_seconds = _benchmark_with_timings(
+            benchmark,
             doc_service.generate_documentation,
             package_path=str(large_package),
-            use_llm=False
+            use_llm=False,
         )
 
         # Should complete successfully
         assert result["status"] == "success"
 
-        # Should process multiple modules
-        assert result["modules_documented"] > 0
-        assert result["files_documented"] > 0
+        # Should document every module and file in the fixture
+        assert result["modules_documented"] == LARGE_PACKAGE_MODULES
+        assert result["files_documented"] == LARGE_PACKAGE_FILES
 
         # Performance should be reasonable
-        assert benchmark.stats["mean"] < 5.0  # Less than 5 seconds
+        assert mean_seconds < 5.0  # Less than 5 seconds
 
     def test_llm_generation_performance(self, benchmark, doc_service, large_package):
         """Benchmark LLM-based documentation generation performance."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Mock analysis"})
 
-            result = benchmark(
+            result, mean_seconds = _benchmark_with_timings(
+                benchmark,
                 doc_service.generate_documentation,
                 package_path=str(large_package),
-                use_llm=True
+                use_llm=True,
             )
 
             # Should complete successfully
             assert result["status"] == "success"
 
-            # Should generate LLM summaries
-            assert result["llm_summaries_generated"] > 0
+            # Should generate a package, module and file summary for every component
+            assert result["llm_summaries_generated"] == LARGE_PACKAGE_SUMMARIES
+            assert mock_llm.call_count >= LARGE_PACKAGE_SUMMARIES
 
             # Performance should be reasonable (with mocked LLM calls)
-            assert benchmark.stats["mean"] < 10.0  # Less than 10 seconds
+            assert mean_seconds < 10.0  # Less than 10 seconds
 
     def test_caching_performance(self, benchmark, doc_service, large_package):
         """Benchmark performance with caching enabled."""
         # First run to populate cache
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Cached response"})
 
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
+            first = doc_service.generate_documentation(
+                package_path=str(large_package), use_llm=True
             )
 
-        # Second run should use cache
-        result = benchmark(
-            doc_service.generate_documentation,
-            package_path=str(large_package),
-            use_llm=True
-        )
+        # Later runs must be served entirely from the cache
+        with patch.object(doc_service, "_call_ollama_llm") as uncached_llm:
+            result, mean_seconds = _benchmark_with_timings(
+                benchmark,
+                doc_service.generate_documentation,
+                package_path=str(large_package),
+                use_llm=True,
+            )
 
         assert result["status"] == "success"
+        assert uncached_llm.call_count == 0
+        assert result["llm_summaries_generated"] == first["llm_summaries_generated"]
 
-        # Should be faster due to caching
-        assert benchmark.stats["mean"] < 5.0  # Less than 5 seconds
+        # Should be fast because no provider calls are made
+        assert mean_seconds < 5.0  # Less than 5 seconds
 
     def test_memory_usage_during_generation(self, doc_service, large_package):
         """Test memory usage during documentation generation."""
@@ -167,13 +206,10 @@ class Helper{i}:
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
 
         # Generate documentation
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Test response"})
 
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
         memory_increase = final_memory - initial_memory
@@ -237,29 +273,30 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
         assert file_doc["total_classes"] == 50
         assert file_doc["total_functions"] == 100
 
-    def test_concurrent_processing_performance(self, benchmark, doc_service, large_package):
-        """Benchmark concurrent processing performance."""
-        # This test verifies that concurrent processing doesn't degrade performance
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+    @pytest.mark.parametrize("concurrent_limit", [1, 3, 5])
+    def test_concurrent_processing_performance(
+        self, benchmark, doc_service, large_package, concurrent_limit
+    ):
+        """Benchmark generation at each concurrency limit (one benchmark per limit)."""
+        doc_service._max_concurrent_llm_calls = concurrent_limit
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Concurrent response"})
 
-            # Test with different concurrent limits
-            for concurrent_limit in [1, 3, 5]:
-                doc_service._max_concurrent_llm_calls = concurrent_limit
+            result, mean_seconds = _benchmark_with_timings(
+                benchmark,
+                doc_service.generate_documentation,
+                package_path=str(large_package),
+                use_llm=True,
+            )
 
-                result = benchmark(
-                    doc_service.generate_documentation,
-                    package_path=str(large_package),
-                    use_llm=True
-                )
-
-                assert result["status"] == "success"
-                # Performance should be reasonable regardless of concurrency setting
-                assert benchmark.stats["mean"] < 15.0
+        assert result["status"] == "success"
+        assert result["llm_summaries_generated"] == LARGE_PACKAGE_SUMMARIES
+        # Performance should be reasonable regardless of concurrency setting
+        assert mean_seconds < 15.0
 
     def test_cache_performance_benefit(self, doc_service, large_package):
         """Test that caching provides performance benefits."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             call_count = 0
 
             def track_calls(prompt, model="llama3.1", temperature=0.3):
@@ -270,10 +307,7 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
             mock_llm.side_effect = track_calls
 
             # First generation (populate cache)
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
             first_call_count = call_count
 
@@ -281,10 +315,7 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
             call_count = 0
 
             # Second generation (should use cache)
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
             second_call_count = call_count
 
@@ -296,43 +327,42 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
 
     def test_search_index_performance(self, benchmark, doc_service, large_package):
         """Benchmark search index generation performance."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Search test"})
 
             # Generate documentation first
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
             # Benchmark search index generation
-            result = benchmark(doc_service.generate_search_index)
+            result, mean_seconds = _benchmark_with_timings(
+                benchmark, doc_service.generate_search_index
+            )
 
             assert isinstance(result, dict)
-            assert len(result.get("modules", {})) >= 0  # Allow for empty results
+            assert set(result["modules"]) == set(doc_service._module_docs)
+            assert len(result["modules"]) == LARGE_PACKAGE_MODULES
 
             # Should complete in reasonable time
-            assert benchmark.stats["mean"] < 5.0  # Less than 5 seconds
+            assert mean_seconds < 5.0  # Less than 5 seconds
 
     def test_markdown_export_performance(self, benchmark, doc_service, large_package):
         """Benchmark Markdown export performance."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Export test"})
 
             # Generate documentation first
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
             # Benchmark Markdown export
-            result = benchmark(doc_service.export_llm_analyses_to_markdown)
+            result, mean_seconds = _benchmark_with_timings(
+                benchmark, doc_service.export_llm_analyses_to_markdown
+            )
 
-            assert result["standalone_files"] > 0
+            assert result["standalone_files"] == LARGE_PACKAGE_SUMMARIES
             assert result["combined_file"] == 1
 
             # Should complete in reasonable time
-            assert benchmark.stats["mean"] < 5.0  # Less than 5 seconds
+            assert mean_seconds < 5.0  # Less than 5 seconds
 
     def test_memory_efficiency_large_summaries(self, doc_service):
         """Test memory efficiency with large LLM summaries."""
@@ -343,7 +373,7 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
                 "summary_type": "module",
                 "module_name": f"test.module_{i}",
                 "llm_analysis": "A" * 10000,  # 10KB per summary
-                "generated_at": "2025-10-01T10:00:00"
+                "generated_at": "2025-10-01T10:00:00",
             }
 
         doc_service._llm_summaries = large_summaries
@@ -368,40 +398,50 @@ def large_function_{i}(param1: str, param2: int = {i}) -> bool:
     def test_file_io_performance(self, benchmark, doc_service, large_package):
         """Benchmark file I/O performance during documentation generation."""
         # Benchmark file operations
-        result = benchmark(
+        result, mean_seconds = _benchmark_with_timings(
+            benchmark,
             doc_service.generate_documentation,
             package_path=str(large_package),
-            use_llm=False
+            use_llm=False,
         )
 
         assert result["status"] == "success"
+        assert result["files_documented"] == LARGE_PACKAGE_FILES
 
         # File I/O should be efficient
-        assert benchmark.stats["mean"] < 3.0  # Less than 3 seconds for I/O
+        assert mean_seconds < 3.0  # Less than 3 seconds for I/O
 
-    def test_cache_io_performance(self, benchmark, doc_service):
-        """Benchmark cache I/O performance."""
-        # Test cache write performance
-        cache_data = {"response": "Test data", "model": "test"}
+    CACHE_DATA = {"response": "Test data", "model": "test"}
+    CACHE_ENTRIES = 50
 
-        def write_cache():
-            for i in range(50):  # Reduced to 50 for faster testing
-                doc_service._cache_response(f"test_key_{i}", cache_data)
+    def test_cache_write_performance(self, benchmark, doc_service):
+        """Benchmark cache writes."""
 
-        result = benchmark(write_cache)
+        def write_cache() -> None:
+            for i in range(self.CACHE_ENTRIES):
+                doc_service._cache_response(f"test_key_{i}", self.CACHE_DATA)
 
+        _, mean_seconds = _benchmark_with_timings(benchmark, write_cache)
+
+        assert len(list(doc_service._cache_dir.glob("test_key_*.json"))) == self.CACHE_ENTRIES
         # Should be fast
-        assert result.stats["mean"] < 2.0  # Less than 2 seconds for 50 cache writes
+        assert mean_seconds < 2.0  # Less than 2 seconds for 50 cache writes
 
-        # Test cache read performance
-        def read_cache():
-            for i in range(50):  # Reduced to 50 for faster testing
-                doc_service._get_cached_response(f"test_key_{i}")
+    def test_cache_read_performance(self, benchmark, doc_service):
+        """Benchmark cache reads of previously written entries."""
+        for i in range(self.CACHE_ENTRIES):
+            doc_service._cache_response(f"test_key_{i}", self.CACHE_DATA)
 
-        result = benchmark(read_cache)
+        def read_cache() -> List[Any]:
+            return [
+                doc_service._get_cached_response(f"test_key_{i}") for i in range(self.CACHE_ENTRIES)
+            ]
 
+        responses, mean_seconds = _benchmark_with_timings(benchmark, read_cache)
+
+        assert responses == [self.CACHE_DATA] * self.CACHE_ENTRIES
         # Should be fast
-        assert result.stats["mean"] < 1.0  # Less than 1 second for 50 cache reads
+        assert mean_seconds < 1.0  # Less than 1 second for 50 cache reads
 
     def test_scalability_large_codebase(self, doc_service, tmp_path):
         """Test scalability with large codebase simulation."""
@@ -435,23 +475,22 @@ def function_{file_idx}() -> None:
         # Test processing time for large codebase
         start_time = time.time()
 
-        result = doc_service.generate_documentation(
-            package_path=str(large_codebase),
-            use_llm=False
-        )
+        result = doc_service.generate_documentation(package_path=str(large_codebase), use_llm=False)
 
         processing_time = time.time() - start_time
 
         # Should handle large codebase in reasonable time
         assert processing_time < 10.0  # Less than 10 seconds
 
-        # Should process all components
-        assert result["modules_documented"] == 5
-        assert result["files_documented"] == 30  # 5 modules * 6 files each (5 files + __init__.py)
+        # Should process all components. Each of the 5 sub-packages contributes its
+        # ``__init__`` ("module_i") plus 5 submodules ("module_i.file_j"); the root
+        # directory has no ``__init__.py`` and is therefore not a module.
+        assert result["modules_documented"] == 30  # 5 * (1 package init + 5 submodules)
+        assert result["files_documented"] == 30  # 5 * (5 files + __init__.py)
 
     def test_llm_call_timeout_handling(self, doc_service):
         """Test LLM call timeout handling."""
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             # Simulate timeout
             mock_post.side_effect = Exception("Timeout")
 
@@ -462,44 +501,57 @@ def function_{file_idx}() -> None:
             assert "placeholder response" in result.lower()
 
     def test_rate_limiting_effectiveness(self, doc_service, large_package):
-        """Test rate limiting effectiveness."""
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
-            call_times = []
+        """Provider calls never exceed the configured concurrency limit.
 
-            def track_timing(prompt, model="llama3.1", temperature=0.3):
-                import time
-                call_times.append(time.time())
+        The generator rate-limits with a bounded worker pool rather than time
+        delays. The first ``limit`` calls rendezvous at a barrier, proving the
+        limit is actually reached; every call records the in-flight peak, proving
+        it is never exceeded.
+        """
+        limit = 2
+        doc_service._max_concurrent_llm_calls = limit
+        state_lock = threading.Lock()
+        rendezvous = threading.Barrier(limit, timeout=10)
+        calls = 0
+        in_flight = 0
+        peak_in_flight = 0
+
+        def bounded_call(prompt, model="llama3.1", temperature=0.3):
+            nonlocal calls, in_flight, peak_in_flight
+            with state_lock:
+                calls += 1
+                call_index = calls
+                in_flight += 1
+                peak_in_flight = max(peak_in_flight, in_flight)
+            try:
+                if call_index <= limit:
+                    rendezvous.wait()
+                else:
+                    time.sleep(0.002)  # Give queued work a chance to overlap
                 return json.dumps({"overview": "Response"})
+            finally:
+                with state_lock:
+                    in_flight -= 1
 
-            mock_llm.side_effect = track_timing
-
-            # Set low concurrent limit
-            doc_service._max_concurrent_llm_calls = 2
-
-            # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
+        with patch.object(doc_service, "_call_ollama_llm", side_effect=bounded_call):
+            result = doc_service.generate_documentation(
+                package_path=str(large_package), use_llm=True
             )
 
-            # Check that calls are spread out (rate limited)
-            if len(call_times) > 1:
-                time_diffs = [call_times[i+1] - call_times[i] for i in range(len(call_times)-1)]
-                # Most calls should be reasonably spaced
-                assert any(diff > 0.1 for diff in time_diffs)  # Some delays due to rate limiting
+        assert result["status"] == "success"
+        assert result["llm_summaries_generated"] == LARGE_PACKAGE_SUMMARIES
+        assert calls == LARGE_PACKAGE_SUMMARIES
+        assert peak_in_flight == limit
 
     def test_resource_cleanup(self, doc_service, large_package):
         """Test proper resource cleanup after generation."""
         initial_files = len(list(doc_service.output_dir.rglob("*")))
 
-        with patch.object(doc_service, '_call_ollama_llm') as mock_llm:
+        with patch.object(doc_service, "_call_ollama_llm") as mock_llm:
             mock_llm.return_value = json.dumps({"overview": "Cleanup test"})
 
             # Generate documentation
-            doc_service.generate_documentation(
-                package_path=str(large_package),
-                use_llm=True
-            )
+            doc_service.generate_documentation(package_path=str(large_package), use_llm=True)
 
         final_files = len(list(doc_service.output_dir.rglob("*")))
 
@@ -513,8 +565,6 @@ def function_{file_idx}() -> None:
 
     def test_concurrent_generation_safety(self, doc_service, large_package):
         """Test thread safety of concurrent documentation generation."""
-        import threading
-
         results = []
         errors = []
 
@@ -523,7 +573,7 @@ def function_{file_idx}() -> None:
                 # Simple test without LLM calls to avoid mocking complexity
                 result = doc_service.generate_documentation(
                     package_path=str(large_package),
-                    use_llm=False  # Skip LLM to test basic thread safety
+                    use_llm=False,  # Skip LLM to test basic thread safety
                 )
 
                 results.append(result["status"])
@@ -544,4 +594,3 @@ def function_{file_idx}() -> None:
         # Should complete without errors
         assert len(errors) == 0
         assert all(status == "success" for status in results)
-

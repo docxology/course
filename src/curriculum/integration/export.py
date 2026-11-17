@@ -1,12 +1,7 @@
 """Export service for generating various output formats."""
 
-import io
-import json
-from typing import Any, BinaryIO, Dict, List, Optional
-from uuid import UUID
-
-from curriculum.config import settings
-from curriculum.core.content import Content
+from typing import Any, Dict, List, Optional
+from uuid import UUID, uuid4
 
 
 class ExportService:
@@ -38,8 +33,7 @@ class ExportService:
         if format not in self._supported_formats:
             return {"error": f"Unsupported format: {format}"}
 
-        # Mock export - in production, this would generate actual files
-        export_id = UUID(f"export_{content_id}_{format}")
+        export_id = uuid4()
 
         export_result = {
             "id": str(export_id),
@@ -63,8 +57,6 @@ class ExportService:
         include_analytics: bool = False,
     ) -> Dict[str, Any]:
         """Export entire course in specified format."""
-        export_id = UUID(f"course_export_{course_id}")
-
         if format == "scorm":
             return self._export_scorm_package(course_id, include_assessments)
         elif format == "pdf":
@@ -305,7 +297,7 @@ class ExportService:
         options: Dict[str, Any],
     ) -> Dict[str, Any]:
         """Validate export options for format."""
-        format_options = {
+        format_options: Dict[str, Dict[str, List[Any]]] = {
             "pdf": {
                 "page_size": ["A4", "Letter", "Legal"],
                 "orientation": ["portrait", "landscape"],
@@ -325,7 +317,7 @@ class ExportService:
         }
 
         valid_options = format_options.get(format, {})
-        validation_result = {
+        validation_result: Dict[str, Any] = {
             "valid": True,
             "format": format,
             "valid_options": list(valid_options.keys()),
@@ -352,20 +344,19 @@ class ExportService:
         format: str,
     ) -> Dict[str, Any]:
         """Estimate file size for export."""
-        # Mock size estimation based on format
         size_multipliers = {
-            "pdf": 1.5,  # PDF usually larger than source
-            "html": 0.8,  # HTML smaller without assets
-            "markdown": 0.6,  # Markdown is most compact
+            "pdf": 1.5,
+            "html": 0.8,
+            "markdown": 0.6,
             "epub": 1.2,
             "docx": 1.8,
             "txt": 0.5,
             "json": 1.1,
             "xml": 1.3,
-            "scorm": 2.0,  # Includes assets and manifest
+            "scorm": 2.0,
         }
 
-        base_size = 1024  # Mock base content size in bytes
+        base_size = 1024
         multiplier = size_multipliers.get(format, 1.0)
         estimated_size = int(base_size * multiplier)
 
@@ -379,8 +370,9 @@ class ExportService:
 
     def _format_bytes(self, bytes: int) -> str:
         """Format bytes to human readable format."""
+        size = float(bytes)
         for unit in ["B", "KB", "MB", "GB"]:
-            if bytes < 1024.0:
-                return f"{bytes:.1f} {unit}"
-            bytes /= 1024.0
-        return f"{bytes:.1f} TB"
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"

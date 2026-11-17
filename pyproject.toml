@@ -37,7 +37,7 @@ dependencies = [
     "redis>=5.0.0",
     "elasticsearch>=9.1.0",
     "aiofiles>=23.2.0",
-    "python-jose[cryptography]>=3.3.0",
+    "PyJWT[crypto]>=2.10.1",
     "passlib[bcrypt]>=1.7.4",
     "python-multipart>=0.0.6",
     "markdown>=3.5.0",
@@ -63,6 +63,8 @@ dev = [
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.1.0",
     "psutil>=5.9.0",
+    "pytest-benchmark>=5.1.0",
+    "asyncpg>=0.32.0",
     "black>=23.11.0",
     "flake8>=6.1.0",
     "mypy>=1.7.0",
@@ -130,6 +132,8 @@ disallow_untyped_calls = false
 
 [tool.pytest.ini_options]
 minversion = "7.0"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = ["src"]
 python_files = ["test_*.py", "*_test.py"]
@@ -174,3 +178,6 @@ disable = [
     "C0114",  # Missing module docstring
     "R0903",  # Too few public methods
 ]
+[[tool.mypy.overrides]]
+module = ["markdown", "json_log_formatter"]
+ignore_missing_imports = true

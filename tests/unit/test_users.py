@@ -1,9 +1,8 @@
 """Unit tests for User and Authentication Services."""
 
 import pytest
-from uuid import uuid4
 
-from curriculum.core.user import User, UserRole, UserPermission
+from curriculum.core.user import User, UserPermission, UserRole
 from curriculum.users.user import UserService
 
 
@@ -25,11 +24,11 @@ class TestUserService:
 
     def test_validation_methods_exist(self, user_service):
         """Test that validation methods exist."""
-        assert hasattr(user_service, '_validate_email')
-        assert hasattr(user_service, '_validate_username')
-        assert hasattr(user_service, '_validate_password_strength')
-        assert hasattr(user_service, '_hash_password')
-        assert hasattr(user_service, '_verify_password')
+        assert hasattr(user_service, "_validate_email")
+        assert hasattr(user_service, "_validate_username")
+        assert hasattr(user_service, "_validate_password_strength")
+        assert hasattr(user_service, "_hash_password")
+        assert hasattr(user_service, "_verify_password")
 
     def test_email_validation(self, user_service):
         """Test email validation."""
@@ -104,7 +103,9 @@ class TestUserService:
         assert UserPermission.ASSESSMENT_CREATE in instructor_permissions
 
         # Test multiple roles
-        combined_permissions = user_service._calculate_permissions([UserRole.STUDENT, UserRole.INSTRUCTOR])
+        combined_permissions = user_service._calculate_permissions(
+            [UserRole.STUDENT, UserRole.INSTRUCTOR]
+        )
         assert UserPermission.CONTENT_READ in combined_permissions
         assert UserPermission.CONTENT_CREATE in combined_permissions
 
@@ -258,4 +259,6 @@ class TestUserService:
 
         for method_name in required_methods:
             assert hasattr(user_service, method_name), f"Method {method_name} not found"
-            assert callable(getattr(user_service, method_name)), f"Method {method_name} not callable"
+            assert callable(
+                getattr(user_service, method_name)
+            ), f"Method {method_name} not callable"

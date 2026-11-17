@@ -1,8 +1,7 @@
 """Content rendering and compilation service."""
 
 import hashlib
-from typing import Any, Dict, Optional
-from uuid import UUID
+from typing import Any, Dict
 
 import markdown
 

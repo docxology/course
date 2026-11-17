@@ -1,8 +1,9 @@
 """Tests for configuration module."""
 
-import pytest
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
+import pytest
 
 
 @pytest.mark.unit
@@ -20,31 +21,31 @@ class TestConfig:
         from curriculum.config import settings
 
         # Core application settings
-        assert hasattr(settings, 'app_name')
-        assert hasattr(settings, 'app_version')
-        assert hasattr(settings, 'environment')
-        assert hasattr(settings, 'debug')
-        assert hasattr(settings, 'log_level')
+        assert hasattr(settings, "app_name")
+        assert hasattr(settings, "app_version")
+        assert hasattr(settings, "environment")
+        assert hasattr(settings, "debug")
+        assert hasattr(settings, "log_level")
 
         # Server settings
-        assert hasattr(settings, 'host')
-        assert hasattr(settings, 'port')
-        assert hasattr(settings, 'workers')
+        assert hasattr(settings, "host")
+        assert hasattr(settings, "port")
+        assert hasattr(settings, "workers")
 
         # Database settings
-        assert hasattr(settings, 'database_url')
-        assert hasattr(settings, 'mongodb_url')
-        assert hasattr(settings, 'redis_url')
+        assert hasattr(settings, "database_url")
+        assert hasattr(settings, "mongodb_url")
+        assert hasattr(settings, "redis_url")
 
         # Security settings
-        assert hasattr(settings, 'secret_key')
-        assert hasattr(settings, 'algorithm')
-        assert hasattr(settings, 'access_token_expire_minutes')
+        assert hasattr(settings, "secret_key")
+        assert hasattr(settings, "algorithm")
+        assert hasattr(settings, "access_token_expire_minutes")
 
         # Feature flags
-        assert hasattr(settings, 'enable_versioning')
-        assert hasattr(settings, 'enable_analytics')
-        assert hasattr(settings, 'enable_ai_features')
+        assert hasattr(settings, "enable_versioning")
+        assert hasattr(settings, "enable_analytics")
+        assert hasattr(settings, "enable_ai_features")
 
     def test_settings_environment_variables(self):
         """Test that settings can be overridden by environment variables."""
@@ -79,11 +80,11 @@ class TestConfig:
         from curriculum.config import settings
 
         # Test is_production property
-        assert hasattr(settings, 'is_production')
-        assert hasattr(settings, 'is_development')
+        assert hasattr(settings, "is_production")
+        assert hasattr(settings, "is_development")
 
         # Test allowed_extensions_list property
-        assert hasattr(settings, 'allowed_extensions_list')
+        assert hasattr(settings, "allowed_extensions_list")
         extensions = settings.allowed_extensions_list
         assert isinstance(extensions, list)
         assert ".pdf" in extensions
@@ -93,7 +94,7 @@ class TestConfig:
         """Test CORS origins configuration."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'cors_origins')
+        assert hasattr(settings, "cors_origins")
         assert isinstance(settings.cors_origins, list)
         assert "http://localhost:3000" in settings.cors_origins
         assert "http://localhost:8000" in settings.cors_origins
@@ -102,9 +103,9 @@ class TestConfig:
         """Test upload configuration settings."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'upload_dir')
-        assert hasattr(settings, 'max_upload_size')
-        assert hasattr(settings, 'allowed_extensions')
+        assert hasattr(settings, "upload_dir")
+        assert hasattr(settings, "max_upload_size")
+        assert hasattr(settings, "allowed_extensions")
 
         assert settings.upload_dir == "./data/uploads"
         assert settings.max_upload_size == 104857600  # 100MB
@@ -115,27 +116,27 @@ class TestConfig:
         from curriculum.config import settings
 
         # Database URLs
-        assert hasattr(settings, 'database_url')
-        assert hasattr(settings, 'mongodb_url')
-        assert hasattr(settings, 'mongodb_db_name')
-        assert hasattr(settings, 'redis_url')
+        assert hasattr(settings, "database_url")
+        assert hasattr(settings, "mongodb_url")
+        assert hasattr(settings, "mongodb_db_name")
+        assert hasattr(settings, "redis_url")
 
         # Search
-        assert hasattr(settings, 'elasticsearch_url')
-        assert hasattr(settings, 'elasticsearch_index')
+        assert hasattr(settings, "elasticsearch_url")
+        assert hasattr(settings, "elasticsearch_index")
 
         # Email
-        assert hasattr(settings, 'smtp_host')
-        assert hasattr(settings, 'smtp_port')
-        assert hasattr(settings, 'email_from')
+        assert hasattr(settings, "smtp_host")
+        assert hasattr(settings, "smtp_port")
+        assert hasattr(settings, "email_from")
 
     def test_settings_feature_flags(self):
         """Test feature flag settings."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'enable_versioning')
-        assert hasattr(settings, 'enable_analytics')
-        assert hasattr(settings, 'enable_ai_features')
+        assert hasattr(settings, "enable_versioning")
+        assert hasattr(settings, "enable_analytics")
+        assert hasattr(settings, "enable_ai_features")
 
         # Check default values
         assert settings.enable_versioning is True
@@ -146,28 +147,28 @@ class TestConfig:
         """Test caching configuration."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'redis_url')
+        assert hasattr(settings, "redis_url")
         assert settings.redis_url == "redis://localhost:6379/0"
 
     def test_settings_cdn_config(self):
         """Test CDN configuration."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'cdn_url')
-        assert hasattr(settings, 's3_bucket')
-        assert hasattr(settings, 's3_region')
+        assert hasattr(settings, "cdn_url")
+        assert hasattr(settings, "s3_bucket")
+        assert hasattr(settings, "s3_region")
 
         assert settings.cdn_url == "https://cdn.example.com"
         assert settings.s3_bucket == "curriculum-content"
         assert settings.s3_region == "us-east-1"
 
-    @patch.dict(os.environ, {'APP_NAME': 'TestApp', 'DEBUG': 'true'})
+    @patch.dict(os.environ, {"APP_NAME": "TestApp", "DEBUG": "true"})
     def test_settings_environment_override(self):
         """Test that environment variables override defaults."""
         from curriculum.config import get_settings
 
         # Create new settings instance to pick up environment variables
-        test_settings = get_settings()
+        get_settings()
 
         # Note: In a real test, we would need to reload the module
         # For now, just verify the method exists
@@ -178,11 +179,7 @@ class TestConfig:
         from curriculum.config import Settings
 
         # Test with valid data - create settings with environment override
-        with patch.dict(os.environ, {
-            'APP_NAME': 'Valid App',
-            'PORT': '8080',
-            'DEBUG': 'false'
-        }):
+        with patch.dict(os.environ, {"APP_NAME": "Valid App", "PORT": "8080", "DEBUG": "false"}):
             valid_settings = Settings()
 
             assert valid_settings.app_name == "Valid App"
@@ -193,11 +190,11 @@ class TestConfig:
         """Test email configuration settings."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'smtp_host')
-        assert hasattr(settings, 'smtp_port')
-        assert hasattr(settings, 'smtp_user')
-        assert hasattr(settings, 'smtp_password')
-        assert hasattr(settings, 'email_from')
+        assert hasattr(settings, "smtp_host")
+        assert hasattr(settings, "smtp_port")
+        assert hasattr(settings, "smtp_user")
+        assert hasattr(settings, "smtp_password")
+        assert hasattr(settings, "email_from")
 
         assert settings.smtp_host == "smtp.gmail.com"
         assert settings.smtp_port == 587
@@ -207,8 +204,8 @@ class TestConfig:
         """Test analytics configuration."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'analytics_enabled')
-        assert hasattr(settings, 'analytics_batch_size')
+        assert hasattr(settings, "analytics_enabled")
+        assert hasattr(settings, "analytics_batch_size")
 
         assert settings.analytics_enabled is True
         assert settings.analytics_batch_size == 100
@@ -217,10 +214,10 @@ class TestConfig:
         """Test secret key configuration."""
         from curriculum.config import settings
 
-        assert hasattr(settings, 'secret_key')
-        assert hasattr(settings, 'algorithm')
-        assert hasattr(settings, 'access_token_expire_minutes')
-        assert hasattr(settings, 'refresh_token_expire_days')
+        assert hasattr(settings, "secret_key")
+        assert hasattr(settings, "algorithm")
+        assert hasattr(settings, "access_token_expire_minutes")
+        assert hasattr(settings, "refresh_token_expire_days")
 
         assert settings.secret_key == "change-this-secret-key"
         assert settings.algorithm == "HS256"

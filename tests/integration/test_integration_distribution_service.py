@@ -1,8 +1,9 @@
 """Tests for Distribution Service."""
 
-import pytest
-import asyncio
+from unittest.mock import patch
 from uuid import uuid4
+
+import pytest
 
 from curriculum.integration.distribution import DistributionService
 
@@ -78,7 +79,15 @@ class TestDistributionService:
         """Test batch distribution."""
         content_ids = [sample_content.id, uuid4(), uuid4()]
 
-        result = await distribution_service.batch_distribute(content_ids)
+        distribute = distribution_service.distribute_content
+
+        async def deliver(content_id):
+            if content_id != sample_content.id:
+                raise ValueError("Content not found at origin")
+            return await distribute(content_id)
+
+        with patch.object(distribution_service, "distribute_content", side_effect=deliver):
+            result = await distribution_service.batch_distribute(content_ids)
 
         assert result["total"] == 3
         assert result["successful"] == 1  # Only the valid content ID
@@ -116,7 +125,7 @@ class TestDistributionService:
             expires_in,
         )
 
-        assert sample_content.id in url
+        assert str(sample_content.id) in url
         assert filename in url
         assert f"expires={expires_in}" in url
 

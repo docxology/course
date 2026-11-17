@@ -1,7 +1,6 @@
 """Formatting utilities."""
 
-from datetime import datetime, timedelta
-from typing import Optional
+from datetime import datetime
 
 
 def format_datetime(dt: datetime, format_str: str = "%Y-%m-%d %H:%M:%S") -> str:

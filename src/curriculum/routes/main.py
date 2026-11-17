@@ -2,17 +2,20 @@
 
 import time
 from contextlib import asynccontextmanager
+from typing import AsyncIterator, Dict, Union
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.base import RequestResponseEndpoint
+from starlette.responses import Response
 
 from curriculum.config import settings
 from curriculum.routes import analytics, assessments, content, users
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Application lifespan manager."""
     # Startup
     print(f"Starting {settings.app_name} v{settings.app_version}")
@@ -44,7 +47,7 @@ app.add_middleware(
 
 # Request timing middleware
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def add_process_time_header(request: Request, call_next: RequestResponseEndpoint) -> Response:
     """Add processing time to response headers."""
     start_time = time.time()
     response = await call_next(request)
@@ -55,7 +58,7 @@ async def add_process_time_header(request: Request, call_next):
 
 # Health check endpoint
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, Union[str, float]]:
     """Health check endpoint."""
     return {
         "status": "healthy",
@@ -94,7 +97,7 @@ app.include_router(
 
 # Global exception handlers
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Global exception handler."""
     return JSONResponse(
         status_code=500,

@@ -4,14 +4,16 @@ import json
 from typing import Any, Dict, List, Optional, Type
 from uuid import UUID
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, String, Text, select
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String, Text, select
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, selectinload
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from curriculum.config import settings
 from curriculum.core.base import BaseEntity
-from curriculum.db.base import DatabaseInterface
+from curriculum.core.content import Content
+from curriculum.core.user import User
+from curriculum.db.base import DatabaseInterface, T
 
 
 class Base(DeclarativeBase):
@@ -105,7 +107,7 @@ class PostgreSQLAdapter(DatabaseInterface):
         """Disconnect from PostgreSQL database."""
         await self.engine.dispose()
 
-    async def create(self, entity: BaseEntity) -> BaseEntity:
+    async def create(self, entity: T) -> T:
         """Create a new entity."""
         async with self.async_session() as session:
             # Convert Pydantic model to SQLAlchemy model
@@ -118,7 +120,7 @@ class PostgreSQLAdapter(DatabaseInterface):
             # Convert back to Pydantic model
             return self._sqlalchemy_to_pydantic(sql_model, type(entity))
 
-    async def get(self, entity_id: UUID, entity_type: Type[BaseEntity]) -> Optional[BaseEntity]:
+    async def get(self, entity_id: UUID, entity_type: Type[T]) -> Optional[T]:
         """Get entity by ID."""
         async with self.async_session() as session:
             # Map Pydantic type to SQLAlchemy model
@@ -129,7 +131,7 @@ class PostgreSQLAdapter(DatabaseInterface):
                 return self._sqlalchemy_to_pydantic(result, entity_type)
         return None
 
-    async def update(self, entity: BaseEntity) -> BaseEntity:
+    async def update(self, entity: T) -> T:
         """Update existing entity."""
         async with self.async_session() as session:
             sql_model_class = self._get_sql_model_class(type(entity))
@@ -147,7 +149,7 @@ class PostgreSQLAdapter(DatabaseInterface):
                 return self._sqlalchemy_to_pydantic(sql_model, type(entity))
         return entity
 
-    async def delete(self, entity_id: UUID, entity_type: Type[BaseEntity]) -> bool:
+    async def delete(self, entity_id: UUID, entity_type: Type[T]) -> bool:
         """Delete entity."""
         async with self.async_session() as session:
             sql_model_class = self._get_sql_model_class(entity_type)
@@ -161,11 +163,11 @@ class PostgreSQLAdapter(DatabaseInterface):
 
     async def list(
         self,
-        entity_type: Type[BaseEntity],
+        entity_type: Type[T],
         filters: Optional[Dict[str, Any]] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> List[BaseEntity]:
+    ) -> List[T]:
         """List entities with optional filtering and pagination."""
         async with self.async_session() as session:
             sql_model_class = self._get_sql_model_class(entity_type)
@@ -189,9 +191,7 @@ class PostgreSQLAdapter(DatabaseInterface):
 
             return [self._sqlalchemy_to_pydantic(model, entity_type) for model in sql_models]
 
-    async def count(
-        self, entity_type: Type[BaseEntity], filters: Optional[Dict[str, Any]] = None
-    ) -> int:
+    async def count(self, entity_type: Type[T], filters: Optional[Dict[str, Any]] = None) -> int:
         """Count entities matching filters."""
         async with self.async_session() as session:
             sql_model_class = self._get_sql_model_class(entity_type)
@@ -206,18 +206,18 @@ class PostgreSQLAdapter(DatabaseInterface):
             result = await session.execute(query)
             return len(result.scalars().all())
 
-    def _get_sql_model_class(self, entity_type: Type[BaseEntity]):
+    def _get_sql_model_class(self, entity_type: Type[T]) -> Type[Base]:
         """Map Pydantic model type to SQLAlchemy model class."""
         # This is a simplified mapping - in production you'd have a proper registry
-        type_mapping = {
-            # User: UserModel,
-            # Content: ContentModel,
-            # Add other mappings as needed
+        type_mapping: Dict[Type[BaseEntity], Type[Base]] = {
+            User: UserModel,
+            Content: ContentModel,
         }
+        if entity_type not in type_mapping:
+            raise ValueError(f"Unmapped entity type: {entity_type.__name__}")
+        return type_mapping[entity_type]
 
-        return type_mapping.get(entity_type)
-
-    def _pydantic_to_sqlalchemy(self, entity: BaseEntity):
+    def _pydantic_to_sqlalchemy(self, entity: BaseEntity) -> Base:
         """Convert Pydantic model to SQLAlchemy model."""
         # Simplified conversion - in production you'd handle this properly
         sql_model_class = self._get_sql_model_class(type(entity))
@@ -225,7 +225,7 @@ class PostgreSQLAdapter(DatabaseInterface):
 
         return sql_model_class(**data)
 
-    def _sqlalchemy_to_pydantic(self, sql_model, entity_type: Type[BaseEntity]) -> BaseEntity:
+    def _sqlalchemy_to_pydantic(self, sql_model: Base, entity_type: Type[T]) -> T:
         """Convert SQLAlchemy model to Pydantic model."""
         # Simplified conversion - in production you'd handle this properly
         data = {}

@@ -1,6 +1,6 @@
 """Thin orchestration layer for coordinating all services."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from uuid import UUID
 
 from curriculum.accessibility.accessibility import AccessibilityService
@@ -13,9 +13,7 @@ from curriculum.content.content import ContentService
 from curriculum.content.metadata import MetadataService
 from curriculum.content.rendering import RenderingService
 from curriculum.content.version_control import VersionControlService
-from curriculum.core.assessment import Assessment, Submission
-from curriculum.core.content import Content
-from curriculum.core.user import User
+from curriculum.core.content import ContentFormat, ContentStatus, ContentType
 from curriculum.integration.distribution import DistributionService
 from curriculum.integration.export import ExportService
 from curriculum.integration.gamification import GamificationService
@@ -79,8 +77,8 @@ class CurriculumOrchestrator:
         # Create course content
         course = self.content.create_content(
             title=title,
-            content_type="course",
-            format="html",
+            content_type=ContentType.COURSE,
+            format=ContentFormat.HTML,
             author_id=instructor_id,
             description=description,
         )
@@ -90,8 +88,8 @@ class CurriculumOrchestrator:
         for lesson_title in lesson_titles:
             lesson = self.content.create_content(
                 title=lesson_title,
-                content_type="lesson",
-                format="markdown",
+                content_type=ContentType.LESSON,
+                format=ContentFormat.MARKDOWN,
                 author_id=instructor_id,
                 parent_id=course.id,
             )
@@ -124,7 +122,7 @@ class CurriculumOrchestrator:
         course_progress = self.progress.get_user_course_progress(user_id, course_id)
 
         # Get engagement metrics
-        engagement = self.analytics.get_learning_analytics(user_id)
+        engagement = self.progress.get_learning_analytics(user_id)
 
         # Generate insights
         insights = self.progress.generate_progress_insights(user_id, course_id)
@@ -265,12 +263,16 @@ class CurriculumOrchestrator:
         )
 
         # Check milestones
-        course_progress = self.progress.get_user_course_progress(user_id, metadata.get("course_id"))
-        milestone_achievements = self.progress.check_milestone_achievement(
-            user_id=user_id,
-            course_id=metadata.get("course_id"),
-            current_progress=course_progress.get("overall_progress", 0),
-        )
+        raw_course_id = metadata.get("course_id")
+        course_id = UUID(str(raw_course_id)) if raw_course_id is not None else None
+        milestone_achievements = []
+        if course_id is not None:
+            course_progress = self.progress.get_user_course_progress(user_id, course_id)
+            milestone_achievements = self.progress.check_milestone_achievement(
+                user_id=user_id,
+                course_id=course_id,
+                current_progress=course_progress.get("overall_progress", 0),
+            )
 
         # Get updated user badges
         badges = self.gamification.get_user_badges(user_id)
@@ -454,13 +456,14 @@ class CurriculumOrchestrator:
     ) -> Dict[str, Any]:
         """Set up search and content discovery."""
         # Index course content
-        search_indexed = await self.search.connect()
+        await self.search.connect()
+        search_indexed = self.search.is_connected()
 
         # Get search statistics
         search_stats = await self.search.get_index_stats()
 
         # Get content for indexing
-        contents = self.content.list_content(status="published")
+        contents = self.content.list_content(status=ContentStatus.PUBLISHED)
 
         # Index content
         indexed_count = 0
@@ -511,7 +514,7 @@ class CurriculumOrchestrator:
     # Health Check Orchestration
     async def system_health_check(self) -> Dict[str, Any]:
         """Perform comprehensive system health check."""
-        health_status = {
+        health_status: Dict[str, Any] = {
             "overall": "healthy",
             "services": {},
             "databases": {},

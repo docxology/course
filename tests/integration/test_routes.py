@@ -1,10 +1,21 @@
 """Tests for routes module."""
 
-import pytest
-from fastapi.testclient import TestClient
 from uuid import uuid4
 
+import pytest
+from fastapi.testclient import TestClient
+
+from curriculum.routes.dependencies import get_current_user
 from curriculum.routes.main import app
+
+
+@pytest.fixture
+def authenticated_user(sample_user):
+    previous = dict(app.dependency_overrides)
+    app.dependency_overrides[get_current_user] = lambda: sample_user
+    yield sample_user
+    app.dependency_overrides.clear()
+    app.dependency_overrides.update(previous)
 
 
 @pytest.mark.integration
@@ -92,10 +103,10 @@ class TestUserRoutes:
         """Test login with invalid credentials."""
         client = TestClient(app)
 
-        response = client.post("/api/v1/users/login", json={
-            "username_or_email": "nonexistent",
-            "password": "wrongpassword"
-        })
+        response = client.post(
+            "/api/v1/users/login",
+            json={"username_or_email": "nonexistent", "password": "wrongpassword"},
+        )
 
         assert response.status_code == 401
 
@@ -128,7 +139,7 @@ class TestAssessmentRoutes:
 
         assert response.status_code == 404
 
-    def test_list_assessments(self):
+    def test_list_assessments(self, authenticated_user):
         """Test listing assessments."""
         client = TestClient(app)
 
@@ -138,7 +149,7 @@ class TestAssessmentRoutes:
         data = response.json()
         assert isinstance(data, list)
 
-    def test_start_submission_not_found(self):
+    def test_start_submission_not_found(self, authenticated_user):
         """Test starting submission for non-existent assessment."""
         client = TestClient(app)
 
@@ -151,7 +162,7 @@ class TestAssessmentRoutes:
 class TestAnalyticsRoutes:
     """Tests for analytics routes."""
 
-    def test_get_user_report_unauthorized(self):
+    def test_get_user_report_unauthorized(self, authenticated_user):
         """Test getting user report without permissions."""
         client = TestClient(app)
 
@@ -170,11 +181,11 @@ class TestAnalyticsRoutes:
         assert "content_id" in data
         assert "total_views" in data
 
-    def test_get_user_events(self):
+    def test_get_user_events(self, authenticated_user):
         """Test getting user events."""
         client = TestClient(app)
 
-        response = client.get(f"/api/v1/analytics/users/{uuid4()}/events")
+        response = client.get(f"/api/v1/analytics/users/{authenticated_user.id}/events")
 
         assert response.status_code == 200
         data = response.json()
@@ -190,7 +201,7 @@ class TestAnalyticsRoutes:
         data = response.json()
         assert isinstance(data, list)
 
-    def test_dashboard_overview_unauthorized(self):
+    def test_dashboard_overview_unauthorized(self, authenticated_user):
         """Test dashboard overview without permissions."""
         client = TestClient(app)
 
@@ -198,7 +209,7 @@ class TestAnalyticsRoutes:
 
         assert response.status_code == 403
 
-    def test_export_analytics_report_unauthorized(self):
+    def test_export_analytics_report_unauthorized(self, authenticated_user):
         """Test exporting analytics report without permissions."""
         client = TestClient(app)
 
@@ -213,7 +224,7 @@ class TestRouteStructure:
 
     def test_api_versioning(self):
         """Test that API routes are properly versioned."""
-        client = TestClient(app)
+        paths = app.openapi()["paths"]
 
         # All API routes should start with /api/v1/
         api_routes = [
@@ -225,7 +236,7 @@ class TestRouteStructure:
 
         for route in api_routes:
             # Just check that the routes exist in the app
-            assert route in str(app.routes)
+            assert any(path.startswith(route) for path in paths), route
 
     def test_cors_middleware(self):
         """Test that CORS middleware is configured."""
@@ -235,7 +246,7 @@ class TestRouteStructure:
     def test_exception_handlers(self):
         """Test that global exception handlers are configured."""
         # Check that exception handler is in the app
-        assert hasattr(app, 'exception_handlers')
+        assert hasattr(app, "exception_handlers")
         assert Exception in app.exception_handlers
 
     def test_route_tags(self):
@@ -252,18 +263,13 @@ class TestRouteStructure:
 
     def test_route_dependencies(self):
         """Test that routes have proper dependencies."""
-        # Check that protected routes have dependencies
-        protected_routes = [
-            route for route in app.routes
-            if any(dep for dep in route.dependencies if "Depends" in str(dep))
-        ]
-
-        assert len(protected_routes) > 0
+        operation = app.openapi()["paths"]["/api/v1/assessments/"]["post"]
+        assert operation["security"] == [{"OAuth2PasswordBearer": []}]
 
     def test_middleware_order(self):
         """Test that middleware is properly ordered."""
         # Check that CORS middleware is configured
-        middleware_classes = [str(type(m.cls)) for m in app.user_middleware]
+        middleware_classes = [m.cls.__name__ for m in app.user_middleware]
 
         # CORS should be configured (though exact order may vary)
         assert any("CORSMiddleware" in cls for cls in middleware_classes)
@@ -293,5 +299,3 @@ class TestRouteStructure:
 
         # Should have error information
         assert "detail" in data
-
-

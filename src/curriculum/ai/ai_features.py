@@ -1,12 +1,21 @@
 """AI-powered features service for intelligent tutoring and recommendations."""
 
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
 from curriculum.core.assessment import Assessment, Submission
 from curriculum.core.content import Content
-from curriculum.core.user import User
+
+
+def _coerce_uuid(value: Union[UUID, str]) -> Optional[UUID]:
+    """Convert a UUID or string UUID into a UUID object, or None if invalid."""
+    if isinstance(value, UUID):
+        return value
+    try:
+        return UUID(value)
+    except (ValueError, TypeError):
+        return None
 
 
 class AIFeaturesService:
@@ -18,13 +27,20 @@ class AIFeaturesService:
         self._tutoring_sessions: dict[UUID, dict] = {}
         self._content_analysis: dict[UUID, dict] = {}
 
-    def analyze_content_difficulty(self, content: Content) -> Dict[str, Any]:
+    def analyze_content_difficulty(self, content: Optional[Content]) -> Dict[str, Any]:
         """Analyze content difficulty level."""
+        if content is None:
+            return {
+                "error": "Invalid content",
+                "difficulty_level": "unknown",
+                "complexity_score": 0.0,
+            }
+
         content_id = content.id
 
         # Mock AI analysis - in production, this would use ML models
         word_count = len(content.content_body.split()) if content.content_body else 0
-        technical_terms = self._extract_technical_terms(content.content_body)
+        technical_terms = self._extract_technical_terms(content.content_body or "")
 
         # Simple heuristic for difficulty
         if word_count < 500:
@@ -125,12 +141,13 @@ class AIFeaturesService:
 
     def provide_intelligent_feedback(
         self,
-        session_id: UUID,
+        session_id: Union[UUID, str],
         user_response: str,
         question_type: str = "conceptual",
     ) -> Dict[str, Any]:
         """Provide intelligent feedback on user response."""
-        session = self._tutoring_sessions.get(session_id)
+        resolved_id = _coerce_uuid(session_id)
+        session = self._tutoring_sessions.get(resolved_id) if resolved_id else None
         if not session:
             return {"error": "Tutoring session not found"}
 
@@ -139,7 +156,7 @@ class AIFeaturesService:
         feedback_type = random.choice(feedback_types)
 
         feedback = {
-            "session_id": str(session_id),
+            "session_id": str(resolved_id),
             "feedback_type": feedback_type,
             "is_correct": random.choice([True, False]),
             "confidence": random.uniform(0.7, 0.95),
@@ -356,7 +373,9 @@ class AIFeaturesService:
     ) -> Dict[str, Any]:
         """Automatically grade submission using AI."""
         # Mock automated grading
-        total_points = sum(q.points for q in assessment.question_ids)  # Would get actual questions
+        total_points = assessment.total_points or float(
+            len(assessment.question_ids) * 10 or 100
+        )  # Would get actual questions
 
         # Simulate AI grading based on content analysis
         if rubric:
@@ -370,7 +389,7 @@ class AIFeaturesService:
             "submission_id": str(submission.id),
             "automated_score": score,
             "max_score": total_points,
-            "percentage": (score / total_points) * 100,
+            "percentage": (score / total_points) * 100 if total_points else 0.0,
             "feedback": [
                 "Good understanding of core concepts",
                 "Consider reviewing edge cases",

@@ -7,14 +7,14 @@ from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from curriculum.config import settings
-from curriculum.core.content import Content, ContentFormat
 
 
 class DistributionService:
     """Service for content distribution and delivery."""
 
-    def __init__(self) -> None:
+    def __init__(self, content_service: Optional[Any] = None) -> None:
         """Initialize distribution service."""
+        self._content_service = content_service
         self._cdn_urls: Dict[str, str] = {}
         self._cache_manifest: Dict[str, Dict[str, Any]] = {}
         self._distribution_queue: asyncio.Queue = asyncio.Queue()
@@ -26,10 +26,12 @@ class DistributionService:
         regions: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Distribute content to CDN and edge locations."""
-        # Get content (would be from database in production)
-        # content = await self._get_content(content_id)
+        if self._content_service is not None:
+            content = self._content_service.get_content(content_id)
+            if content is None:
+                raise ValueError(f"Content {content_id} not found")
 
-        distribution_result = {
+        distribution_result: Dict[str, Any] = {
             "content_id": str(content_id),
             "format": target_format,
             "status": "distributing",
@@ -51,6 +53,9 @@ class DistributionService:
             distribution_result["cdn_urls"][region] = f"{cdn_url}?region={region}"
 
         distribution_result["status"] = "completed"
+        self._cache_manifest[self.generate_cache_key(content_id, target_format)] = (
+            distribution_result
+        )
 
         return distribution_result
 
@@ -59,9 +64,9 @@ class DistributionService:
         # Simulate cache invalidation
         await asyncio.sleep(0.1)  # Simulate async operation
 
-        cache_key = f"content:{content_id}"
-        if cache_key in self._cache_manifest:
-            del self._cache_manifest[cache_key]
+        prefix = f"content:{content_id}"
+        for key in [k for k in self._cache_manifest if k.startswith(prefix)]:
+            del self._cache_manifest[key]
 
         return True
 

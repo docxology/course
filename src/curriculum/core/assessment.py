@@ -37,6 +37,7 @@ class GradingStatus(str, Enum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
+    GRADED = "completed"
     FLAGGED = "flagged"
 
 
@@ -47,8 +48,9 @@ class Assessment(BaseEntity):
     description: Optional[str] = None
     instructions: Optional[str] = None
 
-    # Content relationship
+    # Content and author relationships
     content_id: Optional[UUID] = None
+    created_by: Optional[UUID] = None
 
     # Assessment settings
     time_limit: Optional[int] = None  # minutes
@@ -163,6 +165,11 @@ class Submission(BaseEntity):
     time_spent: Optional[int] = None  # seconds
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
+
+    @property
+    def status(self) -> GradingStatus:
+        """Return the submission grading status."""
+        return self.grading_status
 
     def submit(self) -> None:
         """Mark submission as submitted."""

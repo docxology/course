@@ -18,47 +18,56 @@ jobs:
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # actions/setup-python@v7.1.0
       with:
         python-version-file: ".python-version"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+    - name: Set up uv
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # astral-sh/setup-uv@v10.3.3
+      with:
+        version: "0.13.8"
+        enable-cache: true
+        cache-dependency-glob: uv.lock
 
-    - name: Install security tools
+    - name: Export locked requirements
       run: |
-        pip install safety bandit[toml] pip-audit
-
-    - name: Run Safety (known vulnerabilities)
-      run: |
-        safety check --json --output safety-report.json || true
+        uv export --frozen --extra dev --extra docs --no-emit-project --format requirements-txt -o requirements-audit.txt
 
     - name: Run Bandit (security linter)
       run: |
-        bandit -r src/ -f json -o bandit-report.json || true
+        uvx --from 'bandit[toml]==1.9.4' bandit -r src/ -f json -o bandit-report.json || true
 
-    - name: Run pip-audit (PyPI vulnerabilities)
+    - name: Run pip-audit (locked PyPI dependencies)
       run: |
-        pip-audit --format=json --output pip-audit-report.json || true
+        uvx pip-audit==2.10.1 -r requirements-audit.txt --require-hashes --disable-pip --format json --output pip-audit-report.json
 
     - name: Upload security reports
+      if: always()
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # actions/upload-artifact@v7.0.2
       with:
         name: security-reports
         path: |
-          safety-report.json
           bandit-report.json
           pip-audit-report.json
         retention-days: 90
 
     - name: Security summary
+      if: always()
       run: |
-        echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- Safety: $(cat safety-report.json | jq '.vulnerabilities | length') vulnerabilities found" >> $GITHUB_STEP_SUMMARY
-        echo "- Bandit: $(cat bandit-report.json | jq '.metrics._totals.baseline') baseline issues" >> $GITHUB_STEP_SUMMARY
-        echo "- Pip-audit: $(cat pip-audit-report.json | jq '.vulnerabilities | length') vulnerabilities found" >> $GITHUB_STEP_SUMMARY
-
+        python - <<'PYTHON' >> "$GITHUB_STEP_SUMMARY"
+        import json
+        from pathlib import Path
+        for name in ("bandit-report.json", "pip-audit-report.json"):
+            path = Path(name)
+            if not path.exists():
+                print(f"- {name}: scan did not produce a report")
+                continue
+            report = json.loads(path.read_text())
+            findings = (len(report["results"]) if "results" in report else
+                        sum(len(dep.get("vulns", [])) for dep in report["dependencies"]))
+            print(f"- {name}: {findings} findings")
+        PYTHON

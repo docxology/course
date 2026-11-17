@@ -1,9 +1,8 @@
 """Tests for User and Authentication Services."""
 
 import pytest
-from uuid import uuid4
 
-from curriculum.core.user import UserRole, UserPermission
+from curriculum.core.user import UserPermission, UserRole
 
 
 @pytest.mark.integration
@@ -35,7 +34,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert first_user is not None
-        
+
         # Try to create duplicate with same email
         duplicate = user_service.create_user_legacy(
             email="test@example.com",
@@ -56,7 +55,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert first_user is not None
-        
+
         # Try to create duplicate with same username
         duplicate = user_service.create_user_legacy(
             email="different@example.com",
@@ -77,7 +76,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert created_user is not None
-        
+
         # Retrieve by email
         retrieved = user_service.get_user_by_email("test@example.com")
 
@@ -95,7 +94,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert created_user is not None
-        
+
         # Retrieve by username
         retrieved = user_service.get_user_by_username("testuser")
 
@@ -113,7 +112,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Update the user
         updated = user_service.update_user(
             user.id,
@@ -135,9 +134,11 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Change password
-        result = user_service.change_password(user.id, "StrongPassword123!", "newStrongPassword123!")
+        result = user_service.change_password(
+            user.id, "StrongPassword123!", "newStrongPassword123!"
+        )
 
         assert result is True
 
@@ -151,7 +152,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Verify correct and incorrect passwords
         assert user_service.verify_password(user.id, "StrongPassword123!") is True
         assert user_service.verify_password(user.id, "wrongpassword") is False
@@ -166,7 +167,7 @@ class TestUserService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Add instructor role
         updated = user_service.add_role(user.id, UserRole.INSTRUCTOR)
         assert UserRole.INSTRUCTOR in updated.roles
@@ -186,7 +187,7 @@ class TestUserService:
         )
         assert user is not None
         assert user.is_active is True
-        
+
         # Deactivate the user
         result = user_service.deactivate_user(user.id)
 
@@ -206,7 +207,7 @@ class TestUserService:
         )
         assert user is not None
         user_service.deactivate_user(user.id)
-        
+
         # Activate the user
         result = user_service.activate_user(user.id)
 
@@ -237,7 +238,7 @@ class TestUserService:
     def test_list_users(self, user_service):
         """Test listing users with filters."""
         # Create multiple users
-        user1 = user_service.create_user_legacy(
+        user_service.create_user_legacy(
             email="student@example.com",
             username="student1",
             full_name="Student One",
@@ -251,7 +252,7 @@ class TestUserService:
         )
         # Add instructor role to user2
         user_service.add_role(user2.id, UserRole.INSTRUCTOR)
-        
+
         # List all active users
         users = user_service.list_users(active_only=True)
         assert len(users) >= 2
@@ -304,7 +305,7 @@ class TestAuthenticationService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Try with wrong password
         authenticated = auth_service.authenticate_user("testuser", "wrongpassword")
 
@@ -337,7 +338,7 @@ class TestAuthenticationService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Create access token
         token = auth_service.create_access_token(user.id)
 
@@ -355,7 +356,7 @@ class TestAuthenticationService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Create refresh token
         token = auth_service.create_refresh_token(user.id)
 
@@ -372,7 +373,7 @@ class TestAuthenticationService:
             password="StrongPassword123!",
         )
         assert user is not None
-        
+
         # Create and verify token
         token = auth_service.create_access_token(user.id)
         user_id = auth_service.verify_token(token)
@@ -398,12 +399,9 @@ class TestAuthenticationService:
         assert instructor is not None
         # Add instructor role
         instructor = user_service.add_role(instructor.id, UserRole.INSTRUCTOR)
-        
+
         # Check permission
-        has_perm = auth_service.has_permission(
-            instructor.id,
-            UserPermission.CONTENT_CREATE
-        )
+        has_perm = auth_service.has_permission(instructor.id, UserPermission.CONTENT_CREATE)
 
         assert has_perm is True
 
@@ -419,7 +417,7 @@ class TestAuthenticationService:
         assert instructor is not None
         # Add instructor role
         instructor = user_service.add_role(instructor.id, UserRole.INSTRUCTOR)
-        
+
         # Check role
         has_role = auth_service.has_role(instructor.id, UserRole.INSTRUCTOR)
 

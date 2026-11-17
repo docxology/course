@@ -1,6 +1,6 @@
 """Content API routes."""
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
@@ -9,8 +9,9 @@ from pydantic import BaseModel
 from curriculum.content.content import ContentService
 from curriculum.content.rendering import RenderingService
 from curriculum.content.version_control import VersionControlService
-from curriculum.core.base import PagedResponse
 from curriculum.core.content import Content, ContentFormat, ContentStatus, ContentType
+from curriculum.core.user import User
+from curriculum.routes.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -61,13 +62,15 @@ class ContentResponse(BaseModel):
 
 # Routes
 @router.post("/", response_model=ContentResponse)
-async def create_content(request: CreateContentRequest):
+async def create_content(
+    request: CreateContentRequest, current_user: User = Depends(get_current_user)
+) -> ContentResponse:
     """Create new content."""
     content = content_service.create_content(
         title=request.title,
         content_type=request.content_type,
         format=request.format,
-        author_id=UUID("12345678-1234-5678-1234-567812345678"),  # TODO: Get from auth
+        author_id=current_user.id,
         description=request.description,
         content_body=request.content_body,
     )
@@ -83,7 +86,7 @@ async def create_content(request: CreateContentRequest):
 
 
 @router.get("/{content_id}", response_model=ContentResponse)
-async def get_content(content_id: UUID = Path(..., description="Content ID")):
+async def get_content(content_id: UUID = Path(..., description="Content ID")) -> ContentResponse:
     """Get content by ID."""
     content = content_service.get_content(content_id)
     if not content:
@@ -100,7 +103,7 @@ async def update_content(
     content_id: UUID,
     request: UpdateContentRequest,
     content_id_path: UUID = Path(..., description="Content ID"),
-):
+) -> ContentResponse:
     """Update content."""
     if content_id != content_id_path:
         raise HTTPException(status_code=400, detail="Content ID mismatch")
@@ -127,7 +130,7 @@ async def update_content(
 
 
 @router.delete("/{content_id}")
-async def delete_content(content_id: UUID):
+async def delete_content(content_id: UUID) -> Dict[str, Any]:
     """Soft delete content."""
     success = content_service.delete_content(content_id)
     if not success:
@@ -137,7 +140,7 @@ async def delete_content(content_id: UUID):
 
 
 @router.post("/{content_id}/publish")
-async def publish_content(content_id: UUID):
+async def publish_content(content_id: UUID) -> Dict[str, Any]:
     """Publish content."""
     content = content_service.publish_content(content_id)
     if not content:
@@ -153,7 +156,7 @@ async def change_content_status(
     content_id: UUID,
     new_status: ContentStatus,
     content_id_path: UUID = Path(..., description="Content ID"),
-):
+) -> Dict[str, Any]:
     """Change content status."""
     if content_id != content_id_path:
         raise HTTPException(status_code=400, detail="Content ID mismatch")
@@ -172,7 +175,7 @@ async def list_content(
     status: Optional[ContentStatus] = Query(None, description="Filter by status"),
     author_id: Optional[UUID] = Query(None, description="Filter by author"),
     search: Optional[str] = Query(None, description="Search query"),
-):
+) -> Dict[str, Any]:
     """List content with pagination and filtering."""
     if search:
         contents = content_service.search_content(search)
@@ -203,7 +206,7 @@ async def list_content(
 async def render_content(
     content_id: UUID,
     format: str = Query("html", description="Target format"),
-):
+) -> Dict[str, Any]:
     """Render content in specified format."""
     content = content_service.get_content(content_id)
     if not content:
@@ -214,7 +217,7 @@ async def render_content(
 
 
 @router.post("/{content_id}/download")
-async def download_content(content_id: UUID):
+async def download_content(content_id: UUID) -> Dict[str, Any]:
     """Download content (increment download count)."""
     content = content_service.get_content(content_id)
     if not content:
@@ -229,7 +232,7 @@ async def download_content(content_id: UUID):
 
 
 @router.get("/{content_id}/versions")
-async def get_content_versions(content_id: UUID):
+async def get_content_versions(content_id: UUID) -> Dict[str, Any]:
     """Get all versions of content."""
     versions = version_service.get_content_versions(content_id)
 
@@ -249,7 +252,7 @@ async def get_content_versions(content_id: UUID):
 
 
 @router.get("/{content_id}/children")
-async def get_content_children(content_id: UUID):
+async def get_content_children(content_id: UUID) -> Dict[str, Any]:
     """Get child content items."""
     children = content_service.get_children(content_id)
 

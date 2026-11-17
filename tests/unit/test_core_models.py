@@ -1,13 +1,14 @@
 """Tests for data models."""
 
-import pytest
 from datetime import datetime
 from uuid import UUID
 
-from curriculum.core.content import Content, ContentStatus, ContentFormat, ContentType
-from curriculum.core.user import User, UserRole, UserPermission
-from curriculum.core.metadata import Metadata, DublinCore, ResourceType
-from curriculum.core.assessment import Question, QuestionType, Assessment
+import pytest
+
+from curriculum.core.assessment import Assessment, Question, QuestionType
+from curriculum.core.content import Content, ContentFormat, ContentStatus, ContentType
+from curriculum.core.metadata import DublinCore, Metadata, ResourceType
+from curriculum.core.user import User, UserPermission, UserRole
 
 
 @pytest.mark.unit

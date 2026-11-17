@@ -1,6 +1,5 @@
 """Configuration management for the Curriculum Repository System."""
 
-import os
 from functools import lru_cache
 from typing import List, Optional
 

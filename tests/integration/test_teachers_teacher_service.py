@@ -1,7 +1,8 @@
 """Tests for Teacher Service."""
 
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from curriculum.teachers.teacher import TeacherService
 
@@ -68,7 +69,7 @@ class TestTeacherService:
             course_id=course_id,
             title="Test Announcement",
             content="This is a test announcement",
-            priority="normal"
+            priority="normal",
         )
 
         assert announcement["teacher_id"] == str(teacher_id)
@@ -88,13 +89,11 @@ class TestTeacherService:
             "end_time": "16:00",
             "location": "Virtual",
             "is_recurring": True,
-            "max_students": 10
+            "max_students": 10,
         }
 
         office_hours = teacher_service.schedule_office_hours(
-            teacher_id=teacher_id,
-            course_id=course_id,
-            schedule=schedule
+            teacher_id=teacher_id, course_id=course_id, schedule=schedule
         )
 
         assert office_hours["teacher_id"] == str(teacher_id)
@@ -138,7 +137,7 @@ class TestTeacherService:
             teacher_id=teacher_id,
             student_id=student_id,
             subject="Test Subject",
-            message="Test message content"
+            message="Test message content",
         )
 
         assert message["sender_id"] == str(teacher_id)
@@ -154,14 +153,11 @@ class TestTeacherService:
         criteria = [
             {"name": "Correctness", "points": 40, "description": "Technical accuracy"},
             {"name": "Clarity", "points": 30, "description": "Clear presentation"},
-            {"name": "Completeness", "points": 30, "description": "Complete solution"}
+            {"name": "Completeness", "points": 30, "description": "Complete solution"},
         ]
 
         rubric = teacher_service.create_assignment_rubric(
-            teacher_id=teacher_id,
-            course_id=course_id,
-            title="Test Rubric",
-            criteria=criteria
+            teacher_id=teacher_id, course_id=course_id, title="Test Rubric", criteria=criteria
         )
 
         assert rubric["teacher_id"] == str(teacher_id)
@@ -176,9 +172,7 @@ class TestTeacherService:
         course_id = uuid4()
 
         report = teacher_service.generate_grade_report(
-            teacher_id=teacher_id,
-            course_id=course_id,
-            format="pdf"
+            teacher_id=teacher_id, course_id=course_id, format="pdf"
         )
 
         assert report["teacher_id"] == str(teacher_id)
@@ -204,10 +198,7 @@ class TestTeacherService:
         post_id = "test_post_123"
 
         moderation = teacher_service.moderate_discussion_post(
-            teacher_id=teacher_id,
-            post_id=post_id,
-            action="approve",
-            reason="Good content"
+            teacher_id=teacher_id, post_id=post_id, action="approve", reason="Good content"
         )
 
         assert moderation["post_id"] == post_id
@@ -222,13 +213,11 @@ class TestTeacherService:
 
         events = [
             {"title": "Week 1", "date": "2024-01-15T09:00:00Z", "type": "lesson"},
-            {"title": "Assignment 1", "date": "2024-01-22T23:59:59Z", "type": "deadline"}
+            {"title": "Assignment 1", "date": "2024-01-22T23:59:59Z", "type": "deadline"},
         ]
 
         calendar = teacher_service.create_course_calendar(
-            teacher_id=teacher_id,
-            course_id=course_id,
-            events=events
+            teacher_id=teacher_id, course_id=course_id, events=events
         )
 
         assert calendar["teacher_id"] == str(teacher_id)
@@ -255,14 +244,10 @@ class TestTeacherService:
         course_id = uuid4()
 
         export_data = teacher_service.export_course_data(
-            teacher_id=teacher_id,
-            course_id=course_id,
-            export_type="complete"
+            teacher_id=teacher_id, course_id=course_id, export_type="complete"
         )
 
         assert export_data["teacher_id"] == str(teacher_id)
         assert export_data["course_id"] == str(course_id)
         assert export_data["export_type"] == "complete"
         assert "download_url" in export_data
-
-
