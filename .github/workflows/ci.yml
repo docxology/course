@@ -54,13 +54,15 @@ jobs:
         mypy src/
         isort --check-only src/ tests/
 
+    # Benchmarks are timed once, in performance.yml; here each benchmarked
+    # function still runs once per interpreter as a correctness check.
     - name: Run unit tests
       run: |
-        pytest tests/ -m "not integration and not slow" --cov=src --cov-report=xml --cov-report=term-missing
+        pytest tests/ -m "not integration and not slow" --benchmark-disable --cov=src --cov-report=xml --cov-report=term-missing
 
     - name: Run integration tests
       run: |
-        pytest tests/ -m integration --cov=src --cov-report=xml --cov-append --cov-report=term-missing
+        pytest tests/ -m integration --benchmark-disable --cov=src --cov-report=xml --cov-append --cov-report=term-missing
 
     - name: Upload coverage to Codecov
       continue-on-error: true
@@ -74,7 +76,7 @@ jobs:
     - name: Run slow tests
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        pytest tests/ -m slow --cov=src --cov-report=xml --cov-append --cov-report=term-missing
+        pytest tests/ -m slow --benchmark-disable --cov=src --cov-report=xml --cov-append --cov-report=term-missing
 
   security-scan:
     runs-on: ubuntu-latest
