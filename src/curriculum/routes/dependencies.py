@@ -26,7 +26,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     )
 
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token,
+            settings.secret_key,
+            algorithms=[settings.algorithm],
+            options={"require": ["exp", "sub", "token_type"]},
+        )
         user_id = payload.get("sub")
         if not isinstance(user_id, str) or payload.get("token_type") != "access":
             raise credentials_exception

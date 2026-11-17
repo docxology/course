@@ -486,9 +486,22 @@ class AuthenticationService:
         Returns:
             User UUID if token is valid, None otherwise
         """
+        return self._verify_token(token, "access")
+
+    def verify_refresh_token(self, token: str) -> Optional[UUID]:
+        """Verify a refresh token independently of access tokens."""
+        return self._verify_token(token, "refresh")
+
+    def _verify_token(self, token: str, expected_type: str) -> Optional[UUID]:
+        """Require the signed token's expiry, subject, and intended purpose."""
         try:
-            payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
-            if payload.get("token_type") != "access":
+            payload = jwt.decode(
+                token,
+                settings.secret_key,
+                algorithms=[settings.algorithm],
+                options={"require": ["exp", "sub", "token_type"]},
+            )
+            if payload["token_type"] != expected_type:
                 return None
             return UUID(payload["sub"])
         except (jwt.InvalidTokenError, ValueError, KeyError):

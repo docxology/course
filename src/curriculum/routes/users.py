@@ -105,16 +105,17 @@ async def login(request: LoginRequest) -> TokenResponse:
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(refresh_token: str) -> TokenResponse:
     """Refresh access token using refresh token."""
-    user_id = auth_service.verify_token(refresh_token)
-    if not user_id:
+    user_id = auth_service.verify_refresh_token(refresh_token)
+    user = user_service.get_user(user_id) if user_id else None
+    if user is None or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",
         )
 
     # Generate new tokens
-    access_token = auth_service.create_access_token(user_id)
-    new_refresh_token = auth_service.create_refresh_token(user_id)
+    access_token = auth_service.create_access_token(user.id)
+    new_refresh_token = auth_service.create_refresh_token(user.id)
 
     return TokenResponse(
         access_token=access_token,

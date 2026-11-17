@@ -13,11 +13,13 @@ import ast
 import hashlib
 import json
 import logging
+import os
 import subprocess
 import time
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from threading import RLock
 from typing import Any, Dict, List, Optional, Tuple, Union
 from uuid import uuid4
@@ -65,6 +67,7 @@ class DocumentationGeneratorService:
     def __init__(self, output_dir: str = "./docs/generated") -> None:
         """Initialize documentation generator service."""
         self._generation_lock = RLock()
+        self._cache_lock = RLock()
         self.output_dir = Path(output_dir)
         self._module_docs: Dict[str, Dict[str, Any]] = {}
         self._file_docs: Dict[str, Dict[str, Any]] = {}
@@ -286,6 +289,11 @@ class DocumentationGeneratorService:
         return hashlib.sha256(content).hexdigest()
 
     def _get_cached_response(self, cache_key: str) -> Optional[Dict[str, Any]]:
+        """Read one complete cache entry under the instance cache lock."""
+        with self._cache_lock:
+            return self._read_cached_response(cache_key)
+
+    def _read_cached_response(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """Retrieve cached LLM response if available and not expired."""
         self._performance_metrics["total_llm_calls"] += 1
 
@@ -399,6 +407,13 @@ class DocumentationGeneratorService:
     def _cache_response(
         self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None
     ) -> None:
+        """Publish one complete cache entry under the instance cache lock."""
+        with self._cache_lock:
+            self._write_cached_response(cache_key, response, file_path)
+
+    def _write_cached_response(
+        self, cache_key: str, response: Dict[str, Any], file_path: Optional[str] = None
+    ) -> None:
         """Store LLM response in cache with file path for invalidation."""
         if not self._enable_caching:
             return
@@ -411,8 +426,15 @@ class DocumentationGeneratorService:
             }
 
             cache_file = self._cache_dir / f"{cache_key}.json"
-            with open(cache_file, "w") as f:
-                json.dump(cache_data, f, indent=2)
+            temporary_path: Optional[Path] = None
+            try:
+                with NamedTemporaryFile(mode="w", dir=self._cache_dir, delete=False) as f:
+                    temporary_path = Path(f.name)
+                    json.dump(cache_data, f, indent=2)
+                os.replace(temporary_path, cache_file)
+            finally:
+                if temporary_path is not None:
+                    temporary_path.unlink(missing_ok=True)
 
             logger.debug(f"Cached response for key: {cache_key} (file: {file_path})")
 

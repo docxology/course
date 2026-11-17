@@ -417,8 +417,8 @@ class HugeClass{i}:
         for thread in threads:
             thread.join()
 
-        # Most operations should succeed (allow for some race conditions in testing)
-        assert sum(results) >= 3  # At least 3 out of 5 should succeed
+        # Every reader must see a complete cache snapshot.
+        assert results == [True] * 5
 
     def test_extremely_nested_imports(self, doc_service, tmp_path):
         """Test handling of extremely nested import structures."""
