@@ -1,7 +1,7 @@
 """Offline support service for downloadable content."""
 
 from typing import Any, Dict, List, Optional
-from uuid import UUID
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 
 class OfflineService:
@@ -21,7 +21,7 @@ class OfflineService:
         compression_level: str = "balanced",
     ) -> Dict[str, Any]:
         """Create an offline package for download."""
-        package_id = UUID(f"offline_{course_id}")
+        package_id = uuid5(NAMESPACE_URL, f"curriculum:offline-package:{course_id}")
 
         package = {
             "id": str(package_id),
