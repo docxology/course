@@ -1,7 +1,7 @@
 """Mobile support and responsive design service."""
 
 from typing import Any, Dict, List, Optional
-from uuid import UUID
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 from curriculum.core.content import Content
 
@@ -227,7 +227,7 @@ class MobileService:
         commute_time: int = 30,  # minutes
     ) -> Dict[str, Any]:
         """Create mobile-optimized learning path."""
-        path_id = UUID(f"mobile_path_{user_id}")
+        path_id = uuid5(NAMESPACE_URL, f"curriculum:mobile-path:{user_id}:{course_id}")
 
         # Suggest bite-sized lessons for mobile learning
         learning_path = {
