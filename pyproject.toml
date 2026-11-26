@@ -80,7 +80,7 @@ curriculum-server = "curriculum.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/docxology/course"
-Documentation = "https://github.com/docxology/course/blob/main/README.md"
+Documentation = "https://docxology.github.io/course/"
 Repository = "https://github.com/docxology/course"
 Issues = "https://github.com/docxology/course/issues"
 

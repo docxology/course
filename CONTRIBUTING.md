@@ -4,48 +4,13 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ## Getting Started
 
-### Prerequisites
-
-- the bound in `pyproject.toml` or newer
-- Git
-- A code editor (VS Code, PyCharm, etc.)
-- Basic understanding of FastAPI, Pydantic, and pytest
-
-### Development Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/docxology/course.git
-   cd course
-   ```
-
-2. **Set up a virtual environment:**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   pip install -e ".[dev]"
-   ```
-
-4. **Run tests:**
-   ```bash
-   pytest tests/ -v
-   ```
-
-5. **Set up pre-commit hooks:**
-   ```bash
-   pre-commit install
-   ```
+Follow the [quickstart](docs/quickstart.md) to install Git, uv and the locked development dependencies. Review the [test and documentation commands](docs/development/testing.md) before changing a public API.
 
 ## Development Workflow
 
 ### Branching Strategy
 
-- **main**: Default branch and production-ready code
+- **main**: Default branch
 - **feature/***: Feature branches
 - **bugfix/***: Bug fix branches
 - **hotfix/***: Critical bug fixes for production
@@ -66,12 +31,12 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 3. **Run tests:**
    ```bash
-   pytest tests/ -v
+   uv run --no-sync pytest tests/unit --no-cov
    ```
 
 4. **Check code quality:**
    ```bash
-   make lint
+   uv run --no-sync curriculum-server lint
    ```
 
 5. **Commit your changes:**
@@ -102,7 +67,7 @@ Thank you for your interest in contributing to the Curriculum Repository System!
 
 ### Documentation
 
-- Update README.md for significant changes
+- Keep the relevant guide under `docs/` current
 - Add docstrings to all public APIs
 - Update API documentation for new endpoints
 - Add changelog entries for user-facing changes

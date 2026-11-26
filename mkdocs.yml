@@ -5,6 +5,39 @@ theme:
   name: material
 nav:
   - Home: index.md
-  - Manuscript status: manuscript/MANUSCRIPT_STATUS.md
+  - Quickstart: quickstart.md
+  - Library walkthrough: library.md
+  - Architecture: architecture.md
+  - API reference: reference/api.md
+  - Module reference:
+    - Overview: reference/modules/index.md
+    - Accessibility: reference/modules/accessibility.md
+    - AI-assisted learning: reference/modules/ai.md
+    - Communication and collaboration: reference/modules/communication.md
+    - Content: reference/modules/content.md
+    - Content generation: reference/modules/content_generation.md
+    - Core models: reference/modules/core.md
+    - Database adapters: reference/modules/db.md
+    - Documentation generator: reference/modules/documentation.md
+    - Integrations and export: reference/modules/integration.md
+    - Learning and assessment: reference/modules/learning.md
+    - Mobile and offline: reference/modules/mobile.md
+    - HTTP routes: reference/modules/routes.md
+    - Search and course sites: reference/modules/search.md
+    - Teacher workflows: reference/modules/teachers.md
+    - Utilities: reference/modules/tools.md
+    - Users: reference/modules/users.md
+  - Tests and docs: development/testing.md
+  - Manuscript:
+    - Abstract: manuscript/00_abstract.md
+    - Introduction: manuscript/01_introduction.md
+    - Design: manuscript/02_design.md
+    - Methods: manuscript/03_methods.md
+    - Results: manuscript/04_results.md
+    - Discussion: manuscript/05_discussion.md
+    - Conclusion: manuscript/06_conclusion.md
+    - References: manuscript/99_references.md
+    - Reproduce: development/manuscript.md
 exclude_docs: |
   generated/
+  archive/

@@ -1,0 +1,18 @@
+# Module reference
+
+- [Accessibility](accessibility.md)
+- [AI-assisted learning](ai.md)
+- [Communication and collaboration](communication.md)
+- [Content](content.md)
+- [Content generation](content_generation.md)
+- [Core models](core.md)
+- [Database adapters](db.md)
+- [Documentation generator](documentation.md)
+- [Integrations and export](integration.md)
+- [Learning and assessment](learning.md)
+- [Mobile and offline](mobile.md)
+- [HTTP routes](routes.md)
+- [Search, visualization and course sites](search.md)
+- [Teacher workflows](teachers.md)
+- [Utilities](tools.md)
+- [Users](users.md)

@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Undeclared `pydantic-to-markdown` pin that made `pip install -r requirements.txt` unresolvable
 - `alembic` (no migration environment or configuration exists in this repository)
 - Stray nested `uv` project under `src/` (`src/pyproject.toml`, `src/uv.lock`, `src/main.py`, `src/.python-version`)
-- Superseded `CRITICAL_FIXES_NEEDED.md` (every listed fix is recorded as applied in `FIXES_APPLIED.md`)
+- Superseded `CRITICAL_FIXES_NEEDED.md` (every listed fix is recorded in the [fixes report](docs/archive/reviews/FIXES_APPLIED.md))
 - Stale `*.py.backup` copies of test files
 
 ### Fixed
