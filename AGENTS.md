@@ -1,7 +1,8 @@
 # Working on Course
 
 Start at [the docs index](docs/index.md) for the library workflow,
-architecture, module map and manuscript. The [contributing
+architecture and module map. Use the [manuscript source index](docs/manuscript/README.md)
+when editing the paper. The [contributing
 guide](CONTRIBUTING.md) covers branch, code and review conventions.
 
 - Install from `uv.lock` using the [quickstart](docs/quickstart.md).

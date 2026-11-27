@@ -12,4 +12,4 @@ local FastAPI application and an AST-based documentation generator.
 | [API reference](reference/api.md) | Inspect the running application's OpenAPI schema. |
 | [Module reference](reference/modules/index.md) | Find the service or model that owns a task. |
 | [Development](development/testing.md) | Run tests and build the documentation site. |
-| [Software manuscript](manuscript/00_abstract.md) | Design, reproducible fixture evidence, and limitations. |
+| [Software manuscript](manuscript/README.md) | Design, reproducible fixture evidence, and limitations. |

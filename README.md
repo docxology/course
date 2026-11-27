@@ -8,7 +8,7 @@ of its FastAPI development server.
 - [Documentation](docs/index.md)
 - [Install and run locally](docs/quickstart.md)
 - [Library walkthrough](docs/library.md)
-- [Software manuscript](docs/manuscript/00_abstract.md)
+- [Software manuscript](docs/manuscript/README.md)
 - [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Citation](CITATION.cff)
 
 The source is available under the [MIT license](LICENSE).
