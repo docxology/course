@@ -29,6 +29,7 @@ nav:
     - Users: reference/modules/users.md
   - Tests and docs: development/testing.md
   - Manuscript:
+    - Source index: manuscript/README.md
     - Abstract: manuscript/00_abstract.md
     - Introduction: manuscript/01_introduction.md
     - Design: manuscript/02_design.md
