@@ -4,110 +4,72 @@
 
 ## Overview
 
-This test suite provides comprehensive coverage for the Curriculum Repository System with multiple testing layers:
+## Test Suites
 
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: Component interaction testing
-- **Performance Tests**: Speed and resource usage testing
-- **Edge Case Tests**: Error conditions and boundary testing
-- **Documentation Tests**: Feature validation testing
+| Suite | Coverage and example files |
+| --- | --- |
+| [Unit](unit/) | Local component and workflow checks, including [core models](unit/test_core_models.py) and [content workflow quality](unit/test_content_workflow_quality.py). |
+| [Integration](integration/) | Component interactions, database, CLI, and route tests, including the [content service](integration/test_content_content_service.py). |
+| [Performance](performance/) | [Documentation generation benchmarks](performance/test_documentation_performance.py). |
+| [Security](security/) | Authentication and token validation checks. |
 
-## Test Categories
-
-### 🧪 Unit Tests (`test_*_unit.py`)
-- Individual class and function testing
-- Mock dependencies for isolation
-- Fast execution for development feedback
-
-### 🔗 Integration Tests (`test_*_integration.py`)
-- Component interaction testing
-- Database integration testing
-- External service integration testing
-
-### ⚡ Performance Tests (`test_*_performance.py`)
-- Speed and resource usage testing
-- Load testing capabilities
-- Memory usage monitoring
-
-### 🎯 Edge Case Tests (`test_*_edge_cases.py`)
-- Error condition testing
-- Boundary value testing
-- Invalid input handling
-
-### 📚 Documentation Tests (`test_*_docs.py`)
-- Feature validation testing
-- Output format verification
-- Documentation accuracy testing
-
-## Test File Structure
-
-```
-tests/
-├── README.md                    # This file
-├── conftest.py                  # Shared fixtures and configuration
-├── __init__.py
-│
-├── test_documentation.py        # Main documentation system tests
-├── test_documentation_unit.py   # Documentation unit tests
-├── test_documentation_integration.py  # Documentation integration tests
-├── test_documentation_performance.py  # Documentation performance tests
-├── test_documentation_edge_cases.py   # Documentation edge cases
-│
-├── test_core_unit.py           # Core models unit tests
-├── test_core_integration.py    # Core integration tests
-├── test_core_performance.py    # Core performance tests
-├── test_core_edge_cases.py     # Core edge cases
-│
-├── test_content_unit.py        # Content management unit tests
-├── test_content_integration.py # Content integration tests
-├── test_content_performance.py # Content performance tests
-├── test_content_edge_cases.py  # Content edge cases
-│
-└── [Additional test files for other modules...]
-```
+The documentation service's [main tests](integration/test_documentation.py),
+[unit tests](integration/test_documentation_unit.py),
+[integration tests](integration/test_documentation_integration.py),
+[comprehensive tests](integration/test_documentation_comprehensive.py), and
+[edge cases](integration/test_documentation_edge_cases.py) all live in
+`tests/integration/`. The unit marker applies to some tests in that directory.
 
 ## Running Tests
 
+Install the locked development dependencies with the [quickstart](../docs/quickstart.md)
+and run the commands below from the repository root. Read the integration
+fixtures before running tests that use additional services.
+
 ### All Tests
 ```bash
-PYTHONPATH=src python3 -m pytest tests/ -v
+uv run --no-sync pytest tests/ -v
 ```
 
-### Specific Test Category
+### Specific Suite
 ```bash
-# Unit tests only
-PYTHONPATH=src python3 -m pytest tests/ -k "unit" -v
+# Offline unit suite
+uv run --no-sync pytest tests/unit --no-cov
 
-# Integration tests only
-PYTHONPATH=src python3 -m pytest tests/ -k "integration" -v
+# Integration suite
+uv run --no-sync pytest tests/integration --no-cov -v
 
-# Performance tests only
-PYTHONPATH=src python3 -m pytest tests/ -k "performance" -v
+# Documentation benchmarks
+uv run --no-sync pytest tests/performance --no-cov -v
 ```
 
 ### Single Test File
 ```bash
-PYTHONPATH=src python3 -m pytest tests/test_documentation_unit.py -v
+uv run --no-sync pytest tests/integration/test_documentation_unit.py --no-cov -v
 ```
 
 ### With Coverage
-```bash
-PYTHONPATH=src python3 -m pytest tests/ --cov=src/curriculum --cov-report=html
-```
+
+The default configuration in [pyproject.toml](../pyproject.toml) measures
+coverage over `src/` and produces terminal, HTML, and XML reports. Use
+`--no-cov` for focused runs that do not need reports.
 
 ## Test Fixtures
 
-### Common Fixtures (conftest.py)
+### Common Fixtures
+
+[conftest.py](conftest.py) defines shared data and service fixtures.
+
 - `sample_user()` - Test user data
 - `sample_content()` - Test content data
 - `sample_assessment()` - Test assessment data
-- `mock_llm_service()` - Mock LLM service for testing
-- `temp_output_dir()` - Temporary output directory
 
 ### Documentation-Specific Fixtures
-- `doc_service()` - Documentation generator service
-- `sample_python_file()` - Sample Python file for testing
-- `mock_ollama_response()` - Mock LLM responses
+
+[test_documentation.py](integration/test_documentation.py) defines
+`doc_service` and `sample_python_file`. The shared
+`offline_documentation_provider` fixture simulates an unavailable Ollama
+provider for the documentation test files.
 
 ## Test Patterns
 
@@ -294,32 +256,10 @@ Each test file should include:
 
 ## Continuous Integration
 
-### CI/CD Integration
-```yaml
-# .github/workflows/tests.yml
-name: Tests
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
-      - name: Run tests
-        run: |
-          PYTHONPATH=src python -m pytest tests/ --cov=src/curriculum --cov-report=xml
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
-```
+The [CI workflow](../.github/workflows/ci.yml) installs locked dependencies and
+runs pytest by marker across its supported Python matrix. The
+[performance workflow](../.github/workflows/performance.yml) times the
+documentation benchmarks.
 
 ## Test Maintenance
 
@@ -338,28 +278,21 @@ jobs:
 
 ### Running Specific Tests
 ```bash
-# Run tests for a specific module
-PYTHONPATH=src python -m pytest tests/test_content_*.py -v
+# Run content workflow tests
+uv run --no-sync pytest tests/unit/test_content_workflow_quality.py --no-cov -v
 
-# Run tests with specific markers
-PYTHONPATH=src python -m pytest tests/ -m "unit" -v
+# Select tests by marker within the integration suite
+uv run --no-sync pytest tests/integration -m integration --no-cov -v
 
-# Run tests excluding slow ones
-PYTHONPATH=src python -m pytest tests/ -m "not slow" -v
+# Exclude slow integration tests
+uv run --no-sync pytest tests/integration -m "not slow" --no-cov -v
 ```
 
 ### Debugging Tests
 ```bash
 # Run with detailed output
-PYTHONPATH=src python -m pytest tests/test_documentation.py::TestDocumentationGenerator::test_basic_functionality -v -s
+uv run --no-sync pytest tests/integration/test_documentation.py::TestDocumentationGenerator::test_initialization --no-cov -v -s
 
 # Debug with pdb
-PYTHONPATH=src python -m pytest tests/test_documentation.py --pdb
+uv run --no-sync pytest tests/integration/test_documentation.py --no-cov --pdb
 ```
-
----
-
-**Last Updated:** October 1, 2025
-**Test Coverage Goal:** 85%+
-**Test Categories:** 5 (Unit, Integration, Performance, Edge Cases, Documentation)
-
